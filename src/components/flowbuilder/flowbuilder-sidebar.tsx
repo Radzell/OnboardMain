@@ -1,4 +1,7 @@
 import React from 'react';
+import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { XIcon } from '@heroicons/react/outline'
 
 const Sidebar = () => {
   const onDragStart = (event, nodeType) => {
@@ -6,19 +9,24 @@ const Sidebar = () => {
     event.dataTransfer.effectAllowed = 'move';
   };
 
+  const [open, setOpen] = useState(true)
+
+
   return (
     <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="aspect-[4/3] rounded-md border-2 border-rose-500" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-        Input Node
-      </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-        Default Node
-      </div>
-      <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
-      </div>
-    </aside>
+    <div className="description">You can drag these nodes to the pane on the left.</div>
+    <div className="react-flow__node-input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
+      Input Node
+    </div>
+    <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, 'default')} draggable>
+      Default Node
+    </div>
+    <div className="react-flow__node-output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
+      Output Node
+    </div>
+  </aside>
+
+
   );
 };
 

@@ -62,9 +62,9 @@ export const FlowBuilderChart = () => {
     };
   
     return (
-      <div className="dndflow">
+      <div className="dndflow flex h-full flex-col">
         <ReactFlowProvider>
-          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <div className="w-full h-full" ref={reactFlowWrapper}>
             <ReactFlow
               elements={elements}
               onConnect={onConnect}

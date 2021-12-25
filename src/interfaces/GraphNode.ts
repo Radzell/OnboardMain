@@ -49,7 +49,6 @@ export const ScreenPreviewData = {
     },
     "welcome": {
         name: "Welcome",
-
     },
     "email_and_password": {
         name: "Email and Password",

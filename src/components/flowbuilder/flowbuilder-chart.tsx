@@ -6,11 +6,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 import './flowbuilder.module.css'
 import FormNode from '../../nodes/FormNode';
+import EntryNode from '../../nodes/EntryNode';
 
 
 
 const nodeTypes = {
   formNode: FormNode,
+  entryNode: EntryNode
 }
 
 const snapGrid = [20, 20];
@@ -20,10 +22,8 @@ const getId = () => uuidv4();
 const initialElements: Elements = [
   {
     id: getId(),
-    type: "input",
-    sourcePosition: Position.Right,
-
-    position: { x: 250, y: 0 },
+    type: "entryNode",
+    position: { x: 250, y: 50 },
     data: { label: `Entry`, formType: "entry" },
   }
 ];

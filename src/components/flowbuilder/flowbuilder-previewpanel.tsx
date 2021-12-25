@@ -62,7 +62,7 @@ const PreviewPanel = () => {
 
     const schemas = useMemo(() => {
         const schemaData = ScreenPreviewData[formNode?.data.formType]
-        if(!schemaData || !schemaData.dataSchema || !schemaData.uiSchema) {
+        if(!schemaData) {
             return
         }
 
@@ -71,10 +71,10 @@ const PreviewPanel = () => {
 
     return (
         <>
-            <Typography variant="h5" gutterBottom component="div">
-               Email and Password Form
-            </Typography>
-            { formNode && schemas && <Form
+            { formNode && schemas && <Typography variant="h5" gutterBottom component="div">
+               {schemas.name}
+            </Typography>}
+            { formNode && schemas && schemas.dataSchema && schemas.uiSchema && <Form
                 schema={schemas.dataSchema}
                 uiSchema={schemas.uiSchema}
                 onChange={(newFormData) =>  setFormData(newFormData.formData)}

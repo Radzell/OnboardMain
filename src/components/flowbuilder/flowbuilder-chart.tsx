@@ -5,12 +5,17 @@ import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
 
 import './flowbuilder.module.css'
+import FormNode from '../../nodes/FormNode';
 
 const initialElements: Elements = [
 
 ];
 
+const nodeTypes = {
+  formNode: FormNode,
+}
 
+const snapGrid = [20, 20];
 
 const getId = () => uuidv4();
 
@@ -63,6 +68,9 @@ export const FlowBuilderChart = () => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            snapToGrid={true}
+            nodeTypes={nodeTypes}
+
           >
             <Controls />
           </ReactFlow>

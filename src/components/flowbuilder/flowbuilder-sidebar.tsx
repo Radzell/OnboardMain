@@ -13,8 +13,6 @@ const Sidebar = () => {
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const [open, setOpen] = useState(true)
-
   const tab =   useAppSelector((state) => state.counter.tab)
   const dispatch = useAppDispatch()
   const changeTab = (newTab: 'preview'| 'screens') => {

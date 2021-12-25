@@ -5,6 +5,7 @@ import { Typography } from "@mui/material";
 
 import { withTheme } from '@rjsf/core';
 import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
+import { ScreenPreviewData } from "../../interfaces/GraphNode";
 
 const Form = withTheme(Bootstrap4Theme)
 
@@ -58,15 +59,24 @@ const PreviewPanel = () => {
     console.log('formNode', formNode)
 
     const [formData, setFormData] = useState({})
+
+    const schemas = useMemo(() => {
+        const schemaData = ScreenPreviewData[formNode?.data.formType]
+        if(!schemaData || !schemaData.dataSchema || !schemaData.uiSchema) {
+            return
+        }
+
+        return schemaData
+    }, [formNode])
+
     return (
         <>
-            <div className="description">You can drag these screens to the pane on the left. {selectedNodeId} </div>
             <Typography variant="h5" gutterBottom component="div">
                Email and Password Form
             </Typography>
-            { formNode && <Form
-                schema={emailDataSchema}
-                uiSchema={emailUiSchema}
+            { formNode && schemas && <Form
+                schema={schemas.dataSchema}
+                uiSchema={schemas.uiSchema}
                 onChange={(newFormData) =>  setFormData(newFormData.formData)}
                 formData={formData}
                 submitButtonMessage="Login"

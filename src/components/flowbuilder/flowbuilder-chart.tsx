@@ -21,6 +21,8 @@ const initialElements: Elements = [
   {
     id: getId(),
     type: "input",
+    sourcePosition: Position.Right,
+
     position: { x: 250, y: 0 },
     data: { label: `Entry`, formType: "entry" },
   }

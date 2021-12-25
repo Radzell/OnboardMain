@@ -14,7 +14,7 @@ export interface GraphNode {
     sourcePosition?: string,
     isHidden?: boolean,
     draggable?: boolean,
-    connectable? :boolean,
+    connectable?: boolean,
     selectable?: boolean,
     dragHandle?: string
 }
@@ -40,5 +40,45 @@ export const ScreenMetaData = {
         name: "Email and Password",
         type: "formNode",
         schemaChangable: false
+    },
+}
+
+export const ScreenPreviewData = {
+    "entry": {
+        name: "Entry",
+    },
+    "welcome": {
+        name: "Welcome",
+
+    },
+    "email_and_password": {
+        name: "Email and Password",
+        dataSchema: {
+            type: 'object',
+            title: '',
+            properties: {
+                email: {
+                    title: 'Email',
+                    type: 'string'
+                },
+                password: {
+                    title: 'Password',
+                    type: 'string'
+                }
+            },
+            dependencies: {},
+            required: [
+                'email'
+            ]
+        },
+        uiSchema: {
+            password: {
+                'ui:widget': 'password'
+              },
+              'ui:order': [
+                'email',
+                'password'
+              ]
+        }
     },
 }

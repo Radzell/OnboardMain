@@ -2,6 +2,8 @@ import React from 'react';
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button';
 
 const Sidebar = () => {
   const onDragStart = (event, nodeType) => {
@@ -13,18 +15,23 @@ const Sidebar = () => {
 
 
   return (
-    <aside>
-    <div className="description">You can drag these nodes to the pane on the left.</div>
-    <div className="react-flow__node-input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-      Input Node
-    </div>
-    <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-      Default Node
-    </div>
-    <div className="react-flow__node-output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-      Output Node
-    </div>
-  </aside>
+    <aside style={{ width: '400px' }} className="bg-gray-800 flex flex-col items-center">
+
+      <ButtonGroup variant="outlined" aria-label="outlined button group">
+        <Button variant="contained">Screens</Button>
+        <Button>Preview</Button>
+      </ButtonGroup>
+      <div className="description">You can drag these screens to the pane on the left.</div>
+      <div className="react-flow__node-input" onDragStart={(event) => onDragStart(event, 'entry')} draggable>
+        Entry
+      </div>
+      <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, 'welcome')} draggable>
+        Welcome Flow
+      </div>
+      <div className="react-flow__node-output" onDragStart={(event) => onDragStart(event, 'email_and_password')} draggable>
+        Email and Password
+      </div>
+    </aside>
 
 
   );

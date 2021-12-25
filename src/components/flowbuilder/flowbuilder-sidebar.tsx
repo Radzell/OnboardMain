@@ -26,7 +26,7 @@ const Sidebar = () => {
   }
 
   return (
-    <aside style={{ width: '400px' }} className="bg-gray-800 flex flex-col items-center">
+    <aside style={{ width: '500px', backgroundColor: '#E5E7EB' }} className="flex flex-col items-center">
 
       <ButtonGroup variant="outlined" aria-label="outlined button group">
         <Button onClick={changeTab('screens')} variant={tab === 'screens' ? "contained" : "outlined"}>Screens</Button>

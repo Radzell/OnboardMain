@@ -33,7 +33,7 @@ export const ScreenMetaData = {
     },
     "welcome": {
         name: "Welcome",
-        type: "default",
+        type: "formNode",
         schemaChangable: false
     },
     "email_and_password": {

@@ -7,14 +7,12 @@ import Button from '@mui/material/Button';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { previewClick, screenClick } from '../../reducers/uiSlice';
 import ScreensPanel from './flowbuilder-screenspanel';
+import PreviewPanel from './flowbuilder-previewpanel';
 
 const Sidebar = () => {
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+  
 
-  const tab =   useAppSelector((state) => state.counter.tab)
+  const tab =   useAppSelector((state) => state.ui.tab)
   const dispatch = useAppDispatch()
   const changeTab = (newTab: 'preview'| 'screens') => {
     return () => {
@@ -35,6 +33,8 @@ const Sidebar = () => {
         <Button onClick={changeTab('preview')} variant={tab === 'preview' ? "contained" : "outlined"}>Preview</Button>
       </ButtonGroup>
       {tab === 'screens' && <ScreensPanel />}
+      {tab === 'preview' && <PreviewPanel />}
+
     </aside>
 
 

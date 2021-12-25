@@ -8,6 +8,9 @@ import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
 import store from '../app/store'
 import { Provider } from 'react-redux'
+import {
+  ReactFlowProvider
+} from 'react-flow-renderer';
 
 import '../styles/globals.css'
 
@@ -30,13 +33,16 @@ const App = (props) => {
           content="initial-scale=1, width=device-width"
         />
       </Head>
+
       <Provider store={store}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {getLayout(<Component {...pageProps} />)}
-          </ThemeProvider>
-        </LocalizationProvider>
+        <ReactFlowProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {getLayout(<Component {...pageProps} />)}
+            </ThemeProvider>
+          </LocalizationProvider>
+        </ReactFlowProvider>
       </Provider>
     </CacheProvider>
   );

@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import uiReducer from '../reducers/uiSlice'
+import flowChartReducer from '../reducers/flowChartSlice'
 
 
 export function makeStore() {
   return configureStore({
     reducer: { 
-      counter: uiReducer
+      ui: uiReducer,
+      flowChart: flowChartReducer
     },
   })
 }

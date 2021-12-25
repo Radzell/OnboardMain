@@ -7,9 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './flowbuilder.module.css'
 import FormNode from '../../nodes/FormNode';
 
-const initialElements: Elements = [
 
-];
 
 const nodeTypes = {
   formNode: FormNode,
@@ -19,7 +17,18 @@ const snapGrid = [20, 20];
 
 const getId = () => uuidv4();
 
+const initialElements: Elements = [
+  {
+    id: getId(),
+    type: "input",
+    position: { x: 250, y: 0 },
+    data: { label: `Entry`, formType: "entry" },
+  }
+];
+
 export const FlowBuilderChart = () => {
+
+  
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(initialElements);
@@ -39,19 +48,19 @@ export const FlowBuilderChart = () => {
     event.preventDefault();
 
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    const type = event.dataTransfer.getData('application/reactflow');
+    const formType = event.dataTransfer.getData('application/reactflow');
     const position = reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
 
 
-    const screenMetaData = ScreenMetaData[type]
+    const screenMetaData = ScreenMetaData[formType]
     const newNode = {
       id: getId(),
       type: screenMetaData.type,
       position,
-      data: { label: `${screenMetaData.name}` },
+      data: { label: `${screenMetaData.name}`, formType: formType },
     };
 
     setElements((es) => es.concat(newNode));

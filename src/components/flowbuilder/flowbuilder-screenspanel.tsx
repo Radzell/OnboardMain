@@ -1,10 +1,13 @@
+import { DragEvent } from "react";
+
 const ScreensPanel = () => {
+    const onDragStart = (event: DragEvent<HTMLDivElement>, nodeType: string) => {
+        event.dataTransfer.setData('application/reactflow', nodeType);
+        event.dataTransfer.effectAllowed = 'move';
+      };
     return (
         <>
             <div className="description">You can drag these screens to the pane on the left.</div>
-            <div className="react-flow__node-input" onDragStart={(event) => onDragStart(event, 'entry')} draggable>
-                Entry
-            </div>
             <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, 'welcome')} draggable>
                 Welcome Flow
             </div>

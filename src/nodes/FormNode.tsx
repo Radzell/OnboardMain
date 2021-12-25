@@ -1,25 +1,34 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import { Handle, Position } from 'react-flow-renderer';
 import Button from '@mui/material/Button';
 import { useAppDispatch } from '../app/hooks';
 import { showPreviewOfNode } from '../reducers/uiSlice';
 
-export default memo(({ data, isConnectable }: { data: any, isConnectable: boolean }) => {
+export default memo(({ data, id, isConnectable}: { data: any, id:string, isConnectable: boolean }) => {
   
   const dispatch = useAppDispatch()
 
   const showPreview = () => {
-    dispatch(showPreviewOfNode(data.id))
+    dispatch(showPreviewOfNode(id))
   }
+
+
   
   return (
     <>
+      
       <Handle
-        type="target"
+        type="source"
         position={Position.Right}
-        style={{ background: '#555' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
+        
+        style={{ 
+          background: '#555', 
+          width: 25, 
+          height: 'calc(100% + 2px)', 
+          right: -24,
+          borderRadius: '0px 10px 10px 0px'  
+        }}
         isConnectable={isConnectable}
       />
       <div style={{border: '1px solid #777', padding: 8}}>
@@ -30,14 +39,20 @@ export default memo(({ data, isConnectable }: { data: any, isConnectable: boolea
           Preview
         </Button>
       </div>
+      
       <Handle
-        type="source"
+        type="target"
         position={Position.Left}
-        id="a"
-        style={{ background: '#555' }}
+        style={{ 
+          background: '#555',
+          left: -14,
+          height: 18,
+          width: 15,
+          borderRadius: '8px 0px 0px 8px' 
+        }}
+        onConnect={(params) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
       />
-
     </>
   );
 });

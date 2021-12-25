@@ -28,6 +28,7 @@
     "@rjsf/core": "^3.2.1",
     "@rjsf/material-ui": "^3.2.1",
     "@types/uuid": "^8.3.3",
+    "bootstrap": "^4.6.1",
     "chart.js": "^3.5.1",
     "date-fns": "^2.25.0",
     "formik": "^2.1.5",

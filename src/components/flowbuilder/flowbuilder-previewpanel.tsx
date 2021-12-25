@@ -1,8 +1,12 @@
 import React, { DragEvent, useMemo, useState } from "react";
 import { useStoreState, useStoreActions } from "react-flow-renderer";
 import { useAppSelector } from "../../app/hooks";
-import Form from '@rjsf/bootstrap-4';
 import { Typography } from "@mui/material";
+
+import { withTheme } from '@rjsf/core';
+import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
+
+const Form = withTheme(Bootstrap4Theme)
 
 const emailDataSchema = {
     type: 'object',

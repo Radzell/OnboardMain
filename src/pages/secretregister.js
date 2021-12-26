@@ -15,7 +15,11 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import { useAuth } from '../database/FirebaseAuthContext' 
+
 const Register = () => {
+  const { createUserWithEmailAndPassword } = useAuth();
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -55,7 +59,10 @@ const Register = () => {
           'This field must be checked'
         )
     }),
-    onSubmit: () => {
+    onSubmit: async (values) => {
+      
+      console.log('onSubmit', values)
+      await createUserWithEmailAndPassword(email, passwordOne)
       router.push('/');
     }
   });
@@ -64,7 +71,7 @@ const Register = () => {
     <>
       <Head>
         <title>
-          Register | Material Kit
+          Register | Onboard OS
         </title>
       </Head>
       <Box

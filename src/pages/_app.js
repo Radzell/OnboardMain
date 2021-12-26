@@ -25,6 +25,8 @@ import {
   ReactReduxFirebaseProvider
 } from 'react-redux-firebase'
 
+import { AuthUserProvider } from '../database/FirebaseAuthContext'
+
 
 const rrfConfig = {
   userProfile: 'users',
@@ -42,7 +44,7 @@ const rrfProps = {
 console.log('firebase', firebase)
 firebase.initializeApp(fbConfig)
 
-firebase.firestore() 
+firebase.firestore()
 // firebase.functions() // <- needed if using httpsCallable
 
 
@@ -67,14 +69,16 @@ const App = (props) => {
 
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
-          <ReactFlowProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <ThemeProvider theme={theme}>
-                <CssBaseline />
-                {getLayout(<Component {...pageProps} />)}
-              </ThemeProvider>
-            </LocalizationProvider>
-          </ReactFlowProvider>
+          <AuthUserProvider>
+            <ReactFlowProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  {getLayout(<Component {...pageProps} />)}
+                </ThemeProvider>
+              </LocalizationProvider>
+            </ReactFlowProvider>
+          </AuthUserProvider>
         </ReactReduxFirebaseProvider>
       </Provider>
     </CacheProvider>

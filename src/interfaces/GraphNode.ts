@@ -19,10 +19,11 @@ export interface GraphNode {
     dragHandle?: string
 }
 
-export declare enum ScreenType {
+export enum ScreenType {
     ENTRY = "entry",
     WELCOME = "welcome",
-    EMAIL_AND_PASSWORD = "email_and_password"
+    EMAIL_AND_PASSWORD = "email_and_password",
+    EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name"
 }
 
 export const ScreenMetaData = {
@@ -41,6 +42,11 @@ export const ScreenMetaData = {
         type: "formNode",
         schemaChangable: false
     },
+    "email_and_password_and_name": {
+        name: "Email, Password and Name",
+        type: "formNode",
+        schemaChangable: false
+    },
 }
 
 export const ScreenPreviewData = {
@@ -51,14 +57,15 @@ export const ScreenPreviewData = {
         name: "Welcome",
     },
     "email_and_password": {
-        name: "Create a blank account",
+        name: "Create a account",
         dataSchema: {
             type: 'object',
-            title: '',
+            title: 'Create an account',
             properties: {
                 email: {
                     title: 'Email',
-                    type: 'string'
+                    type: 'string',
+                    format: "email"
                 },
                 password: {
                     title: 'Password',

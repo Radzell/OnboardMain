@@ -1,19 +1,27 @@
 import { DragEvent } from "react";
+import { ScreenMetaData, ScreenType } from "../../interfaces/GraphNode";
 
 const ScreensPanel = () => {
     const onDragStart = (event: DragEvent<HTMLDivElement>, nodeType: string) => {
         event.dataTransfer.setData('application/reactflow', nodeType);
         event.dataTransfer.effectAllowed = 'move';
       };
+
+    console.log('ScreenType', ScreenType, Object.keys(ScreenType), Object.values(ScreenType))
+    console.log('ScreenType', ScreenType, Object.keys(ScreenType), Object.values(ScreenType))
+
     return (
         <>
             <div className="description">You can drag these screens to the pane on the left.</div>
-            <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, 'welcome')} draggable>
-                Welcome Flow
-            </div>
-            <div className="react-flow__node-output" onDragStart={(event) => onDragStart(event, 'email_and_password')} draggable>
-                Email and Password
-            </div>
+
+
+            {Object.values(ScreenType).filter(nodetype => nodetype !== "entry").map(nodetype => {
+                return (
+                    <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, nodetype)} draggable>
+                        {ScreenMetaData[nodetype].name}
+                    </div>
+                )
+            })}
         </>
     )
 }

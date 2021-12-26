@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'
 import {
   ReactFlowProvider
 } from 'react-flow-renderer';
+import {SnackBarProvider}  from '../components/snackbar'
 
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/globals.css'
@@ -71,12 +72,14 @@ const App = (props) => {
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthUserProvider>
             <ReactFlowProvider>
+              <SnackBarProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <ThemeProvider theme={theme}>
                   <CssBaseline />
                   {getLayout(<Component {...pageProps} />)}
                 </ThemeProvider>
               </LocalizationProvider>
+              </SnackBarProvider>
             </ReactFlowProvider>
           </AuthUserProvider>
         </ReactReduxFirebaseProvider>

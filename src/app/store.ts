@@ -1,13 +1,18 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import uiReducer from '../reducers/uiSlice'
 import flowChartReducer from '../reducers/flowChartSlice'
-
+import { createFirestoreInstance, firestoreReducer } from 'redux-firestore' 
+import {
+  firebaseReducer
+} from 'react-redux-firebase'
 
 export function makeStore() {
   return configureStore({
     reducer: { 
       ui: uiReducer,
-      flowChart: flowChartReducer
+      flowChart: flowChartReducer,
+      firebase: firebaseReducer,
+      firestore: firestoreReducer
     },
   })
 }

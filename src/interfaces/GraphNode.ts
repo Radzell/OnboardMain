@@ -51,7 +51,7 @@ export const ScreenPreviewData = {
         name: "Welcome",
     },
     "email_and_password": {
-        name: "Email and Password",
+        name: "Create a blank account",
         dataSchema: {
             type: 'object',
             title: '',

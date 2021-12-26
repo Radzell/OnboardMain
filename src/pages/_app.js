@@ -12,8 +12,38 @@ import {
   ReactFlowProvider
 } from 'react-flow-renderer';
 
-import 'bootstrap/dist/css/bootstrap.css'; 
+import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/globals.css'
+
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import { createFirestoreInstance } from 'redux-firestore'
+import fbConfig from '../database/fbConfig'
+import {
+  ReactReduxFirebaseProvider
+} from 'react-redux-firebase'
+
+
+const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true
+}
+
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance // <- needed if using firestore
+}
+
+console.log('firebase', firebase)
+firebase.initializeApp(fbConfig)
+
+firebase.firestore() 
+// firebase.functions() // <- needed if using httpsCallable
 
 
 const clientSideEmotionCache = createEmotionCache();
@@ -36,14 +66,16 @@ const App = (props) => {
       </Head>
 
       <Provider store={store}>
-        <ReactFlowProvider>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {getLayout(<Component {...pageProps} />)}
-            </ThemeProvider>
-          </LocalizationProvider>
-        </ReactFlowProvider>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <ReactFlowProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {getLayout(<Component {...pageProps} />)}
+              </ThemeProvider>
+            </LocalizationProvider>
+          </ReactFlowProvider>
+        </ReactReduxFirebaseProvider>
       </Provider>
     </CacheProvider>
   );

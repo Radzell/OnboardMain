@@ -7,9 +7,6 @@ const ScreensPanel = () => {
         event.dataTransfer.effectAllowed = 'move';
       };
 
-    console.log('ScreenType', ScreenType, Object.keys(ScreenType), Object.values(ScreenType))
-    console.log('ScreenType', ScreenType, Object.keys(ScreenType), Object.values(ScreenType))
-
     return (
         <>
             <div className="description">You can drag these screens to the pane on the left.</div>

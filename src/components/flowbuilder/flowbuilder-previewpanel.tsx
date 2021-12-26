@@ -1,11 +1,13 @@
 import React, { DragEvent, useMemo, useState } from "react";
 import { useStoreState, useStoreActions } from "react-flow-renderer";
-import { useAppSelector } from "../../app/hooks";
-import { Typography } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { Button, Typography } from "@mui/material";
 
 import { withTheme } from '@rjsf/core';
 import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
 import { ScreenPreviewData } from "../../interfaces/GraphNode";
+import { useSnackBar } from "../snackbar";
+import { saveFlowForm } from "../../reducers/flowChartSlice";
 
 const Form = withTheme(Bootstrap4Theme)
 
@@ -13,30 +15,30 @@ const emailDataSchema = {
     type: 'object',
     title: '',
     properties: {
-      email: {
-        title: 'Email',
-        type: 'string'
-      },
-      password: {
-        title: 'Password',
-        type: 'string'
-      }
+        email: {
+            title: 'Email',
+            type: 'string'
+        },
+        password: {
+            title: 'Password',
+            type: 'string'
+        }
     },
     dependencies: {},
     required: [
-      'email'
+        'email'
     ]
 }
 
 const emailUiSchema = {
     password: {
-      'ui:widget': 'password'
+        'ui:widget': 'password'
     },
     'ui:order': [
-      'email',
-      'password'
+        'email',
+        'password'
     ]
-  }
+}
 
 const PreviewPanel = () => {
 
@@ -48,7 +50,7 @@ const PreviewPanel = () => {
     const formNode = useMemo(() => {
         const foundNodes = nodes.filter(node => node.id == selectedNodeId)
 
-        if(foundNodes.length == 0) {
+        if (foundNodes.length == 0) {
             return null
         }
 
@@ -62,27 +64,46 @@ const PreviewPanel = () => {
 
     const schemas = useMemo(() => {
         const schemaData = ScreenPreviewData[formNode?.data.formType]
-        if(!schemaData) {
+        if (!schemaData) {
             return
         }
 
         return schemaData
     }, [formNode])
 
+    const snackbar = useSnackBar()
+    const dispatch = useAppDispatch()
+
+    const onSave = async() => {
+
+        await dispatch(saveFlowForm({flowFormId: selectedNodeId, flowForm: formData}))
+        snackbar.showSnackBar("Saving...", "info")
+    }
+
     return (
-        <>
-            { formNode && schemas && <Typography variant="h5" gutterBottom component="div">
-               {schemas.name}
-            </Typography>}
-            { formNode && schemas && schemas.dataSchema && schemas.uiSchema && <Form
-                schema={schemas.dataSchema}
-                uiSchema={schemas.uiSchema}
-                onChange={(newFormData) =>  setFormData(newFormData.formData)}
-                formData={formData}
-                submitButtonMessage="Login"
+        <div className="flex flex-col justify-between h-full">
+            <div>
+                {formNode && schemas && <Typography variant="h5" gutterBottom component="div">
+                    {schemas.name}
+                </Typography>}
+                {formNode && schemas && schemas.dataSchema && schemas.uiSchema && <Form
+                    schema={schemas.dataSchema}
+                    uiSchema={schemas.uiSchema}
+                    onChange={(newFormData) => setFormData(newFormData.formData)}
+                    formData={formData}
+                    readonly={true}
+                    submitButtonMessage="Login"
                 />
-            }
-        </>
+                }
+            </div>
+
+            <div>
+                <Button onClick={onSave} variant="contained" fullWidth={true} sx={{}}>
+                    Save
+                </Button>
+            </div>
+
+        </div>
     )
 }
 

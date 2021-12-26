@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, ReactFlowProvider, Controls, Position, Connection, Edge } from 'react-flow-renderer';
+import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
 import { ScreenMetaData } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +10,8 @@ import EntryNode from '../../nodes/EntryNode';
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
 import { AlertColor } from '@mui/material';
+import { useAppDispatch } from '../../app/hooks';
+import { saveFlow } from '../../reducers/flowChartSlice';
 
 
 const nodeTypes = {
@@ -34,13 +36,13 @@ export const FlowBuilderChart = () => {
 
 
   const reactFlowWrapper = useRef(null);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams<any> | null>(null);
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params: Edge<any> | Connection) => setElements((els) => addEdge(params, els));
   const onElementsRemove = (elementsToRemove: Elements<any>) =>
     setElements((els) => removeElements(elementsToRemove, els));
 
-  const onLoad = (_reactFlowInstance: React.SetStateAction<null>) =>
+  const onLoad = (_reactFlowInstance: OnLoadParams<any>) =>
     setReactFlowInstance(_reactFlowInstance);
 
   const onDragOver = (event: { preventDefault: () => void; dataTransfer: { dropEffect: string; }; }) => {
@@ -53,7 +55,7 @@ export const FlowBuilderChart = () => {
 
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const formType = event.dataTransfer.getData('application/reactflow');
-    const position = reactFlowInstance.project({
+    const position = reactFlowInstance?.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
@@ -71,6 +73,7 @@ export const FlowBuilderChart = () => {
   };
 
   const snackbar = useSnackBar()
+  const dispatch = useAppDispatch()
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
     console.log('onKeyDown', keyName, e, _)
@@ -80,7 +83,17 @@ export const FlowBuilderChart = () => {
     console.log('onKeyDown', keyName)
     if(keyName === "alt+s" || keyName === "command+s" ) {
       // save
-      snackbar.showSnackBar("Saving...", "info")
+      const flow = reactFlowInstance?.toObject();
+
+      if(flow) {
+        
+        dispatch(saveFlow({flowId:'main-app_flow', flowNodes: flow}))
+        snackbar.showSnackBar("Saving...", "info")
+      }else  {
+        snackbar.showSnackBar("Error saving...", "error")
+
+      }
+      
     }
   }
 

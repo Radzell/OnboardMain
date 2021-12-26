@@ -3,7 +3,7 @@ import { Alert, AlertColor, Snackbar, SnackbarOrigin } from '@mui/material';
 import React, { createContext, useContext } from 'react';
 
 type SnackBarContextActions = {
-  showSnackBar: (text: string, typeColor: AlertColor, position: SnackbarOrigin) => void;
+  showSnackBar: (text: string, typeColor: AlertColor, position?: SnackbarOrigin) => void;
 };
 
 const SnackBarContext = createContext({} as SnackBarContextActions);

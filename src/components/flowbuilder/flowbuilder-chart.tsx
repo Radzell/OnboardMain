@@ -9,10 +9,11 @@ import FormNode from '../../nodes/FormNode';
 import EntryNode from '../../nodes/EntryNode';
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
-import { AlertColor } from '@mui/material';
+import { AlertColor, Divider } from '@mui/material';
 import { useAppDispatch } from '../../app/hooks';
 import { saveFlow } from '../../reducers/flowChartSlice';
-
+import { Menu, Transition } from '@headlessui/react'
+import { FileMenu } from './flowbuilder-filemenu';
 
 const nodeTypes = {
   formNode: FormNode,
@@ -104,7 +105,12 @@ export const FlowBuilderChart = () => {
     >
       <div className="dndflow flex h-full flex-col">
         <ReactFlowProvider>
-          <div className="w-full h-full" ref={reactFlowWrapper}>
+          <div className="w-full h-full flex flex-col" ref={reactFlowWrapper}>
+            <div className="flex flex-row w-full">
+            <FileMenu reactFlowInstance={reactFlowInstance} />
+            </div>
+
+            <Divider />
             <ReactFlow
               elements={elements}
               onConnect={onConnect}

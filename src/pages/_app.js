@@ -46,7 +46,6 @@ console.log('firebase', firebase)
 firebase.initializeApp(fbConfig)
 
 firebase.firestore()
-// firebase.functions() // <- needed if using httpsCallable
 
 
 const clientSideEmotionCache = createEmotionCache();

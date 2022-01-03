@@ -76,6 +76,8 @@ export const FlowBuilderChart = () => {
   const snackbar = useSnackBar()
   const dispatch = useAppDispatch()
 
+  const flowId = "main-app_flow"
+
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
     console.log('onKeyDown', keyName, e, _)
 
@@ -88,7 +90,7 @@ export const FlowBuilderChart = () => {
 
       if(flow) {
         
-        dispatch(saveFlow({flowId:'main-app_flow', flowNodes: flow}))
+        dispatch(saveFlow({flowId, flowNodes: flow}))
         snackbar.showSnackBar("Saving...", "info")
       }else  {
         snackbar.showSnackBar("Error saving...", "error")
@@ -107,7 +109,7 @@ export const FlowBuilderChart = () => {
         <ReactFlowProvider>
           <div className="w-full h-full flex flex-col" ref={reactFlowWrapper}>
             <div className="flex flex-row w-full">
-            <FileMenu reactFlowInstance={reactFlowInstance} />
+            <FileMenu flowId={flowId} reactFlowInstance={reactFlowInstance} />
             </div>
 
             <Divider />

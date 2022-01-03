@@ -16,13 +16,22 @@ const initialState: ChartState = {
 export const setElements = createAction<Elements>('flowChart/setElements')
 
 
+export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color}: {flowId: string, name: string, tagLine: string, color: string}) => {
+  await firebase.firestore().collection('flows').doc(flowId).set({
+    name,
+    tagLine,
+    color
+  }, { merge: true })
+  return;
+})
+
 export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}) => {
-    await firebase.firestore().collection('flows').doc(flowId).set(flowNodes)
+    await firebase.firestore().collection('flows').doc(flowId).set(flowNodes, { merge: true })
     return;
 })
 
 export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowFormId, flowForm}: {flowFormId: string, flowForm: any}) => {
-    await firebase.firestore().collection('flowForms').doc(flowFormId).set(flowForm)
+    await firebase.firestore().collection('flowForms').doc(flowFormId).set(flowForm, { merge: true })
     return;
 })
 

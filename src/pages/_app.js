@@ -26,6 +26,8 @@ import {
   ReactReduxFirebaseProvider
 } from 'react-redux-firebase'
 
+import {FlowBuilderSettingProvider} from '../components/flowbuilder/flowbuilder-settings'
+
 import { AuthUserProvider } from '../database/FirebaseAuthContext'
 
 
@@ -75,7 +77,9 @@ const App = (props) => {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <ThemeProvider theme={theme}>
                   <CssBaseline />
-                  {getLayout(<Component {...pageProps} />)}
+                  <FlowBuilderSettingProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </FlowBuilderSettingProvider>
                 </ThemeProvider>
               </LocalizationProvider>
               </SnackBarProvider>

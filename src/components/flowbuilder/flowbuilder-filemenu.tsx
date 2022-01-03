@@ -7,9 +7,10 @@ import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, ReactFlowP
 import { useAppDispatch } from '../../app/hooks';
 import { saveFlow } from '../../reducers/flowChartSlice';
 import { useSnackBar } from '../snackbar';
+import { useFlowbuilderSetting } from './flowbuilder-settings';
 
 
-export const FileMenu = ({reactFlowInstance} : {reactFlowInstance?: OnLoadParams<any> | null}) => {
+export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactFlowInstance?: OnLoadParams<any> | null }) => {
 
     const dispatch = useAppDispatch()
     const snackbar = useSnackBar()
@@ -26,14 +27,22 @@ export const FileMenu = ({reactFlowInstance} : {reactFlowInstance?: OnLoadParams
 
     const handleSave = () => {
         const flow = reactFlowInstance?.toObject();
-        if(flow) {
-            dispatch(saveFlow({flowId:'main-app_flow', flowNodes: flow}))
+        if (flow) {
+            dispatch(saveFlow({ flowId: 'main-app_flow', flowNodes: flow }))
             snackbar.showSnackBar("Saving...", "info")
-          } else  {
+        } else {
             snackbar.showSnackBar("Error saving...", "error")
-          }
+        }
+
+        setAnchorEl(null);
     }
 
+    const settings = useFlowbuilderSetting()
+
+    const handleSetting = () => {
+        settings.openSettingDialog(flowId)
+        setAnchorEl(null);
+    }
 
     return (
         <div>
@@ -47,7 +56,7 @@ export const FileMenu = ({reactFlowInstance} : {reactFlowInstance?: OnLoadParams
                 }}
             >
                 <MenuItem onClick={handleSave}>Save</MenuItem>
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem onClick={handleSetting}>Settings</MenuItem>
                 <MenuItem onClick={handleClose}>Logout</MenuItem>
             </Menu>
             <Button

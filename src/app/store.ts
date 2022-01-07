@@ -1,19 +1,38 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action, combineReducers } from '@reduxjs/toolkit'
 import uiReducer from '../reducers/uiSlice'
 import flowChartReducer from '../reducers/flowChartSlice'
-import { createFirestoreInstance, firestoreReducer } from 'redux-firestore' 
+import { createFirestoreInstance, firestoreReducer, FirestoreReducer } from 'redux-firestore' 
 import {
-  firebaseReducer
+  firebaseReducer,
+  FirebaseReducer 
 } from 'react-redux-firebase'
 
+
+export interface Flow {
+  name?: string,
+  color?: string
+}
+
+// create schema for the DB
+interface DBSchema {
+  flows: Flow
+  [name: string]: any
+}
+
+interface RootState {
+  firebase: FirebaseReducer.Reducer<DBSchema>;
+  firestore: FirestoreReducer.Reducer<DBSchema>;
+  ui: any,
+  flowChart: any
+}
 export function makeStore() {
   return configureStore({
-    reducer: { 
+    reducer: combineReducers<RootState>({ 
       ui: uiReducer,
       flowChart: flowChartReducer,
       firebase: firebaseReducer,
       firestore: firestoreReducer
-    },
+    }),
   })
 }
 

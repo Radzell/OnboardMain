@@ -14,7 +14,7 @@ const ScreensPanel = () => {
 
             {Object.values(ScreenType).filter(nodetype => nodetype !== "entry").map(nodetype => {
                 return (
-                    <div className="react-flow__node-default" onDragStart={(event) => onDragStart(event, nodetype)} draggable>
+                    <div key={nodetype} className="react-flow__node-default" onDragStart={(event) => onDragStart(event, nodetype)} draggable>
                         {ScreenMetaData[nodetype].name}
                     </div>
                 )

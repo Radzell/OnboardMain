@@ -44,7 +44,6 @@ const rrfProps = {
   createFirestoreInstance // <- needed if using firestore
 }
 
-console.log('firebase', firebase)
 firebase.initializeApp(fbConfig)
 
 firebase.firestore()

@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
+import React, { useEffect, useRef, useState } from 'react';
+import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
 import { ScreenMetaData } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,10 +10,12 @@ import EntryNode from '../../nodes/EntryNode';
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
 import { AlertColor, Divider } from '@mui/material';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { saveFlow } from '../../reducers/flowChartSlice';
 import { Menu, Transition } from '@headlessui/react'
 import { FileMenu } from './flowbuilder-filemenu';
+import { useFirestoreConnect } from 'react-redux-firebase'
+
 
 const nodeTypes = {
   formNode: FormNode,
@@ -34,7 +36,26 @@ const initialElements: Elements = [
 ];
 
 export const FlowBuilderChart = () => {
+  const flowId = "main-app_flow"
 
+  useFirestoreConnect([
+    { collection: 'flows', doc: flowId } // or 'todos'
+  ])
+
+
+  const flow = useAppSelector(
+    ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
+  )
+
+  const { transform } = useZoomPanHelper();
+
+  useEffect(() => {
+    if (flow) {
+      const [x = 0, y = 0] = flow.position;
+      setElements(flow.elements || []);
+      transform({ x, y, zoom: flow.zoom || 0 });
+    }
+  }, [flowId, flow])
 
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams<any> | null>(null);
@@ -76,7 +97,6 @@ export const FlowBuilderChart = () => {
   const snackbar = useSnackBar()
   const dispatch = useAppDispatch()
 
-  const flowId = "main-app_flow"
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
     console.log('onKeyDown', keyName, e, _)
@@ -84,19 +104,19 @@ export const FlowBuilderChart = () => {
     e?.preventDefault()
 
     console.log('onKeyDown', keyName)
-    if(keyName === "alt+s" || keyName === "command+s" ) {
+    if (keyName === "alt+s" || keyName === "command+s") {
       // save
       const flow = reactFlowInstance?.toObject();
 
-      if(flow) {
-        
-        dispatch(saveFlow({flowId, flowNodes: flow}))
+      if (flow) {
+
+        dispatch(saveFlow({ flowId, flowNodes: flow }))
         snackbar.showSnackBar("Saving...", "info")
-      }else  {
+      } else {
         snackbar.showSnackBar("Error saving...", "error")
 
       }
-      
+
     }
   }
 
@@ -109,7 +129,7 @@ export const FlowBuilderChart = () => {
         <ReactFlowProvider>
           <div className="w-full h-full flex flex-col" ref={reactFlowWrapper}>
             <div className="flex flex-row w-full">
-            <FileMenu flowId={flowId} reactFlowInstance={reactFlowInstance} />
+              <FileMenu flowId={flowId} reactFlowInstance={reactFlowInstance} />
             </div>
 
             <Divider />
@@ -126,7 +146,7 @@ export const FlowBuilderChart = () => {
               <Controls />
             </ReactFlow>
           </div>
-          <Sidebar />
+          <Sidebar flowId={flowId} />
         </ReactFlowProvider>
       </div>
     </Hotkeys>

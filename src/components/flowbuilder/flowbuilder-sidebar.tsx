@@ -9,7 +9,7 @@ import { previewClick, screenClick } from '../../reducers/uiSlice';
 import ScreensPanel from './flowbuilder-screenspanel';
 import PreviewPanel from './flowbuilder-previewpanel';
 
-const Sidebar = () => {
+const Sidebar = ({flowId}: {flowId: string}) => {
   
 
   const tab =   useAppSelector((state) => state.ui.tab)
@@ -33,7 +33,7 @@ const Sidebar = () => {
         <Button onClick={changeTab('preview')} variant={tab === 'preview' ? "contained" : "outlined"}>Preview</Button>
       </ButtonGroup>
       {tab === 'screens' && <ScreensPanel />}
-      {tab === 'preview' && <PreviewPanel />}
+      {tab === 'preview' && <PreviewPanel flowId={flowId} />}
 
     </aside>
 

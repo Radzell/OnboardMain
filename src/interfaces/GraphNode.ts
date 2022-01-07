@@ -23,7 +23,10 @@ export enum ScreenType {
     ENTRY = "entry",
     WELCOME = "welcome",
     EMAIL_AND_PASSWORD = "email_and_password",
-    EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name"
+    EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name",
+    FOLDER_PICKER = "folder_picker",
+    ADDON_SIGNUP = "addon_signup",
+    VIDEO_TUTORIAL = "video_tutorials"
 }
 
 export const ScreenMetaData = {
@@ -47,6 +50,22 @@ export const ScreenMetaData = {
         type: "formNode",
         schemaChangable: false
     },
+    "folder_picker": {
+        name: "Pick a folder",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "addon_signup": {
+        name: "Select an Addon",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "video_tutorials": {
+        name: "Video Tutorial",
+        type: "formNode",
+        schemaChangable: false
+    }
+
 }
 
 export const ScreenPreviewData = {
@@ -87,4 +106,13 @@ export const ScreenPreviewData = {
               ]
         }
     },
+    "folder_picker": {
+        name: "Pick a folder",
+    },
+    "addon_signup": {
+        name: "Select an Addon",
+    },
+    "video_tutorials": {
+        name: "Video Tutorial",
+    }
 }

@@ -1,5 +1,5 @@
 import { DragEvent } from "react";
-import { ScreenMetaData, ScreenType } from "../../interfaces/GraphNode";
+import { ScreenMetaDataMap, ScreenType } from "../../interfaces/GraphNode";
 
 const ScreensPanel = () => {
     const onDragStart = (event: DragEvent<HTMLDivElement>, nodeType: string) => {
@@ -15,7 +15,7 @@ const ScreensPanel = () => {
             {Object.values(ScreenType).filter(nodetype => nodetype !== "entry").map(nodetype => {
                 return (
                     <div key={nodetype} className="react-flow__node-default" onDragStart={(event) => onDragStart(event, nodetype)} draggable>
-                        {ScreenMetaData[nodetype].name}
+                        {ScreenMetaDataMap[nodetype].name}
                     </div>
                 )
             })}

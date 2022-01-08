@@ -5,7 +5,7 @@ import { Button, Typography } from "@mui/material";
 
 import { withTheme } from '@rjsf/core';
 import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
-import { ScreenPreviewData } from "../../interfaces/GraphNode";
+import { ScreenPreviewDataMap } from "../../interfaces/GraphNode";
 import { useSnackBar } from "../snackbar";
 import { saveFlowForm } from "../../reducers/flowChartSlice";
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -90,7 +90,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const [formData, setFormData] = useState({})
 
     const schemas = useMemo(() => {
-        const schemaData = ScreenPreviewData[formNode?.data.formType]
+        const schemaData = ScreenPreviewDataMap[formNode?.data.formType]
         if (!schemaData) {
             return
         }
@@ -102,6 +102,10 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const dispatch = useAppDispatch()
 
     const onSave = async () => {
+
+        if(!selectedNodeId) {
+            return
+        }
 
         await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: formData }))
         snackbar.showSnackBar("Saving...", "info")
@@ -121,10 +125,11 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                     onChange={(newFormData) => setFormData(newFormData.formData)}
                     formData={formData}
                     readonly={true}
+                    //@ts-ignore
                     submitButtonMessage="Login"
                 />}
                 {formNode?.data.formType === "welcome" && <div style={{backgroundColor: appColor}} className="flex h-full w-full">
-                    <Typography variant="h6">{flow.name}</Typography>
+                    <Typography variant="h6">{flow?.name}</Typography>
                 </div>
                 }
             </div>

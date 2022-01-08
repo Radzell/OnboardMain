@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
-import { ScreenMetaData } from '../../interfaces/GraphNode';
+import { ScreenMetaDataMap } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,7 +61,7 @@ export const FlowBuilderChart = () => {
     }
   }, [flowId, flow])
 
-  const reactFlowWrapper = useRef(null);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams<any> | null>(null);
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params: Edge<any> | Connection) => setElements((els) => addEdge(params, els));
@@ -79,7 +79,10 @@ export const FlowBuilderChart = () => {
   const onDrop = (event: { preventDefault: () => void; dataTransfer: { getData: (arg0: string) => any; }; clientX: number; clientY: number; }) => {
     event.preventDefault();
 
-    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect();
+    if(!reactFlowBounds){
+      return
+    }
     const formType = event.dataTransfer.getData('application/reactflow');
     const position = reactFlowInstance?.project({
       x: event.clientX - reactFlowBounds.left,
@@ -87,13 +90,13 @@ export const FlowBuilderChart = () => {
     });
 
 
-    const screenMetaData = ScreenMetaData[formType]
+    const screenMetaData = ScreenMetaDataMap[formType]
     const newNode = {
       id: getId(),
       type: screenMetaData.type,
       position,
       data: { label: `${screenMetaData.name}`, formType: formType },
-    };
+    } as Node;
 
     setElements((es) => es.concat(newNode));
   };
@@ -146,7 +149,6 @@ export const FlowBuilderChart = () => {
               <Controls />
             </ReactFlow>}
             {screen === "preview" && <FlowPreview />}
-
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
 

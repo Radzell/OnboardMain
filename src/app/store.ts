@@ -22,8 +22,8 @@ interface DBSchema {
 interface RootState {
   firebase: FirebaseReducer.Reducer<DBSchema>;
   firestore: FirestoreReducer.Reducer<DBSchema>;
-  ui: any,
-  flowChart: any
+  ui: ReturnType<typeof uiReducer>,
+  flowChart: ReturnType<typeof flowChartReducer>
 }
 export function makeStore() {
   return configureStore({

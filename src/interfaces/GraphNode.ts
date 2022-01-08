@@ -29,7 +29,13 @@ export enum ScreenType {
     VIDEO_TUTORIAL = "video_tutorials"
 }
 
-export const ScreenMetaData = {
+export type ScreenMetaDataType = {
+    name: string,
+    type: string;
+    schemaChangable: boolean
+}
+
+export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     "entry": {
         name: "Entry",
         type: "input",
@@ -68,7 +74,14 @@ export const ScreenMetaData = {
 
 }
 
-export const ScreenPreviewData = {
+
+export type ScreenPreviewData = {
+    name: string,
+    dataSchema?: any
+    uiSchema?: any
+}
+
+export const ScreenPreviewDataMap: Record<string, ScreenPreviewData> = {
     "entry": {
         name: "Entry",
     },

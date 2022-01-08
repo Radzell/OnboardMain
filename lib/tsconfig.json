@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "target": "es5",
-      "outDir": "/lib/build",
+      "outDir": "lib/esm",
       "lib": [
         "dom",
         "dom.iterable",
@@ -26,7 +26,6 @@
       "src"
     ],
     "exclude": [
-        "node_modules",
-        
+        "node_modules"
     ]
   }

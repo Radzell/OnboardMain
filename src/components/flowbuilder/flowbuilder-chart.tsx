@@ -16,6 +16,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
+import FlowPreview from './flowbuilder-flowpreview';
 
 
 const nodeTypes = {
@@ -144,8 +145,11 @@ export const FlowBuilderChart = () => {
             >
               <Controls />
             </ReactFlow>}
+            {screen === "preview" && <FlowPreview />}
+
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
+
         </ReactFlowProvider>
       </div>
     </Hotkeys>

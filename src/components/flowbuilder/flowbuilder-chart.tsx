@@ -9,12 +9,13 @@ import FormNode from '../../nodes/FormNode';
 import EntryNode from '../../nodes/EntryNode';
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
-import { AlertColor, Divider } from '@mui/material';
+import { AlertColor, Button, ButtonGroup, Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { saveFlow } from '../../reducers/flowChartSlice';
 import { Menu, Transition } from '@headlessui/react'
 import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
+import FlowBuilderHeader from './flowbuilder-header';
 
 
 const nodeTypes = {
@@ -37,6 +38,8 @@ const initialElements: Elements = [
 
 export const FlowBuilderChart = () => {
   const flowId = "main-app_flow"
+
+  const screen = useAppSelector(state => state.ui.screen)
 
   useFirestoreConnect([
     { collection: 'flows', doc: flowId } // or 'todos'
@@ -128,12 +131,8 @@ export const FlowBuilderChart = () => {
       <div className="dndflow flex h-full flex-col">
         <ReactFlowProvider>
           <div className="w-full h-full flex flex-col" ref={reactFlowWrapper}>
-            <div className="flex flex-row w-full">
-              <FileMenu flowId={flowId} reactFlowInstance={reactFlowInstance} />
-            </div>
-
-            <Divider />
-            <ReactFlow
+            <FlowBuilderHeader reactFlowInstance={reactFlowInstance} />
+            {screen === "chart" && <ReactFlow
               elements={elements}
               onConnect={onConnect}
               onElementsRemove={onElementsRemove}
@@ -144,9 +143,9 @@ export const FlowBuilderChart = () => {
               nodeTypes={nodeTypes}
             >
               <Controls />
-            </ReactFlow>
+            </ReactFlow>}
           </div>
-          <Sidebar flowId={flowId} />
+          {screen === "chart" && <Sidebar flowId={flowId} />}
         </ReactFlowProvider>
       </div>
     </Hotkeys>

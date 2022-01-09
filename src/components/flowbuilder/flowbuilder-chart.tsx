@@ -17,7 +17,6 @@ import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
-import SayHello from 'onboard-os'
 
 const nodeTypes = {
   formNode: FormNode,

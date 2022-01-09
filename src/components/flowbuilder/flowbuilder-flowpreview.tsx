@@ -1,7 +1,9 @@
+import SayHello from "../../../lib/src"
+
 const FlowPreview = () => {
     return (
         <div>
-            here
+            <SayHello name={"hello world"} />
         </div>
     )
 }

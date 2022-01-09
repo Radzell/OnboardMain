@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'
 import {
   ReactFlowProvider
 } from 'react-flow-renderer';
+import {SnackBarProvider}  from '../components/snackbar'
 
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/globals.css'
@@ -24,6 +25,10 @@ import fbConfig from '../database/fbConfig'
 import {
   ReactReduxFirebaseProvider
 } from 'react-redux-firebase'
+
+import {FlowBuilderSettingProvider} from '../components/flowbuilder/flowbuilder-settings'
+
+import { AuthUserProvider } from '../database/FirebaseAuthContext'
 
 
 const rrfConfig = {
@@ -39,11 +44,9 @@ const rrfProps = {
   createFirestoreInstance // <- needed if using firestore
 }
 
-console.log('firebase', firebase)
 firebase.initializeApp(fbConfig)
 
-firebase.firestore() 
-// firebase.functions() // <- needed if using httpsCallable
+firebase.firestore()
 
 
 const clientSideEmotionCache = createEmotionCache();
@@ -67,14 +70,20 @@ const App = (props) => {
 
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
-          <ReactFlowProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <ThemeProvider theme={theme}>
-                <CssBaseline />
-                {getLayout(<Component {...pageProps} />)}
-              </ThemeProvider>
-            </LocalizationProvider>
-          </ReactFlowProvider>
+          <AuthUserProvider>
+            <ReactFlowProvider>
+              <SnackBarProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <FlowBuilderSettingProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </FlowBuilderSettingProvider>
+                </ThemeProvider>
+              </LocalizationProvider>
+              </SnackBarProvider>
+            </ReactFlowProvider>
+          </AuthUserProvider>
         </ReactReduxFirebaseProvider>
       </Provider>
     </CacheProvider>

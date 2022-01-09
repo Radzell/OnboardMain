@@ -19,13 +19,23 @@ export interface GraphNode {
     dragHandle?: string
 }
 
-export declare enum ScreenType {
+export enum ScreenType {
     ENTRY = "entry",
     WELCOME = "welcome",
-    EMAIL_AND_PASSWORD = "email_and_password"
+    EMAIL_AND_PASSWORD = "email_and_password",
+    EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name",
+    FOLDER_PICKER = "folder_picker",
+    ADDON_SIGNUP = "addon_signup",
+    VIDEO_TUTORIAL = "video_tutorials"
 }
 
-export const ScreenMetaData = {
+export type ScreenMetaDataType = {
+    name: string,
+    type: string;
+    schemaChangable: boolean
+}
+
+export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     "entry": {
         name: "Entry",
         type: "input",
@@ -41,9 +51,37 @@ export const ScreenMetaData = {
         type: "formNode",
         schemaChangable: false
     },
+    "email_and_password_and_name": {
+        name: "Email, Password and Name",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "folder_picker": {
+        name: "Pick a folder",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "addon_signup": {
+        name: "Select an Addon",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "video_tutorials": {
+        name: "Video Tutorial",
+        type: "formNode",
+        schemaChangable: false
+    }
+
 }
 
-export const ScreenPreviewData = {
+
+export type ScreenPreviewData = {
+    name: string,
+    dataSchema?: any
+    uiSchema?: any
+}
+
+export const ScreenPreviewDataMap: Record<string, ScreenPreviewData> = {
     "entry": {
         name: "Entry",
     },
@@ -51,14 +89,15 @@ export const ScreenPreviewData = {
         name: "Welcome",
     },
     "email_and_password": {
-        name: "Create a blank account",
+        name: "Create a account",
         dataSchema: {
             type: 'object',
-            title: '',
+            title: 'Create an account',
             properties: {
                 email: {
                     title: 'Email',
-                    type: 'string'
+                    type: 'string',
+                    format: "email"
                 },
                 password: {
                     title: 'Password',
@@ -80,4 +119,13 @@ export const ScreenPreviewData = {
               ]
         }
     },
+    "folder_picker": {
+        name: "Pick a folder",
+    },
+    "addon_signup": {
+        name: "Select an Addon",
+    },
+    "video_tutorials": {
+        name: "Video Tutorial",
+    }
 }

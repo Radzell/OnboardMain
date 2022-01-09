@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createAction, createReducer } from '@reduxjs/toolkit'
-import { Elements } from 'react-flow-renderer'
+import { Elements, FlowExportObject } from 'react-flow-renderer'
+import firebase from 'firebase/compat/app'
 
 import type { AppState, AppThunk } from '../app/store'
 
@@ -15,6 +16,25 @@ const initialState: ChartState = {
 export const setElements = createAction<Elements>('flowChart/setElements')
 
 
+export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color}: {flowId: string, name: string, tagLine: string, color: string}) => {
+  await firebase.firestore().collection('flows').doc(flowId).set({
+    name,
+    tagLine,
+    color
+  }, { merge: true })
+  return;
+})
+
+export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}) => {
+    await firebase.firestore().collection('flows').doc(flowId).set(flowNodes, { merge: true })
+    return;
+})
+
+export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowFormId, flowForm}: {flowFormId: string, flowForm: any}) => {
+    await firebase.firestore().collection('flowForms').doc(flowFormId).set(flowForm, { merge: true })
+    return;
+})
+
 export const flowChartSlice = createSlice({
   name: 'flowChart',
   initialState,
@@ -27,6 +47,9 @@ export const flowChartSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(setElements, (state, action) => {
       state.elements = action.payload
+    })
+    builder.addCase(saveFlow.pending, (state, action) => {
+
     })
   },
 })

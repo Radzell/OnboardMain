@@ -148,7 +148,7 @@ export const FlowBuilderChart = () => {
             >
               <Controls />
             </ReactFlow>}
-            {screen === "preview" && <FlowPreview />}
+            {screen === "preview" && <FlowPreview flowId={flowId} />}
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
 

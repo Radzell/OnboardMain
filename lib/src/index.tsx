@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from 'axios';
 
-const SayHello = ({ name }: { name: string }): JSX.Element => (
-  <div>Hey {name}, say hello to TypeScript.</div>
-);
-
-export default SayHello;
+export const OnboardOS = ({flowId} : {flowId: string}): JSX.Element  => {
+    useEffect(() => {
+        axios.get("")
+    },[])
+    
+    return (
+        <div>flowid</div>
+    )
+}

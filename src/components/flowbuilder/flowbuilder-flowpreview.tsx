@@ -1,9 +1,9 @@
-import SayHello from "../../../lib/src"
+import { OnboardOS } from "../../../lib/src"
 
-const FlowPreview = () => {
+const FlowPreview = ({flowId}: {flowId: string}) => {
     return (
         <div>
-            <SayHello name={"hello world"} />
+            <OnboardOS flowId={flowId} />
         </div>
     )
 }

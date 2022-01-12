@@ -23,6 +23,10 @@
     "/build"
   ],
   "dependencies": {
-    "axios": "^0.24.0"
+    "@rebass/preset": "^4.0.5",
+    "axios": "^0.24.0",
+    "emotion-theming": "^11.0.0",
+    "localforage": "^1.10.0",
+    "rebass": "^4.0.7"
   }
 }

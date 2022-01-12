@@ -10,11 +10,10 @@
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
-    "deploy": "firebase deploy — only hosting",
+    "deploy": "firebase deploy —-only hosting",
     "lint-fix": "next lint --fix"
   },
   "dependencies": {
-    "onboard-os": "link:~/lib",
     "@emotion/cache": "^11.5.0",
     "@emotion/react": "^11.5.0",
     "@emotion/server": "^11.4.0",
@@ -38,8 +37,10 @@
     "firebase": "^9.6.1",
     "formik": "^2.1.5",
     "history": "^5.0.0",
+    "localforage": "^1.10.0",
     "next": "^12.0.3-canary.7",
     "nprogress": "^0.2.0",
+    "onboard-os": "link:~/lib",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-bootstrap": "^1.0.1",

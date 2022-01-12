@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import localforage from 'localforage'
-import { ThemeProvider } from 'emotion-theming'
-import theme from '@rebass/preset'
+
 
 interface Flow {
     name?: string
@@ -16,7 +15,11 @@ function isObject(object:any) {
     return object != null && typeof object === 'object';
   }
 
-function deepEqual(object1:any, object2:any) {
+function deepEqual(object1?:any, object2?:any) {
+
+    if(!object1 || !object2) {
+        return false
+    }
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
     if (keys1.length !== keys2.length) {
@@ -58,17 +61,19 @@ export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
                 const _flow = await localforage.getItem(flowId) as Flow | null
 
                 if(_flow && deepEqual(_flow, flow)) {
-                    setFlow(_flow)
+                    setFlow(flow)
                 }
             }
 
             getFlow()
         }, [])
 
-    return (
-        <ThemeProvider theme={theme}>
-            {!flow && <div>Loading</div>}
+    console.log('flowing', flow)
 
-        </ThemeProvider>
+    return (
+        <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
+            {!flow && <div>Loading</div>}
+            <p>Krate Konnect</p>
+        </div>
     )
 }

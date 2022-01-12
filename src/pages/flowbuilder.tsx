@@ -13,7 +13,7 @@ const Flowbuilder = () => {
 
 Flowbuilder.getLayout = (page: any) => (
   <DashboardLayout>
-    
+
     {page}
   </DashboardLayout>
 );

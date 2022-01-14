@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
+import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams, useStoreState } from 'react-flow-renderer';
 import { ScreenMetaDataMap } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -102,6 +102,7 @@ export const FlowBuilderChart = () => {
 
   const snackbar = useSnackBar()
   const dispatch = useAppDispatch()
+  const _elements = useStoreState((store) => [...store.nodes, ...store.edges]);
 
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
@@ -113,6 +114,10 @@ export const FlowBuilderChart = () => {
     if (keyName === "alt+s" || keyName === "command+s") {
       // save
       const flow = reactFlowInstance?.toObject();
+
+
+      console.log('sarah', elements, flow)
+
 
       if (flow) {
 

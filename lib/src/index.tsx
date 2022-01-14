@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import localforage from 'localforage'
+import { Elements } from "./types";
+import OnboardOsDisplay from "./OnboardOSDisplay";
 
 
-interface Flow {
+
+export interface Flow {
     name?: string
     color?: string
     tagLine?: string
-    elements: any[]
+    elements: Elements[]
 
 }
 
@@ -41,6 +44,7 @@ function deepEqual(object1?:any, object2?:any) {
 
 export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
     const [flow, setFlow] = useState <Flow | null>(null)
+    const [step, setStep] = useState<number>(0)
 
         useEffect(() => {
             const getFlow = async () => {
@@ -71,8 +75,9 @@ export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
     console.log('flowing', flow)
 
     return (
-        <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column'}}>
+        <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             {!flow && <div>Loading</div>}
+            <OnboardOsDisplay flow={flow} />
             <p>Krate Konnect</p>
         </div>
     )

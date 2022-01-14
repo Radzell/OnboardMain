@@ -1,5 +1,6 @@
 import React from "react";
 import { Flow } from ".";
+import { Heading } from '@chakra-ui/react'
 
 const OnboardOsDisplay = ({ flow }: {flow?: Flow}) => {
 
@@ -10,7 +11,7 @@ const OnboardOsDisplay = ({ flow }: {flow?: Flow}) => {
     
     return ( 
         <div>
-            <p>{flow.name}</p>
+            <Heading>{flow.name}</Heading>
         </div>
     )
 

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 import * as cors from 'cors'
-import { Connection, Edge, Elements } from "./types";
+import { Connection, Edge, Elements, Node } from "./types";
 
 admin.initializeApp()
 
@@ -11,7 +11,7 @@ interface Flow {
     name?: string
     color?: string
     tagLine?: string
-    elements: Elements
+    elements: Elements<any>
 
 }
 
@@ -46,7 +46,6 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
     })
 });
 
-
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
 
@@ -54,9 +53,9 @@ export const isNode = (element: Node | Connection | Edge): element is Node =>
   'id' in element && !('source' in element) && !('target' in element);
 
   
-exports.useWildcard = functions.firestore
+exports.onFlowStats = functions.firestore
     .document('flows/{flowId}/elements')
-    .onUpdate(async (change, context) => {
+    .onUpdate(async (_change, context) => {
         const flowId = context.params.flowId
         const flowSnap = await admin.firestore().collection(`/flows`).doc(flowId).get()
         if(!flowSnap.exists) {
@@ -66,19 +65,33 @@ exports.useWildcard = functions.firestore
         const flow = flowSnap.data() as Flow
         const edges  = flow.elements.filter(element => isEdge(element))
 
+        //@ts-ignore
         const inputEdges = edges.reduce((prev, cur) => {
             const edge = cur as Edge
             prev[edge.source] = edge
             return prev
         }, {} as Record<string, Edge>)
 
-
+        //@ts-ignore
         const outEdges = edges.reduce((prev, cur) => {
             const edge = cur as Edge
             prev[edge.target] = edge
             return prev
         }, {} as Record<string, Edge>)
 
+        const rootArr = flow.elements.filter(element => element.data.formType === 'entry')
+
+
+        if(!rootArr|| rootArr.length !== 1) {
+            return
+        }
+
+        const root = rootArr[0]
+
+
+        console.log('root', root)
+
+        return
         // If we set `/users/marie` to {name: "Marie"} then
         // context.params.userId == "marie"
         // ... and ...

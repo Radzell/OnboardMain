@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
+import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 
 export type ElementId = string;
 
@@ -244,7 +244,6 @@ export interface WrapNodeProps<T = any> {
   snapToGrid?: boolean;
   snapGrid?: SnapGrid;
   isDragging?: boolean;
-  resizeObserver: ResizeObserver | null;
   dragHandle?: string;
 }
 

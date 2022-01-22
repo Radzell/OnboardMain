@@ -3,16 +3,22 @@ import axios from 'axios';
 import localforage from 'localforage'
 import { Elements } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
+import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 
-
+export interface Form {
+    dataSchema: any,
+    uiScheme: any,
+    name: string
+}
 
 export interface Flow {
     name?: string
     color?: string
     tagLine?: string
-    elements: Elements[]
-
+    elements: Elements,
+    stepCount?: number,
+    forms?: Record<string, Form>
 }
 
 function isObject(object:any) {
@@ -43,9 +49,21 @@ function deepEqual(object1?:any, object2?:any) {
     return true;
   }
 
+
+
 export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
-    const [step, setStep] = useState<number>(0)
+
+    const theme = extendTheme({
+        components: {
+          Steps,
+        },
+        colors: {
+            brand: {
+              500: !!flow?.color ? flow?.color : "green",
+            },
+        },
+    })
 
         useEffect(() => {
             const getFlow = async () => {
@@ -76,11 +94,10 @@ export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
     console.log('flowing', flow)
 
     return (
-        <ChakraProvider >
-            <div style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <ChakraProvider theme={theme} >
+                <CSSReset />
                 {!flow && <div>Loading</div>}
-                <OnboardOsDisplay flow={flow} />
-            </div>
+                <OnboardOsDisplay flowId={flowId} flow={flow} />
         </ChakraProvider>
     )
 }

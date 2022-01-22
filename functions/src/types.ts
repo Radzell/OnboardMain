@@ -1,5 +1,13 @@
 import { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 
+
+
+export const isEdge = (element: Node | Connection | Edge): element is Edge =>
+  'id' in element && 'source' in element && 'target' in element;
+
+export const isNode = (element: Node | Connection | Edge): element is Node =>
+  'id' in element && !('source' in element) && !('target' in element);
+  
 export type ElementId = string;
 
 export type FlowElement<T = any> = Node<T> | Edge<T>;

@@ -2,7 +2,7 @@ import { OnboardOS } from "../../../lib/src"
 
 const FlowPreview = ({flowId}: {flowId: string}) => {
     return (
-        <div>
+        <div className="w-full h-full">
             <OnboardOS flowId={flowId} />
         </div>
     )

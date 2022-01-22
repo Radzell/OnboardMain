@@ -1,5 +1,10 @@
 import React, { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 
+
+
+export const isNode = (element: Node | Connection | Edge): element is Node =>
+  'id' in element && !('source' in element) && !('target' in element);
+
 export type ElementId = string;
 
 export type FlowElement<T = any> = Node<T> | Edge<T>;
@@ -77,6 +82,10 @@ export interface Edge<T = any> {
   className?: string;
 }
 
+
+export const isEdge = (element: Node | Connection | Edge): element is Edge =>
+  'id' in element && 'source' in element && 'target' in element;
+  
 export enum BackgroundVariant {
   Lines = 'lines',
   Dots = 'dots',

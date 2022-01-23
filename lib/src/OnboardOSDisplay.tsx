@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Flow } from ".";
 import { Box, Container, Heading } from '@chakra-ui/react'
 import { Edge, FlowElement, isEdge, isNode, Node } from './types'
 import OSStep from "./OSStep";
+import { RefObject } from "./useOnboardOS";
+interface OSProps {
+    flow?: Flow, 
+    flowId:string,
+    onValidate: (data: Record<string, any>) => string | boolean
+}
+const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
 
-const OnboardOsDisplay = ({ flow, flowId }: {flow?: Flow, flowId:string}) => {
+    const {flow, flowId, onValidate} = props
     if(!flow) {
         return <></>
     }
@@ -75,7 +82,15 @@ const OnboardOsDisplay = ({ flow, flowId }: {flow?: Flow, flowId:string}) => {
 
     const onNext =  (data?: Record<string, any>) => {
         console.log('onNext', data, step?.id)
+        if(step?.data.validate && data) {
+            onValidate(data)
+            return
+        }
+        goForward()
+    }
 
+
+    const goForward = () => {
         if(!step) {
             return
         }
@@ -94,6 +109,7 @@ const OnboardOsDisplay = ({ flow, flowId }: {flow?: Flow, flowId:string}) => {
         setStepCount(stepCount+1)
     }
 
+    useImperativeHandle(ref, () => ({ goForward }));
 
     
 
@@ -104,6 +120,6 @@ const OnboardOsDisplay = ({ flow, flowId }: {flow?: Flow, flowId:string}) => {
         </Box>
     )
 
-}
+})
 
 export default OnboardOsDisplay

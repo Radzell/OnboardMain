@@ -5,6 +5,7 @@ import { Elements } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
 import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
+import { RefObject, RegisterReturn } from "./useOnboardOS";
 
 export interface Form {
     dataSchema: any,
@@ -51,8 +52,18 @@ function deepEqual(object1?:any, object2?:any) {
 
 
 
-export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
+export const OnboardOS = ({ flowId, register, onValidate }: { flowId: string, register: () => RegisterReturn, onValidate: () => boolean | string }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
+    const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
+
+
+    useEffect(() => {
+      if(!register) {
+        return
+      }
+
+      setOSRef(register().ref)
+    },[])
 
     const theme = extendTheme({
         components: {
@@ -97,7 +108,7 @@ export const OnboardOS = ({ flowId }: { flowId: string }): JSX.Element => {
         <ChakraProvider theme={theme} >
                 <CSSReset />
                 {!flow && <div>Loading</div>}
-                <OnboardOsDisplay flowId={flowId} flow={flow} />
+                <OnboardOsDisplay onValidate={onValidate} ref={osRef} flowId={flowId} flow={flow} />
         </ChakraProvider>
     )
 }

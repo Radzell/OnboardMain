@@ -1,24 +1,58 @@
 import React from 'react';
+import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
+import { XIcon } from '@heroicons/react/outline'
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { previewClick, screenClick } from '../../reducers/uiSlice';
+import ScreensPanel from './flowbuilder-screenspanel';
+import PreviewPanel from './flowbuilder-previewpanel';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 
-const Sidebar = () => {
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+const Sidebar = ({ flowId }: { flowId: string }) => {
+
+  const [open, setOpen] = useState(true)
+
+  const tab = useAppSelector((state) => state.ui.tab)
+  const dispatch = useAppDispatch()
+  const changeTab = (newTab: 'preview' | 'screens') => {
+    return () => {
+      if (newTab === 'screens') {
+        dispatch(screenClick())
+      }
+      if (newTab === 'preview') {
+        dispatch(previewClick())
+      }
+    }
+  }
+
+  const onCloseClicked = () =>{
+    setOpen(false)
+  }
 
   return (
-    <aside>
-      <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="aspect-[4/3] rounded-md border-2 border-rose-500" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-        Input Node
-      </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-        Default Node
-      </div>
-      <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
-      </div>
-    </aside>
+
+    <Transition.Root show={open} as={Fragment}>
+      <aside style={{ width: '500px', backgroundColor: '#E5E7EB' }} className="flex flex-col items-center">
+        <div className="w-full, justify-between">
+          <IconButton onClick={onCloseClicked} >
+            <CloseIcon />
+          </IconButton>
+          <ButtonGroup style={{ marginRight: "auto", marginLeft: "auto" }} variant="outlined" aria-label="outlined button group">
+            <Button onClick={changeTab('screens')} variant={tab === 'screens' ? "contained" : "outlined"}>Screens</Button>
+            <Button onClick={changeTab('preview')} variant={tab === 'preview' ? "contained" : "outlined"}>Preview</Button>
+          </ButtonGroup>
+          <div />
+        </div>
+
+        {tab === 'screens' && <ScreensPanel />}
+        {tab === 'preview' && <PreviewPanel flowId={flowId} />}
+
+      </aside>
+
+    </Transition.Root>
   );
 };
 

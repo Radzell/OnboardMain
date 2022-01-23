@@ -6,7 +6,48 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
-import '../styles/global.css'
+import store from '../app/store'
+import { Provider } from 'react-redux'
+import {
+  ReactFlowProvider
+} from 'react-flow-renderer';
+import {SnackBarProvider}  from '../components/snackbar'
+
+import 'bootstrap/dist/css/bootstrap.css';
+import '../styles/globals.css'
+
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import { createFirestoreInstance } from 'redux-firestore'
+import fbConfig from '../database/fbConfig'
+import {
+  ReactReduxFirebaseProvider
+} from 'react-redux-firebase'
+
+import {FlowBuilderSettingProvider} from '../components/flowbuilder/flowbuilder-settings'
+
+import { AuthUserProvider } from '../database/FirebaseAuthContext'
+
+
+const rrfConfig = {
+  userProfile: 'users',
+  useFirestoreForProfile: true
+}
+
+
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance // <- needed if using firestore
+}
+
+firebase.initializeApp(fbConfig)
+
+firebase.firestore()
+
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -19,19 +60,32 @@ const App = (props) => {
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          Onboard OS
         </title>
         <meta
           name="viewport"
           content="initial-scale=1, width=device-width"
         />
       </Head>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
-        </ThemeProvider>
-      </LocalizationProvider>
+
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <AuthUserProvider>
+            <ReactFlowProvider>
+              <SnackBarProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <FlowBuilderSettingProvider>
+                    {getLayout(<Component {...pageProps} />)}
+                  </FlowBuilderSettingProvider>
+                </ThemeProvider>
+              </LocalizationProvider>
+              </SnackBarProvider>
+            </ReactFlowProvider>
+          </AuthUserProvider>
+        </ReactReduxFirebaseProvider>
+      </Provider>
     </CacheProvider>
   );
 };

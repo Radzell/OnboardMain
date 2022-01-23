@@ -11,8 +11,9 @@ const Flowbuilder = () => {
     </div>
 }
 
-Flowbuilder.getLayout = (page) => (
+Flowbuilder.getLayout = (page: any) => (
   <DashboardLayout>
+
     {page}
   </DashboardLayout>
 );

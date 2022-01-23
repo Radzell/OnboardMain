@@ -82,6 +82,7 @@ export interface Edge<T = any> {
   className?: string;
 }
 
+export type ValidateFunc = (stepId: string , stepType: string, data: object) => boolean | string
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;

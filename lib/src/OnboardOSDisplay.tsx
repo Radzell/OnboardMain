@@ -1,13 +1,13 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Flow } from ".";
 import { Box, Container, Heading } from '@chakra-ui/react'
-import { Edge, FlowElement, isEdge, isNode, Node } from './types'
+import { Edge, FlowElement, isEdge, isNode, Node, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
 interface OSProps {
     flow?: Flow, 
     flowId:string,
-    onValidate: (data: Record<string, any>) => string | boolean
+    onValidate: ValidateFunc
 }
 const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
 
@@ -80,10 +80,10 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         }, {} as Record<string, Edge[]>)
     },[edges])
 
-    const onNext =  (data?: Record<string, any>) => {
+    const onNext =  (data?: object) => {
         console.log('onNext', data, step?.id)
         if(step?.data.validate && data) {
-            onValidate(data)
+            onValidate(step.id, step.data.formType, data)
             return
         }
         goForward()

@@ -98,7 +98,7 @@ export const ScreenPreviewDataMap: Record<string, ScreenPreviewData> = {
         name: "Create a account",
         dataSchema: {
             type: 'object',
-            title: 'Create an account',
+            title: '',
             properties: {
                 email: {
                     title: 'Email',

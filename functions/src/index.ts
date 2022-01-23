@@ -20,7 +20,7 @@ const formsTemplates: Record<string, Form> = {
     email_and_password: {
         dataSchema: {
             type: 'object',
-            title: 'Create an account',
+            title: '',
             properties: {
                 email: {
                     title: 'Email',

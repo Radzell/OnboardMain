@@ -7,7 +7,9 @@ import {
   FirebaseReducer 
 } from 'react-redux-firebase'
 
-
+export interface FlowForm {
+  validate?: boolean
+}
 export interface Flow {
   name?: string,
   color?: string

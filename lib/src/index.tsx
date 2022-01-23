@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import localforage from 'localforage'
-import { Elements } from "./types";
+import { Elements, ValidateFunc } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
 import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
@@ -52,7 +52,7 @@ function deepEqual(object1?:any, object2?:any) {
 
 
 
-export const OnboardOS = ({ flowId, register, onValidate }: { flowId: string, register: () => RegisterReturn, onValidate: () => boolean | string }): JSX.Element => {
+export const OnboardOS = ({ flowId, register, onValidate }: { flowId: string, register: () => RegisterReturn, onValidate: ValidateFunc }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
     const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
 

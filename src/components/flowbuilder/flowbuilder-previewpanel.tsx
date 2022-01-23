@@ -1,7 +1,7 @@
-import React, { DragEvent, useMemo, useState } from "react";
+import React, { DragEvent, useEffect, useMemo, useState } from "react";
 import { useStoreState, useStoreActions } from "react-flow-renderer";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Button, Typography } from "@mui/material";
+import { Button, Checkbox, Divider, FormControlLabel, Typography } from "@mui/material";
 
 import { withTheme } from '@rjsf/core';
 import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
@@ -9,7 +9,7 @@ import { ScreenPreviewDataMap } from "../../interfaces/GraphNode";
 import { useSnackBar } from "../snackbar";
 import { saveFlowForm } from "../../reducers/flowChartSlice";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { Flow } from "../../app/store";
+import { Flow, FlowForm } from "../../app/store";
 
 const Form = withTheme(Bootstrap4Theme)
 
@@ -49,9 +49,12 @@ const welcomeUIschema = {
 }
 
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
+    const selectedNodeId = useAppSelector((state) => state.ui.previewing)
+    const [shouldValidate, setShouldValidate] = useState<boolean>(false)
 
     useFirestoreConnect([
-        { collection: 'flows', doc: flowId } // or 'todos'
+        { collection: 'flows', doc: flowId },
+        { collection: 'flowForms', doc: selectedNodeId}
     ])
 
 
@@ -69,7 +72,28 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     )
 
-    const selectedNodeId = useAppSelector((state) => state.ui.previewing)
+    const flowForm: FlowForm | undefined = useAppSelector(
+        ({ firestore }): any =>  {
+            if(!firestore.data.flowForms || !selectedNodeId) {
+                return
+            }
+
+            if(!firestore.data.flowForms[selectedNodeId]) {
+                return
+            }
+
+            
+            return firestore.data.flowForms[selectedNodeId]    
+        }
+    )
+
+    console.log('flowForm?.validate', flowForm?.validate)
+    useEffect(() => {
+        console.log('setShouldValidate', flowForm?.validate)
+
+        setShouldValidate(flowForm?.validate)
+    }, [flowForm])
+
     const nodes = useStoreState((store) => store.nodes);
     const transform = useStoreState((store) => store.transform);
     const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
@@ -107,7 +131,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             return
         }
 
-        await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: formData }))
+        await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: { ...formData, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
@@ -132,6 +156,20 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                     <Typography variant="h6">{flow?.name}</Typography>
                 </div>
                 }
+                {formNode && schemas && schemas.dataSchema && schemas.uiSchema &&
+                    <>
+                        <Divider  style={{width: '100%', borderColor: "#000", marginTop: 8}} />
+                        <Typography variant="h5" gutterBottom component="div">
+                            Settings
+                        </Typography>
+                        <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
+                            console.log("setShouldValidate 2", e.target.checked)
+                            setShouldValidate(e.target.checked)
+                        }} />} label="Validate" />
+                    </>
+                    
+                }
+
             </div>
 
             <div className="mt-16">

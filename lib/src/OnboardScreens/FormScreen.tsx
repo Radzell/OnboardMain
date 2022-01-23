@@ -5,12 +5,13 @@ import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { Form as OSForm, presetMws } from '../GravelForm';
 
-const FormScreen = ({ form, flow, onNext }: { form: Form, flow: Flow,onNext: (data: Record<string, any>) => void }) => {
-    const [data, setData] = React.useState();
+const FormScreen = ({ form, flow, onNext }: { form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
+    const [data, setData] = React.useState<Record<string, any>>();
 
     const onNextClicked = () => {
         onNext(data)
     }
+    delete form.dataSchema.name
     return (
         <>
  

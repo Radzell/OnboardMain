@@ -21,7 +21,7 @@ const WelcomeScreen = ({ flow, onNext }: { flow: Flow,onNext: () => void }) => {
                         lineHeight={'110%'}>
                         Welcome To <br />
                         <Text as={'span'} color={flow.color}>
-                            Krate Konnect
+                            {flow.name}
                         </Text>
                     </Heading>
                     <Text fontWeight={600}>

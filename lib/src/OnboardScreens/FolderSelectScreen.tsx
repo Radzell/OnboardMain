@@ -46,7 +46,7 @@ const FolderSelectScreen = ({ flow, onNext }: { flow: Flow,onNext: () => void })
                         alignSelf={'center'}
                         position={'relative'}>
                         <Button
-                            onClick={onNext}
+                            onClick={() => onNext()}
                             colorScheme={'green'}
                             bg={'green.400'}
                             px={6}

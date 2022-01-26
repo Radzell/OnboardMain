@@ -1,23 +1,26 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Flow } from ".";
-import { Box, Container, Heading } from '@chakra-ui/react'
-import { Edge, FlowElement, isEdge, isNode, Node, ValidateFunc } from './types'
+import { Box, Center, Container, Heading, Spinner, useToast } from '@chakra-ui/react'
+import { Edge, EndFunc, FlowElement, isEdge, isNode, Node, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
 interface OSProps {
     flow?: Flow, 
     flowId:string,
-    onValidate: ValidateFunc
+    onValidate: ValidateFunc,
+    onEnd: EndFunc
 }
 const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
-
-    const {flow, flowId, onValidate} = props
+    let totalData = {}
+    const {flow, flowId, onValidate, onEnd} = props
     if(!flow) {
         return <></>
     }
 
     const [stepCount, setStepCount] = useState<number>(0)
     const [step, setStep] = useState<Node>()
+    const [currentData, setCurrentData] = useState<object>()
+    const [isLoading, setIsLoading] = useState<string | null>()
 
     const edges = useMemo(() => {
         return flow?.elements.filter((element) => isEdge(element)).map(element => element as Edge)
@@ -80,25 +83,66 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         }, {} as Record<string, Edge[]>)
     },[edges])
 
+
+    const toast = useToast()
+
+
+    const validateAsync = async (data?: object) => {
+        if(!step || !data) {
+            return
+        }
+        const validationMessage = await onValidate(step.id, step.data.formType, data);
+        console.log('validationMessage', validationMessage);
+        if (typeof validationMessage === 'string') {
+            toast({
+                title: 'Error',
+                description: validationMessage,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+
+        if(validationMessage === true) {
+            goForward()
+        }
+    }
+
     const onNext =  (data?: object) => {
         console.log('onNext', data, step?.id)
-        if(step?.data.validate && data) {
-            onValidate(step.id, step.data.formType, data)
+
+        if(!step) {
+            return
+        }
+        
+        setCurrentData(data)
+        
+        const formSetting = flow.formSettings
+
+        if(data && formSetting && formSetting[step.id] && formSetting[step.id].validate) {
+            validateAsync(data);
             return
         }
         goForward()
+
+        
     }
 
 
     const goForward = () => {
+        console.log("goForward", step)
         if(!step) {
             return
         }
+
+        totalData = {...totalData, ...currentData}
+
         const outputEdge = outputEdges[step.id]
 
         //For now assuming one edge
 
         if(!outputEdge || outputEdge.length !== 1) {
+            onEnd(totalData, {})
             return
         }
 
@@ -109,14 +153,31 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         setStepCount(stepCount+1)
     }
 
-    useImperativeHandle(ref, () => ({ goForward }));
+    const startLoader = (message: string) => {
+        setIsLoading(message)
+    }
+
+    const stopLoader = () => {
+        setIsLoading(null)
+
+    }
+
+    useImperativeHandle(ref, () => ({ goForward, startLoader, stopLoader }));
 
     
 
     
     return ( 
         <Box as={Container}  w='100%' h="100%">
-            <OSStep onNext ={onNext} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1} step={step} color={flow?.color} />
+            {!!isLoading && 
+                <Center>
+                    <Box display='flex' flexDirection="column" alignItems="center">
+                        <Spinner size='xl' />
+                        <Heading>{isLoading}</Heading>
+                    </Box>
+                </Center>
+            }
+            {!isLoading && <OSStep onNext ={onNext} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1} step={step} color={flow?.color} />}
         </Box>
     )
 

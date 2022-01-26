@@ -47,7 +47,7 @@ const rrfProps = {
 firebase.initializeApp(fbConfig)
 
 firebase.firestore()
-
+firebase.auth()
 
 const clientSideEmotionCache = createEmotionCache();
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import localforage from 'localforage'
-import { Elements, ValidateFunc } from "./types";
+import { Elements, EndFunc, ValidateFunc } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
-import { ChakraProvider, CSSReset, extendTheme } from '@chakra-ui/react'
+import { Center, ChakraProvider, CSSReset, extendTheme, Text } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 import { RefObject, RegisterReturn } from "./useOnboardOS";
 
@@ -13,6 +13,11 @@ export interface Form {
     name: string
 }
 
+export interface FormSetting {
+  validate: boolean
+}
+
+
 export interface Flow {
     name?: string
     color?: string
@@ -20,6 +25,8 @@ export interface Flow {
     elements: Elements,
     stepCount?: number,
     forms?: Record<string, Form>
+    formSettings?: Record<string, FormSetting>
+
 }
 
 function isObject(object:any) {
@@ -52,7 +59,7 @@ function deepEqual(object1?:any, object2?:any) {
 
 
 
-export const OnboardOS = ({ flowId, register, onValidate }: { flowId: string, register: () => RegisterReturn, onValidate: ValidateFunc }): JSX.Element => {
+export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
     const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
 
@@ -107,8 +114,8 @@ export const OnboardOS = ({ flowId, register, onValidate }: { flowId: string, re
     return (
         <ChakraProvider theme={theme} >
                 <CSSReset />
-                {!flow && <div>Loading</div>}
-                <OnboardOsDisplay onValidate={onValidate} ref={osRef} flowId={flowId} flow={flow} />
+                {!flow && <Center><Text>Loading...</Text></Center>}
+                <OnboardOsDisplay onEnd={onEnd} onValidate={onValidate} ref={osRef} flowId={flowId} flow={flow} />
         </ChakraProvider>
     )
 }

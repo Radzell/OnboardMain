@@ -13,40 +13,6 @@ import { Flow, FlowForm } from "../../app/store";
 
 const Form = withTheme(Bootstrap4Theme)
 
-const emailDataSchema = {
-    type: 'object',
-    title: '',
-    properties: {
-        email: {
-            title: 'Email',
-            type: 'string'
-        },
-        password: {
-            title: 'Password',
-            type: 'string'
-        }
-    },
-    dependencies: {},
-    required: [
-        'email'
-    ]
-}
-
-const emailUiSchema = {
-    password: {
-        'ui:widget': 'password'
-    },
-    'ui:order': [
-        'email',
-        'password'
-    ]
-}
-
-const welcomeUIschema = {
-
-    "type": "VerticalLayout"
-
-}
 
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const selectedNodeId = useAppSelector((state) => state.ui.previewing)
@@ -95,8 +61,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }, [flowForm])
 
     const nodes = useStoreState((store) => store.nodes);
-    const transform = useStoreState((store) => store.transform);
-    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
     const formNode = useMemo(() => {
         const foundNodes = nodes.filter(node => node.id == selectedNodeId)

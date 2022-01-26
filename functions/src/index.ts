@@ -16,6 +16,11 @@ interface Form {
     name: string
 }
 
+
+interface FormSetting {
+    validate: boolean
+}
+
 const formsTemplates: Record<string, Form> = {
     email_and_password: {
         dataSchema: {
@@ -56,6 +61,7 @@ interface Flow {
     elements: Elements<any>
     setCount?: number
     forms?: Record<string, Form>
+    formSettings?: Record<string, FormSetting>
 }
 
 export const helloWorld = functions.https.onRequest((request, response) => {
@@ -82,7 +88,18 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
 
         const flow = flowSnap.data() as Flow
         const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
-        
+        const nodeIds = nodes.map(node => node.id)
+
+        const flowFormsRef = admin.firestore().collection('flowForms')
+
+        const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
+
+        functions.logger.info("flowForms", nodeIds, formSettingSnap.size)
+
+        const formSettings = formSettingSnap.docs.reduce((prev, cur) => {
+            prev[cur.id] = cur.data() as FormSetting
+            return prev
+        }, {} as Record<string, FormSetting>)
         const forms: Record<string, Form> = nodes.filter(element => !!formsTemplates[element.data.formType])
             .reduce((prev, cur) => {
                 prev[cur.data.formType] = formsTemplates[cur.data.formType]
@@ -92,6 +109,7 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
         functions.logger.info("Hello flow", flow);
 
         flow.forms = forms
+        flow.formSettings = formSettings
 
 
         res.send(flow);

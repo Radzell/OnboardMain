@@ -8,9 +8,14 @@ const FlowPreview = ({flowId}: {flowId: string}) => {
         osboard.goForward()
         return true
     }
+
+    const onEnd = () => {
+
+    }
+    
     return (
         <div className="w-full h-full">
-            <OnboardOS register={osboard.register} onValidate={onValidate} flowId={flowId} />
+            <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} flowId={flowId} />
         </div>
     )
 }

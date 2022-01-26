@@ -7,10 +7,12 @@ import {
   Container} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { useAuth } from '../database/FirebaseAuthContext' 
+import { getMessageFromErrorCode, useAuth } from '../database/FirebaseAuthContext' 
 
 import { OnboardOS } from '../../lib/src/index'
 import { useOnboardOS } from '../../lib/src/useOnboardOS'
+import firebase from 'firebase/compat/app'
+import { FirebaseError } from '@firebase/util';
 
 const Register = () => {
   const { createUserWithEmailAndPassword } = useAuth();
@@ -18,9 +20,41 @@ const Register = () => {
   const router = useRouter();
   const osboard = useOnboardOS()
 
-  const onValidate = (stepId:string, stepType:string, data:object) => {
+  const onValidate = async (stepId:string, stepType:string, data:object) => {
+    console.log('onValidate 2')
+    osboard.startLoader("Creating Account...")  
+    
+    const result = await createUserWithEmailAndPassword(data.email, data.password)
+    .then(() => {
 
-    return false
+    })
+    .catch((e: FirebaseError) => {
+      const errorMessage = getMessageFromErrorCode(e.code)
+      return errorMessage
+    }).finally(() => {
+      osboard.stopLoader()
+    })
+
+    
+    console.log('result', result)
+    
+    console.log('onValidate 3')
+
+    if(typeof result === "string") {
+      return result
+    }
+    
+    if(result === true) {
+      osboard.stopLoader()
+    }
+
+    osboard.stopLoader()
+    osboard.goForward()
+    return true
+  }
+
+  const onEnd = (data: object) => {
+    console.log('onEnd', data)
   }
 
   return (
@@ -41,7 +75,7 @@ const Register = () => {
       >
         <Container maxWidth="sm">
           
-        <OnboardOS register={osboard.register} onValidate={onValidate} flowId={"main-app_flow"} />
+        <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} flowId={"main-app_flow"} />
         </Container>
       </Box>
     </>

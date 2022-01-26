@@ -55,6 +55,8 @@ const Register = () => {
 
   const onEnd = (data: object) => {
     console.log('onEnd', data)
+    router.push("/flowbuilder")
+
   }
 
   return (

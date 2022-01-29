@@ -27,7 +27,8 @@ export enum ScreenType {
     FOLDER_PICKER = "folder_picker",
     ADDON_SIGNUP = "addon_signup",
     VIDEO_TUTORIAL = "video_tutorials",
-    END_POINT = "end_point"
+    END_POINT = "end_point",
+    create_or_join_org = "create_or_join_org"
 }
 
 export type ScreenMetaDataType = {
@@ -69,6 +70,12 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     },
     "video_tutorials": {
         name: "Video Tutorial",
+        type: "formNode",
+        schemaChangable: false
+    },
+
+    "create_or_join_org": {
+        name: "Create Or Join Organization",
         type: "formNode",
         schemaChangable: false
     },

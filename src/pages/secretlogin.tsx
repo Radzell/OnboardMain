@@ -7,9 +7,17 @@ import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Facebook as FacebookIcon } from '../icons/facebook';
 import { Google as GoogleIcon } from '../icons/google';
+import { useAuth } from '../database/FirebaseAuthContext';
+
+interface SubmitProp { 
+  email: string
+  password: string
+}
 
 const Login = () => {
-  const router = useRouter();
+  const { authUser, loading, signOut,  signInWithEmailAndPassword } = useAuth();
+  const router =  useRouter()
+
   const formik = useFormik({
     initialValues: {
       email: 'demo@devias.io',
@@ -29,15 +37,18 @@ const Login = () => {
         .required(
           'Password is required')
     }),
-    onSubmit: () => {
-      router.push('/');
+    onSubmit: async (values:SubmitProp) => {
+      console.log('onSubmit', values)
+      //signInWithEmailAndPassword()
+      await signInWithEmailAndPassword(values.email, values.password)
+      router.push('/flowbuilder');
     }
   });
 
   return (
     <>
       <Head>
-        <title>Login | Material Kit</title>
+        <title>Login | Onboard OS</title>
       </Head>
       <Box
         component="main"
@@ -73,60 +84,10 @@ const Login = () => {
                 gutterBottom
                 variant="body2"
               >
-                Sign in on the internal platform
+                Sign in on the Onboard OS
               </Typography>
             </Box>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  color="info"
-                  fullWidth
-                  startIcon={<FacebookIcon />}
-                  onClick={formik.handleSubmit}
-                  size="large"
-                  variant="contained"
-                >
-                  Login with Facebook
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  fullWidth
-                  color="error"
-                  startIcon={<GoogleIcon />}
-                  onClick={formik.handleSubmit}
-                  size="large"
-                  variant="contained"
-                >
-                  Login with Google
-                </Button>
-              </Grid>
-            </Grid>
-            <Box
-              sx={{
-                pb: 1,
-                pt: 3
-              }}
-            >
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
-                or login with email address
-              </Typography>
-            </Box>
+
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth

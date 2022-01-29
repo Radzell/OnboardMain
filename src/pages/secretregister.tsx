@@ -75,8 +75,18 @@ const Register = () => {
           minHeight: '100%'
         }}
       >
-        <Container maxWidth="sm">
-          
+        <Container maxWidth="lg">
+        <NextLink
+            href="/secretlogin"
+            passHref
+          >
+            <Button
+              component="a"
+              startIcon={<ArrowBackIcon fontSize="small" />}
+            >
+              Login
+            </Button>
+          </NextLink>
         <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} flowId={"main-app_flow"} />
         </Container>
       </Box>

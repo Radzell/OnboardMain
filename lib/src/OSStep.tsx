@@ -8,6 +8,7 @@ import {Step} from './steps/Step'
 import FormScreen from './OnboardScreens/FormScreen';
 import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
+import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
 
 
 const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
@@ -39,6 +40,9 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
             }
             case 'end_point': {
                 return <EndPointScreen flow={flow} onNext={onNext} />
+            }
+            case 'create_or_join_org': {
+                return <CreateOrJoinOrg flow={flow} onNext={onNext} />
             }
         }
 

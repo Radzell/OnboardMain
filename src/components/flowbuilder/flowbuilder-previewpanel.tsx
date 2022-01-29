@@ -104,28 +104,12 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     return (
         <div className="flex flex-col justify-between h-full w-full">
             <div className="flex full flex-col">
-                {formNode && schemas && <Typography variant="h5" gutterBottom component="div">
-                    {schemas.name}
-                </Typography>}
-                {formNode && schemas && schemas.dataSchema && schemas.uiSchema && <Form
-                    schema={schemas.dataSchema}
-                    uiSchema={schemas.uiSchema}
-                    onChange={(newFormData) => setFormData(newFormData.formData)}
-                    formData={formData}
-                    readonly={true}
-                    //@ts-ignore
-                    submitButtonMessage="Login"
-                />}
-                {formNode?.data.formType === "welcome" && <div style={{backgroundColor: appColor}} className="flex h-full w-full">
-                    <Typography variant="h6">{flow?.name}</Typography>
-                </div>
-                }
+                <Typography variant="h5" gutterBottom component="div">
+                    Settings
+                </Typography>
                 {formNode && schemas && schemas.dataSchema && schemas.uiSchema &&
                     <>
-                        <Divider  style={{width: '100%', borderColor: "#000", marginTop: 8}} />
-                        <Typography variant="h5" gutterBottom component="div">
-                            Settings
-                        </Typography>
+
                         <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
                             console.log("setShouldValidate 2", e.target.checked)
                             setShouldValidate(e.target.checked)

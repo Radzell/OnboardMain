@@ -42,7 +42,7 @@ const Sidebar = ({ flowId }: { flowId: string }) => {
           </IconButton>
           <ButtonGroup style={{ marginRight: "auto", marginLeft: "auto" }} variant="outlined" aria-label="outlined button group">
             <Button onClick={changeTab('screens')} variant={tab === 'screens' ? "contained" : "outlined"}>Screens</Button>
-            <Button onClick={changeTab('preview')} variant={tab === 'preview' ? "contained" : "outlined"}>Preview</Button>
+            <Button onClick={changeTab('preview')} variant={tab === 'preview' ? "contained" : "outlined"}>Settings</Button>
           </ButtonGroup>
           <div />
         </div>

@@ -12,8 +12,6 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
   const showPreview = () => {
     dispatch(showPreviewOfNode(id))
   }
-
-
   
   return (
     <>
@@ -35,9 +33,10 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
         <div>
           {data.label}
         </div>
-        <Button onClick={showPreview} size="small" variant="contained">
+        {data.formType !== "end_point" && <Button onClick={showPreview} size="small" variant="contained">
           Preview
         </Button>
+        }
       </div>
       
       <Handle

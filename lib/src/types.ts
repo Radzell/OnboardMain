@@ -82,7 +82,7 @@ export interface Edge<T = any> {
   className?: string;
 }
 
-export type ValidateFunc = (stepId: string , stepType: string, data: object) => Promise<boolean> | Promise<string>
+export type ValidateFunc = (stepId: string , stepType: string, data: object) => Promise<boolean | string>
 
 export type EndFunc = (data: object, schema: object) => void
 

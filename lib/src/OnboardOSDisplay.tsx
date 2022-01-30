@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Flow } from ".";
 import { Box, Center, Container, Heading, Spinner, useToast } from '@chakra-ui/react'
 import { Edge, EndFunc, FlowElement, isEdge, isNode, Node, ValidateFunc } from './types'
@@ -19,7 +19,10 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
     const [stepCount, setStepCount] = useState<number>(0)
     const [step, setStep] = useState<Node>()
-    const [currentData, setCurrentData] = useState<object>()
+
+    const _currentData = useRef<object>({})
+    const _totalData = useRef<object>({})
+
     const [isLoading, setIsLoading] = useState<string | null>()
 
     const edges = useMemo(() => {
@@ -115,7 +118,9 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             return
         }
         
-        setCurrentData(data)
+        if(data) {
+            _currentData.current = data
+        }
         
         const formSetting = flow.formSettings
 
@@ -135,14 +140,15 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             return
         }
 
-        totalData = {...totalData, ...currentData}
+
+        _totalData.current = {..._totalData.current, ..._currentData.current}
 
         const outputEdge = outputEdges[step.id]
 
         //For now assuming one edge
 
         if(!outputEdge || outputEdge.length !== 1) {
-            onEnd(totalData, {})
+            onEnd(_totalData.current, {})
             return
         }
 

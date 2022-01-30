@@ -21,7 +21,7 @@ const Register = () => {
   const osboard = useOnboardOS()
 
   const onValidate = async (stepId:string, stepType:string, data:object) => {
-    console.log('onValidate 2')
+    console.log('onValidate 2', stepId, stepType)
     osboard.startLoader("Creating Account...")  
     
     const result = await createUserWithEmailAndPassword(data.email, data.password)

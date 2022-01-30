@@ -53,7 +53,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     )
 
-    console.log('flowForm?.validate', flowForm?.validate)
     useEffect(() => {
         console.log('setShouldValidate', flowForm?.validate)
 
@@ -99,7 +98,14 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         snackbar.showSnackBar("Saving...", "info")
     }
 
-    const appColor = flow && flow.color ? flow.color : "#fff"
+    const renderValidateSection = () => {
+
+        if((formNode && schemas && schemas.dataSchema && schemas.uiSchema) || formNode?.data?.formType === "create_or_join_org") {
+            return <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
+                setShouldValidate(e.target.checked)
+            }} />} label="Validate" />
+        }
+    }
 
     return (
         <div className="flex flex-col justify-between h-full w-full">
@@ -107,16 +113,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>
-                {formNode && schemas && schemas.dataSchema && schemas.uiSchema &&
-                    <>
-
-                        <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
-                            console.log("setShouldValidate 2", e.target.checked)
-                            setShouldValidate(e.target.checked)
-                        }} />} label="Validate" />
-                    </>
-                    
-                }
+                {renderValidateSection()}
 
             </div>
 

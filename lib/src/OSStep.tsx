@@ -9,6 +9,8 @@ import FormScreen from './OnboardScreens/FormScreen';
 import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
+import { CheckIcon } from './steps/Icons';
+import { getCheckIcon } from './steps/Icons/Check';
 
 
 const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
@@ -42,7 +44,7 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
                 return <EndPointScreen flow={flow} onNext={onNext} />
             }
             case 'create_or_join_org': {
-                return <CreateOrJoinOrg flow={flow} onNext={onNext} />
+                return <CreateOrJoinOrg stepId={step.id} flow={flow} onNext={onNext} />
             }
         }
 
@@ -50,7 +52,7 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
         console.log('flow info',flow?.forms)
         if(!!flow?.forms && flow?.forms[step.data.formType]) {
             console.log('flow info 2', flow?.forms[step.data.formType])
-            return <FormScreen form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
+            return <FormScreen stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
         }
     }
 
@@ -59,7 +61,7 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
         <Steps colorScheme={color} activeStep={activeStep}>
 
             {Array(maxSteps).fill(1).map((_, index) => (
-                <Step label={`Step ${index+1}`} key={index}>
+                <Step checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index+1}`} key={index}>
                    
                 </Step>
             ))}

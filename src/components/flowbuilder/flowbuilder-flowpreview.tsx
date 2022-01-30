@@ -9,13 +9,13 @@ const FlowPreview = ({flowId}: {flowId: string}) => {
         return true
     }
 
-    const onEnd = () => {
-
+    const onEnd = (data:object, schema:object) => {
+        console.log("onEnd", data,schema)
     }
-    
+
     return (
         <div className="w-full h-full">
-            <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} flowId={flowId} />
+            <OnboardOS onEnd={onEnd} register={osboard.register}  onValidate={onValidate} flowId={flowId} />
         </div>
     )
 }

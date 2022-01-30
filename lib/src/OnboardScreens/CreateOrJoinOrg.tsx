@@ -87,8 +87,7 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
                                 placeholder="Enter a organization code"
                                 {
                                 ...{
-                                    readOnly: true,
-                                    isReadOnly: true,
+
                                     value: joinLink,
                                 }
                                 }

@@ -52,12 +52,22 @@ const Register = () => {
     return true
   }
 
+
+  const getDataSet = (data: object) => {
+    return new Set<string>(Object.keys(data))
+  }
+
   const onValidate = async (stepId:string, stepType:string, data:object) => {
 
     if(stepType === "email_and_password") {
-      return validateEmailAndPassword(data.email,data.password)
+      return validateEmailAndPassword(data.email, data.password)
     }
-    
+
+    if(stepType === "create_or_join_org" && getDataSet(data).has("orgJoinLink")) {
+
+      return "coming soon..."
+    }
+
     return true
   }
 

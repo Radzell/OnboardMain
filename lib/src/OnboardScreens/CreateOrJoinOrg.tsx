@@ -85,13 +85,7 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
 
                             <Input
                                 placeholder="Enter a organization code"
-                                {
-                                ...{
-
-                                    value: joinLink,
-                                }
-                                }
-
+                                value={joinLink}
                                 onChange={(e) => setJoinLink(e.target.value)}
                             />
                             <InputRightAddon>

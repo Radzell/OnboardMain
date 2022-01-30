@@ -20,11 +20,10 @@ const Register = () => {
   const router = useRouter();
   const osboard = useOnboardOS()
 
-  const onValidate = async (stepId:string, stepType:string, data:object) => {
-    console.log('onValidate 2', stepId, stepType)
+  const validateEmailAndPassword = async (email:string, password: string) => {
     osboard.startLoader("Creating Account...")  
     
-    const result = await createUserWithEmailAndPassword(data.email, data.password)
+    const result = await createUserWithEmailAndPassword(email, password)
     .then(() => {
 
     })
@@ -50,6 +49,15 @@ const Register = () => {
 
     osboard.stopLoader()
     osboard.goForward()
+    return true
+  }
+
+  const onValidate = async (stepId:string, stepType:string, data:object) => {
+
+    if(stepType === "email_and_password") {
+      return validateEmailAndPassword(data.email,data.password)
+    }
+    
     return true
   }
 

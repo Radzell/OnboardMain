@@ -9,12 +9,11 @@ import FormScreen from './OnboardScreens/FormScreen';
 import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
-import { CheckIcon } from './steps/Icons';
 import { getCheckIcon } from './steps/Icons/Check';
 
 
 const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
-    const { nextStep, prevStep, setStep, reset, activeStep } = useSteps({
+    const { setStep, activeStep } = useSteps({
         initialStep: 0,
     })
 

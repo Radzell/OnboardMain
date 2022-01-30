@@ -110,6 +110,9 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     return (
         <div className="flex flex-col justify-between h-full w-full">
             <div className="flex full flex-col">
+                <Typography>
+                    {formNode?.data.label}
+                </Typography>
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>

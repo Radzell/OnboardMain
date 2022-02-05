@@ -124,6 +124,7 @@ const Register = () => {
 
     const org = steps.filter(step => step.type === "create_or_join_org")
     const profile = steps.filter(step => step.type === "profile")
+    const emailAndPassword = steps.filter(step => step.type === "email_and_password")
 
 
     if(!!org && org.length > 0 && !!org[0].data && !!org[0].data.organizationName) {
@@ -131,7 +132,7 @@ const Register = () => {
     }
     
     if(!!profile && profile.length > 0 && !!profile[0].data && !!profile[0].data) {
-      dispatch(saveProfile({ firstName: profile[0].data.firstName, lastName:profile[0].data.lastName, phoneNumber:  profile[0].data.telephone}))
+      dispatch(saveProfile({ firstName: profile[0].data.firstName, lastName:profile[0].data.lastName, phoneNumber:  profile[0].data.telephone, email: emailAndPassword[0].data.email}))
     }
 
 

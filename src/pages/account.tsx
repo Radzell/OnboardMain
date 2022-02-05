@@ -5,7 +5,6 @@ import { AccountProfileDetails } from '../components/account/account-profile-det
 import { DashboardLayout } from '../components/dashboard-layout';
 import { isLoaded } from 'react-redux-firebase';
 import { useAppSelector } from '../app/hooks';
-import { useFirestoreConnect } from 'react-redux-firebase'
 
 const Account = () => {
   const profile = useAppSelector(state => state.firebase.profile)
@@ -13,7 +12,6 @@ const Account = () => {
 
   if (!isLoaded(profile)) return <div>splash screen...</div>;
 
-  console.log('profile',profile)
   return (
   <>
     <Head>

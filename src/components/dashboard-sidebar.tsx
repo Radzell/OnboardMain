@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -16,6 +16,8 @@ import { XCircle as XCircleIcon } from '../icons/x-circle';
 import MediationIcon from '@mui/icons-material/Mediation';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { useAppSelector } from '../app/hooks';
 
 const items = [
   {
@@ -36,12 +38,71 @@ const items = [
 ];
 
 export const DashboardSidebar = (props) => {
+  const [selectedOrgId, setSelectedOrgId] = useState<string>()
   const { open, onClose } = props;
   const router = useRouter();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
   });
+
+  const auth = useAppSelector(state => state.firebase.auth)
+
+  const userId = auth.uid
+
+  const junctionUserOrg = useAppSelector(
+    ({ firestore: { data } }) => data.junction_user_org
+  )
+
+  useFirestoreConnect(() => {
+
+    const result = []
+    const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
+      return {
+        collection: 'organization',
+        doc: junction.orgId
+      }
+    })
+
+    if(userId) {
+      result.push({ 
+        collection: 'junction_user_org',
+        where: [['userId', '==', userId]] 
+      })
+    }
+
+    if(Object.keys(junctions).length > 0) {
+      result.push(...junctions)
+    }
+
+
+    console.log('useFirestoreConnect', result)
+  
+    return result
+  })
+
+  
+
+  const organizations = useAppSelector(
+    ({ firestore: { data } }) => {
+      return data.organization ?? {}
+    }
+  )
+
+  useEffect(() => {
+    if(!selectedOrgId && !!organizations) {
+      setSelectedOrgId(Object.keys(organizations)[0])
+    }
+  },[organizations])
+
+  const organization = useMemo(() => {
+    if(!selectedOrgId) {
+      return null
+    }
+    return organizations[selectedOrgId]
+  }, [selectedOrgId])
+
+  console.log('organizations',  organizations)
 
   useEffect(
     () => {
@@ -100,7 +161,7 @@ export const DashboardSidebar = (props) => {
                   color="inherit"
                   variant="subtitle1"
                 >
-                  Acme Inc
+                  {organization?.name}
                 </Typography>
                 <Typography
                   color="neutral.400"
@@ -108,7 +169,7 @@ export const DashboardSidebar = (props) => {
                 >
                   Your tier
                   {' '}
-                  : Premium
+                  : Free
                 </Typography>
               </div>
               <SelectorIcon

@@ -18,7 +18,17 @@ const user = {
   timezone: 'GTM-7'
 };
 
-export const AccountProfile = ({profile}) => (
+export const AccountProfile = ({profile}) => {
+
+  const initial = () => {
+
+    if(profile && profile.firstName && profile.lastName) {
+      return profile.firstName[0] + profile.lastName[0]
+    }
+
+    return "OS"
+  }
+  return (
   <Card >
     <CardContent>
       <Box
@@ -28,14 +38,12 @@ export const AccountProfile = ({profile}) => (
           flexDirection: 'column'
         }}
       >
-        <Avatar
-          src={user.avatar}
-          sx={{
-            height: 64,
+    
+        <Avatar sx={{ height: 64,
             mb: 2,
-            width: 64
-          }}
-        />
+            width: 64, 
+        }}>{initial()}</Avatar>
+
         <Typography
           color="textPrimary"
           gutterBottom
@@ -46,14 +54,7 @@ export const AccountProfile = ({profile}) => (
       </Box>
     </CardContent>
     <Divider />
-    <CardActions>
-      <Button
-        color="primary"
-        fullWidth
-        variant="text"
-      >
-        Upload picture
-      </Button>
-    </CardActions>
+
   </Card>
-);
+  )
+};

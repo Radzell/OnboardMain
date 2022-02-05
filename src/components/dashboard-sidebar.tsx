@@ -74,9 +74,6 @@ export const DashboardSidebar = (props) => {
     if(Object.keys(junctions).length > 0) {
       result.push(...junctions)
     }
-
-
-    console.log('useFirestoreConnect', result)
   
     return result
   })
@@ -101,8 +98,6 @@ export const DashboardSidebar = (props) => {
     }
     return organizations[selectedOrgId]
   }, [selectedOrgId])
-
-  console.log('organizations',  organizations)
 
   useEffect(
     () => {

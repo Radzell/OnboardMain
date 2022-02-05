@@ -33,7 +33,6 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
         return false
     }, [flow.formSettings])
 
-    console.log('needsValidation',needsValidation)
     const onSkip = () => {
         onNext()
     }

@@ -32,7 +32,7 @@ import { AuthUserProvider } from '../database/FirebaseAuthContext'
 
 
 const rrfConfig = {
-  userProfile: 'users',
+  userProfile: 'profile',
   useFirestoreForProfile: true
 }
 

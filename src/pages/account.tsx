@@ -3,12 +3,22 @@ import { Box, Container, Grid, Typography } from '@mui/material';
 import { AccountProfile } from '../components/account/account-profile';
 import { AccountProfileDetails } from '../components/account/account-profile-details';
 import { DashboardLayout } from '../components/dashboard-layout';
+import { isLoaded } from 'react-redux-firebase';
+import { useAppSelector } from '../app/hooks';
+import { useFirestoreConnect } from 'react-redux-firebase'
 
-const Account = () => (
+const Account = () => {
+  const profile = useAppSelector(state => state.firebase.profile)
+
+
+  if (!isLoaded(profile)) return <div>splash screen...</div>;
+
+  console.log('profile',profile)
+  return (
   <>
     <Head>
       <title>
-        Account | Material Kit
+        Account | Onboard OS
       </title>
     </Head>
     <Box
@@ -35,7 +45,7 @@ const Account = () => (
             md={6}
             xs={12}
           >
-            <AccountProfile />
+            <AccountProfile profile={profile} />
           </Grid>
           <Grid
             item
@@ -43,13 +53,14 @@ const Account = () => (
             md={6}
             xs={12}
           >
-            <AccountProfileDetails />
+            <AccountProfileDetails profile={profile} />
           </Grid>
         </Grid>
       </Container>
     </Box>
   </>
-);
+  )
+};
 
 Account.getLayout = (page) => (
   <DashboardLayout>

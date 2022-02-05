@@ -24,11 +24,9 @@ export enum ScreenType {
     WELCOME = "welcome",
     EMAIL_AND_PASSWORD = "email_and_password",
     EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name",
-    FOLDER_PICKER = "folder_picker",
-    ADDON_SIGNUP = "addon_signup",
-    VIDEO_TUTORIAL = "video_tutorials",
-    END_POINT = "end_point",
-    create_or_join_org = "create_or_join_org"
+    CREATE_OR_JOIN_ORG = "create_or_join_org",
+    PROFILE = "profile",
+    END_POINT = "end_point"
 }
 
 export type ScreenMetaDataType = {
@@ -76,6 +74,11 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
 
     "create_or_join_org": {
         name: "Create Or Join Organization",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "profile": {
+        name: "Profile",
         type: "formNode",
         schemaChangable: false
     },

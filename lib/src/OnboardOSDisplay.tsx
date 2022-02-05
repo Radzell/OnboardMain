@@ -141,7 +141,12 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         }
 
 
-        _totalData.current = {..._totalData.current, ..._currentData.current}
+        _totalData.current = {..._totalData.current, 
+            [step.id]: {
+                data: _currentData.current,
+                type: step.data.formType
+            }
+        }
 
         const outputEdge = outputEdges[step.id]
 

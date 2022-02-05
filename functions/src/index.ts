@@ -12,7 +12,6 @@ const corsHandler = cors({ origin: true });
 
 interface Form {
     dataSchema: any,
-    uiScheme: any,
     name: string
 }
 
@@ -41,16 +40,36 @@ const formsTemplates: Record<string, Form> = {
                 'email'
             ]
         },
-        uiScheme: {
-            password: {
-                'ui:widget': 'password'
-              },
-              'ui:order': [
-                'email',
-                'password'
-              ]
-        },
+
         name: "Create a account"
+    },
+    profile: {
+        name: "Profile",
+        dataSchema: {
+            title: "",
+            type: "object",
+            required: [
+                "firstName",
+                "lastName"
+            ],
+            properties: {
+                firstName: {
+                    "type": "string",
+                    "title": "First name",
+                    "default": "Chuck"
+                },
+                lastName: {
+                    "type": "string",
+                    "title": "Last name"
+                },
+                telephone: {
+                    "type": "string",
+                    "title": "Phone",
+                    "minLength": 10
+                }
+            }
+        }
+
     }
 }
 
@@ -104,7 +123,7 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
             .reduce((prev, cur) => {
                 prev[cur.data.formType] = formsTemplates[cur.data.formType]
                 return prev
-            },{} as Record<string, Form>)
+            }, {} as Record<string, Form>)
 
         functions.logger.info("Hello flow", flow);
 
@@ -117,51 +136,51 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
 });
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
-  'id' in element && 'source' in element && 'target' in element;
+    'id' in element && 'source' in element && 'target' in element;
 
 export const isNode = (element: Node | Connection | Edge): element is Node =>
-  'id' in element && !('source' in element) && !('target' in element);
+    'id' in element && !('source' in element) && !('target' in element);
 
 
 
-    const findMaxPath = (count: number, node: Node, outputNodes: Record<string, Edge[]>, nodes: Record<string, Node>): number => {
-        if(!node) {
-            functions.logger.log('getting out 1',node)
+const findMaxPath = (count: number, node: Node, outputNodes: Record<string, Edge[]>, nodes: Record<string, Node>): number => {
+    if (!node) {
+        functions.logger.log('getting out 1', node)
 
-            return count
-        }
-
-        const outs = outputNodes[node.id]
-        functions.logger.log('flow.elements',outs)
-
-        if(!outs) {
-            functions.logger.log('getting out 2',count)
-
-            return count
-        }
-        return Math.max(...outs.map(edge => {
-            const root = nodes[edge.target]
-            return findMaxPath(count+1, root, outputNodes, nodes)
-        }))
+        return count
     }
 
-    exports.onFlowStats = functions.firestore
+    const outs = outputNodes[node.id]
+    functions.logger.log('flow.elements', outs)
+
+    if (!outs) {
+        functions.logger.log('getting out 2', count)
+
+        return count
+    }
+    return Math.max(...outs.map(edge => {
+        const root = nodes[edge.target]
+        return findMaxPath(count + 1, root, outputNodes, nodes)
+    }))
+}
+
+exports.onFlowStats = functions.firestore
     .document('flows/{flowId}')
     .onWrite(async (_change, context) => {
-        
+
         const flowId = context.params.flowId
 
         functions.logger.log('onFlowStatsDos', flowId)
         const flowSnap = await admin.firestore().collection(`/flows`).doc(flowId).get()
-        if(!flowSnap.exists) {
+        if (!flowSnap.exists) {
             return
         }
 
         const flow = flowSnap.data() as Flow
-        functions.logger.log('flow.elements',flow.elements)
+        functions.logger.log('flow.elements', flow.elements)
 
-        const edges  = flow.elements.filter(element => isEdge(element))
-        const nodes: Node[]  = flow.elements.filter(element => isNode(element)) as Node[]
+        const edges = flow.elements.filter(element => isEdge(element))
+        const nodes: Node[] = flow.elements.filter(element => isNode(element)) as Node[]
         const nodeSet = nodes.reduce((prev, cur) => {
             prev[cur.id] = cur
             return prev
@@ -169,7 +188,7 @@ export const isNode = (element: Node | Connection | Edge): element is Node =>
 
         const outputEdges = edges.reduce((prev, cur) => {
             const edge = cur as Edge
-            if(!prev[edge.source]) {
+            if (!prev[edge.source]) {
                 prev[edge.source] = []
             }
             prev[edge.source].push(edge)
@@ -181,7 +200,7 @@ export const isNode = (element: Node | Connection | Edge): element is Node =>
         const rootArr = flow.elements.filter(element => (!!element.data && element.data.formType) === 'entry')
 
 
-        if(!rootArr|| rootArr.length !== 1) {
+        if (!rootArr || rootArr.length !== 1) {
             return
         }
 
@@ -195,7 +214,7 @@ export const isNode = (element: Node | Connection | Edge): element is Node =>
         functions.logger.info('maxPath', maxPath)
 
 
-        if(maxPath === flow.setCount){
+        if (maxPath === flow.setCount) {
             return
         }
 

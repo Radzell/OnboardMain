@@ -100,7 +100,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
     const renderValidateSection = () => {
 
-        if((formNode && schemas && schemas.dataSchema && schemas.uiSchema) || formNode?.data?.formType === "create_or_join_org") {
+        if((formNode?.type === "formNode") || formNode?.data?.formType === "create_or_join_org") {
             return <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
                 setShouldValidate(e.target.checked)
             }} />} label="Validate" />

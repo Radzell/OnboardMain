@@ -50,6 +50,8 @@ export const FlowBuilderChart = () => {
     ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
   )
 
+  console.log('flow here', flow)
+
   const { transform } = useZoomPanHelper();
 
   useEffect(() => {

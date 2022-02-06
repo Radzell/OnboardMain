@@ -10,12 +10,14 @@ import ScreensPanel from './flowbuilder-screenspanel';
 import PreviewPanel from './flowbuilder-previewpanel';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
+import { toggleSidebar } from '../../reducers/flowChartSlice';
 
 const Sidebar = ({ flowId }: { flowId: string }) => {
 
-  const [open, setOpen] = useState(true)
 
   const tab = useAppSelector((state) => state.ui.tab)
+  const flowSideOpen = useAppSelector((state) => state.flowChart.flowSideOpen)
+
   const dispatch = useAppDispatch()
   const changeTab = (newTab: 'preview' | 'screens') => {
     return () => {
@@ -29,12 +31,12 @@ const Sidebar = ({ flowId }: { flowId: string }) => {
   }
 
   const onCloseClicked = () =>{
-    setOpen(false)
+    dispatch(toggleSidebar())
   }
 
   return (
 
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={flowSideOpen} as={Fragment}>
       <aside style={{ width: '500px', backgroundColor: '#E5E7EB' }} className="flex flex-col items-center">
         <div className="w-full, justify-between">
           <IconButton onClick={onCloseClicked} >

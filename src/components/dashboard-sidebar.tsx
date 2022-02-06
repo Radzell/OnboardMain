@@ -18,6 +18,9 @@ import { Logo } from './logo';
 import { NavItem } from './nav-item';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useAppSelector } from '../app/hooks';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import useFirebaseAuth from '../database/useFirebaseAuth';
 
 const items = [
   {
@@ -38,9 +41,12 @@ const items = [
 ];
 
 export const DashboardSidebar = (props) => {
+
+
   const [selectedOrgId, setSelectedOrgId] = useState<string>()
   const { open, onClose } = props;
   const router = useRouter();
+  const { signOut } = useFirebaseAuth()
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
@@ -64,21 +70,23 @@ export const DashboardSidebar = (props) => {
       }
     })
 
-    if(userId) {
-      result.push({ 
+    if (userId) {
+      result.push({
         collection: 'junction_user_org',
-        where: [['userId', '==', userId]] 
+        where: [['userId', '==', userId]]
       })
     }
 
-    if(Object.keys(junctions).length > 0) {
+    if (Object.keys(junctions).length > 0) {
       result.push(...junctions)
     }
-  
+
+    console.log("tom brady", result)
+
     return result
   })
 
-  
+
 
   const organizations = useAppSelector(
     ({ firestore: { data } }) => {
@@ -87,13 +95,13 @@ export const DashboardSidebar = (props) => {
   )
 
   useEffect(() => {
-    if(!selectedOrgId && !!organizations) {
+    if (!selectedOrgId && !!organizations) {
       setSelectedOrgId(Object.keys(organizations)[0])
     }
-  },[organizations])
+  }, [organizations])
 
   const organization = useMemo(() => {
-    if(!selectedOrgId) {
+    if (!selectedOrgId) {
       return null
     }
     return organizations[selectedOrgId]
@@ -113,8 +121,33 @@ export const DashboardSidebar = (props) => {
     [router.asPath]
   );
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('handleClick menu', event)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+
+  const goToProfile = () => {
+    router.push("/account")
+    handleClose()
+  }
+
+  const goToLogout = () => {
+    signOut()
+    handleClose()
+  }
+
   const content = (
     <>
+
       <Box
         sx={{
           display: 'flex',
@@ -122,6 +155,18 @@ export const DashboardSidebar = (props) => {
           height: '100%'
         }}
       >
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={openMenu}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <MenuItem sx={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }} onClick={goToProfile}>Profile</MenuItem>
+          <MenuItem sx={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }} onClick={goToLogout}>Logout</MenuItem>
+        </Menu>
         <div>
           <Box sx={{ p: 3 }}>
             <NextLink
@@ -140,6 +185,7 @@ export const DashboardSidebar = (props) => {
           </Box>
           <Box sx={{ px: 2 }}>
             <Box
+              onClick={handleClick}
               sx={{
                 alignItems: 'center',
                 backgroundColor: 'rgba(255, 255, 255, 0.04)',

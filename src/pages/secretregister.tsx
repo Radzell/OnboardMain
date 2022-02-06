@@ -80,45 +80,10 @@ const Register = () => {
   const onEnd = (data: object) => {
     console.log('onEnd', data)
 
-    const endData:StepDataRecord = {
-      "d5aeecb9-fcb6-4728-b9a7-e976b354ce19": {
-        "data": {},
-        "type": "welcome"
-      },
-      "4cf8d566-7c7b-4023-a34f-612854f74731": {
-        "data": {
-          "email": "deon@appmn.com",
-          "password": "Radzell1"
-        },
-        "type": "email_and_password"
-      },
-      "ca555988-ed11-4387-9fe7-928838689f36": {
-        "data": {
-          "email": "deon@appmn.com",
-          "password": "Radzell1",
-          "firstName": "Deon",
-          "lastName": "Robinson",
-          "telephone": "4159363880"
-        },
-        "type": "profile"
-      },
-      "74d8b185-7169-4fb7-a27d-03277a9d82db": {
-        "data": {
-          "organizationName": "Main"
-        },
-        "type": "create_or_join_org"
-      },
-      "20d4b83e-9d9f-490b-8a67-61c8b9a94bf2": {
-        "data": {
-          "organizationName": "Main"
-        },
-        "type": "end_point"
-      }
-    }
 
 
-    const steps = Object.keys(endData).map(stepId => {
-      const step = endData[stepId]
+    const steps = Object.keys(data).map(stepId => {
+      const step = data[stepId]
       return step
     })
 

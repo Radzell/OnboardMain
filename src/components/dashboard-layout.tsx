@@ -27,7 +27,7 @@ export const DashboardLayout = (props: Props) => {
 
   const router =  useRouter()
 
-  const paddingTop = router.pathname !== "/flowbuilder/[id]" ? 64 : 0
+  const paddingTop = router.pathname !== "/flowbuilder/[flowId]" ? 64 : 0
 
   const { authUser, loading, signOut } = useAuth();
 
@@ -53,7 +53,7 @@ export const DashboardLayout = (props: Props) => {
           {children}
         </Box>
       </DashboardLayoutRoot>
-     {router.pathname !== "/flowbuilder/[id]"  && <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} /> }
+     {router.pathname !== "/flowbuilder/[flowId]"  && <DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} /> }
       <DashboardSidebar
         onClose={() => setSidebarOpen(false)}
         open={isSidebarOpen}

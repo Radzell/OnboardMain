@@ -17,6 +17,7 @@ import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
+import { useRouter } from 'next/router';
 
 const nodeTypes = {
   formNode: FormNode,
@@ -37,7 +38,9 @@ const initialElements: Elements = [
 ];
 
 export const FlowBuilderChart = () => {
-  const flowId = "main-app_flow"
+
+  const router = useRouter()
+  const { flowId } = router.query
 
   const screen = useAppSelector(state => state.ui.screen)
 

@@ -43,7 +43,7 @@ export const flowChartSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    toggleSidebar: (state, action: PayloadAction<number>) => {
+    toggleSidebar: (state) => {
       return {
         ...state,
         flowSideOpen: !state.flowSideOpen

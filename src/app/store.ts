@@ -12,7 +12,9 @@ export interface FlowForm {
 }
 export interface Flow {
   name?: string,
-  color?: string
+  color?: string,
+  tagLine?: string,
+  logoName?: string
 }
 
 // create schema for the DB

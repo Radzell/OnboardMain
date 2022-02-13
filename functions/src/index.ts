@@ -81,12 +81,28 @@ interface Flow {
     setCount?: number
     forms?: Record<string, Form>
     formSettings?: Record<string, FormSetting>
+    logoName?: string
+    logoDownloadUrl?: string
 }
 
 export const helloWorld = functions.https.onRequest((request, response) => {
     functions.logger.info("Hello logs!", { structuredData: true });
     response.send("Hello from Firebase!");
 });
+
+exports.restoreFlow = functions.https.onRequest(async (req, res) => {
+    return corsHandler(req, res, async () => {
+        const flowId = req.query.flowId as string
+        const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
+
+        if (!flowSnap.exists) {
+            res.status(400).send("invalid flowId")
+            return
+        }
+
+        admin.firestore().collection(`/flows`).doc(flowId).update(flowSnap.data() as object)
+    })
+})
 
 exports.getFlow = functions.https.onRequest(async (req, res) => {
     return corsHandler(req, res, async () => {
@@ -98,7 +114,7 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
             return
         }
 
-        const flowSnap = await admin.firestore().collection(`/flows`).doc(flowId).get()
+        const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
 
         if (!flowSnap.exists) {
             res.status(400).send("invalid flowId")
@@ -106,6 +122,18 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
         }
 
         const flow = flowSnap.data() as Flow
+
+        console.log("flow.logoName", flow.logoName)
+        if(flow.logoName){
+            const [logoUrl] = await admin.storage().bucket().file(`images/${flow.logoName}`).getSignedUrl({
+                version: 'v2',                            // default value
+                action: 'read',                           // read | write | delete | resumable
+                expires: Date.now() + 500 * 60 * 60      // expire date, one minute from now
+            })
+
+            functions.logger.info("logoUrl", logoUrl)
+            flow.logoDownloadUrl = logoUrl
+        }
         const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
         const nodeIds = nodes.map(node => node.id)
 
@@ -163,6 +191,38 @@ const findMaxPath = (count: number, node: Node, outputNodes: Record<string, Edge
         return findMaxPath(count + 1, root, outputNodes, nodes)
     }))
 }
+
+exports.onFlowDeploy_FormSetting = functions.firestore
+    .document('prod-flows/{flowId}')
+    .onWrite(async (_change, context) => {
+        const flowId = context.params.flowId
+
+        functions.logger.log('onFlowDeploy', flowId)
+        const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
+        if (!flowSnap.exists) {
+            return
+        }
+
+        const flow = flowSnap.data() as Flow
+        const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
+        const nodeIds = nodes.map(node => node.id)
+
+        const flowFormsRef = admin.firestore().collection('flowForms')
+
+        const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
+
+
+        const formSettings = formSettingSnap.docs
+
+        const batch = admin.firestore().batch();
+
+        for(const formSetting of formSettings) {
+            const flowFormRef = admin.firestore().collection("prod-flowForms").doc(formSetting.id);
+            batch.set(flowFormRef, formSetting.data())
+        }
+
+        batch.commit()
+    })
 
 exports.onFlowStats = functions.firestore
     .document('flows/{flowId}')

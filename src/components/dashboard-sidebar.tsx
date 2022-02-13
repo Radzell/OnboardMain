@@ -80,9 +80,7 @@ export const DashboardSidebar = (props) => {
     if (Object.keys(junctions).length > 0) {
       result.push(...junctions)
     }
-
-    console.log("tom brady", result)
-
+    
     return result
   })
 

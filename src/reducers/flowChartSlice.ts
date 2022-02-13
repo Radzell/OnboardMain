@@ -3,7 +3,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 import { Elements, FlowExportObject } from 'react-flow-renderer'
 import firebase from 'firebase/compat/app'
 
-import type { AppState, AppThunk } from '../app/store'
+import type { AppState, AppThunk, Flow } from '../app/store'
 
 export interface ChartState {
   elements: Elements,
@@ -19,18 +19,53 @@ const initialState: ChartState = {
 export const setElements = createAction<Elements>('flowChart/setElements')
 
 
-export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color}: {flowId: string, name: string, tagLine: string, color: string}) => {
+export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color, file}: {flowId: string, name: string, tagLine: string, color: string, file: File | undefined}) => {
+  console.log('saveFlowSetting', file)
+  if(file) {
+
+    try {
+      const fileExtension = file.path.split('.').pop()
+      await firebase.storage().ref(`images/${flowId}.${fileExtension}`).put(file)
+      await firebase.firestore().collection('flows').doc(flowId).set({
+        logoName: `${flowId}.${fileExtension}`
+        },
+        { merge: true }
+      )
+      console.log('fileResult', `${flowId}.${fileExtension}`)
+    }catch(e) {
+      console.error("iron dragon", e)
+    }
+
+  }
   await firebase.firestore().collection('flows').doc(flowId).set({
     name,
     tagLine,
     color
   }, { merge: true })
+
+ 
   return;
+})
+
+export const deleteFlowLogo = createAsyncThunk('flowChart/deleteFlowLogo', async ({flowId, logoName}: {flowId: string, logoName: string}) => {
+  await firebase.firestore().collection('flows').doc(flowId).update({
+    logoName: firebase.firestore.FieldValue.delete()
+  })
+
+  await firebase.storage().ref(`image/${logoName}`).delete()
+
 })
 
 export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}) => {
     await firebase.firestore().collection('flows').doc(flowId).set(flowNodes, { merge: true })
     return;
+})
+
+export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId}: {flowId: string}) => {
+  const flowSnap = await firebase.firestore().collection('flows').doc(flowId).get()
+  const flow = flowSnap.data() as Flow
+  await firebase.firestore().collection('prod-flows').doc(flowId).set(flow, { merge: true })
+  return;
 })
 
 export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowFormId, flowForm}: {flowFormId: string, flowForm: any}) => {

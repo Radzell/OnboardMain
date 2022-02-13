@@ -6,10 +6,11 @@ import { toggleSidebar } from "../../reducers/flowChartSlice"
 import { screenChartClicked, screenPreviewClicked } from "../../reducers/uiSlice"
 import { FileMenu } from "./flowbuilder-filemenu"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { useRouter } from "next/router"
 
 const FlowBuilderHeader = ({ reactFlowInstance }: { reactFlowInstance: OnLoadParams<any> | null }) => {
-    const flowId = "main-app_flow"
-
+    const router = useRouter()
+    const { flowId }: {flowId: string} = router.query
     const screen = useAppSelector(state => state.ui.screen)
     const flowSideOpen = useAppSelector((state) => state.flowChart.flowSideOpen)
 

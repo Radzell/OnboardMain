@@ -37,6 +37,7 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
         onNext()
     }
     
+
     return (
         <>
  
@@ -63,7 +64,7 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
                         schema={form.dataSchema}
                         data={data}
                         onChange={setData}
-                        middlewares={presetMws}
+                        middlewares={[...presetMws]}
                         size="md"
                         onSubmit={onNextClicked}
                     />

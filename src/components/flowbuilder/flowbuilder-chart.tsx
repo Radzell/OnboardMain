@@ -53,8 +53,6 @@ export const FlowBuilderChart = () => {
     ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
   )
 
-  console.log('flow here', flow)
-
   const { transform } = useZoomPanHelper();
 
   useEffect(() => {
@@ -111,7 +109,6 @@ export const FlowBuilderChart = () => {
 
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
-    console.log('onKeyDown', keyName, e, _)
 
     e?.preventDefault()
 
@@ -119,10 +116,6 @@ export const FlowBuilderChart = () => {
     if (keyName === "alt+s" || keyName === "command+s") {
       // save
       const flow = reactFlowInstance?.toObject();
-
-
-      console.log('sarah', elements, flow)
-
 
       if (flow) {
 

@@ -188,7 +188,8 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
                     </Box>
                 </Center>
             }
-            {!isLoading && <OSStep onNext ={onNext} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1} step={step} color={flow?.color} />}
+            {!isLoading && <OSStep onNext ={onNext} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1}
+step={step} color={flow?.color} />}
         </Box>
     )
 

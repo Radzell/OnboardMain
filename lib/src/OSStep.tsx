@@ -3,8 +3,8 @@ import { Node } from './types'
 import { useSteps, Steps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';
-import { Box } from '@chakra-ui/react';
-import {Step} from './steps/Step'
+import { Box, Flex, Text, Image } from '@chakra-ui/react';
+import { Step } from './steps/Step'
 import FormScreen from './OnboardScreens/FormScreen';
 import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
@@ -21,18 +21,18 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
         console.log('step', step)
         setStep(stepCount)
     }, [stepCount])
-    
+
     if (!step) {
         return <></>
     }
 
 
-    
-    
+
+
     const getForm = () => {
 
         console.log('step.data.formType', step.data.formType)
-        switch(step.data.formType) {
+        switch (step.data.formType) {
             case "welcome": {
                 return <WelcomeScreen flow={flow} onNext={onNext} />
             }
@@ -48,8 +48,8 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
         }
 
 
-        console.log('flow info',flow?.forms)
-        if(!!flow?.forms && flow?.forms[step.data.formType]) {
+        console.log('flow info', flow?.forms)
+        if (!!flow?.forms && flow?.forms[step.data.formType]) {
             console.log('flow info 2', flow?.forms[step.data.formType])
             return <FormScreen stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
         }
@@ -57,11 +57,26 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
 
     console.log("maxSteps", step)
     return <Box maxw="100%" h="100%" pt={8}>
+        <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
+            <Flex flexDirection={"row"} alignItems={"center"} >
+                <Image
+                    style={{marginRight: 8}}
+                    boxSize='50px'
+                    objectFit='cover'
+                    src={flow.logoDownloadUrl}
+                    alt='Dan Abramov'
+                />
+                <Text fontWeight={600} fontSize='md' as={'span'} color={flow.color}>
+                    {flow.name}
+                </Text>
+            </Flex>
+        </Flex>
+
         <Steps colorScheme={color} activeStep={activeStep}>
 
             {Array(maxSteps).fill(1).map((_, index) => (
-                <Step checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index+1}`} key={index}>
-                   
+                <Step checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index + 1}`} key={index}>
+
                 </Step>
             ))}
         </Steps>

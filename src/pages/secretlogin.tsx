@@ -15,13 +15,13 @@ interface SubmitProp {
 }
 
 const Login = () => {
-  const { authUser, loading, signOut,  signInWithEmailAndPassword } = useAuth();
+  const { signInWithEmailAndPassword } = useAuth();
   const router =  useRouter()
 
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123'
+      email: '',
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup

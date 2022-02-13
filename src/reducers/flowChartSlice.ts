@@ -64,7 +64,7 @@ export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, f
 export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId}: {flowId: string}) => {
   const flowSnap = await firebase.firestore().collection('flows').doc(flowId).get()
   const flow = flowSnap.data() as Flow
-  await firebase.firestore().collection('prod-flows').doc(flowId).set(flow, { merge: true })
+  await firebase.firestore().collection('prod-flows').doc(flowId).set(flow)
   return;
 })
 

@@ -59,13 +59,13 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
     return <Box maxw="100%" h="100%" pt={8}>
         <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
             <Flex flexDirection={"row"} alignItems={"center"} >
-                <Image
+                {flow.logoDownloadUrl && <Image
                     style={{marginRight: 8}}
                     boxSize='50px'
                     objectFit='cover'
                     src={flow.logoDownloadUrl}
                     alt='Dan Abramov'
-                />
+                />}
                 <Text fontWeight={600} fontSize='md' as={'span'} color={flow.color}>
                     {flow.name}
                 </Text>

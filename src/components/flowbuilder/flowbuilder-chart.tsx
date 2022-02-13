@@ -56,7 +56,7 @@ export const FlowBuilderChart = () => {
   const { transform } = useZoomPanHelper();
 
   useEffect(() => {
-    if (flow) {
+    if (flow && flow.position && flow.elements) {
       const [x = 0, y = 0] = flow.position;
       setElements(flow.elements || []);
       transform({ x, y, zoom: flow.zoom || 0 });

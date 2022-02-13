@@ -5,10 +5,12 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import { Typography, Button, Grid, Box } from '@mui/material';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useState, useMemo } from 'react';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import NextLink from 'next/link';
+import {createNewFlow} from '../../reducers/flowChartSlice'
+import { useSnackBar } from '../../components/snackbar';
 
 const card = ({flow, flowId}) => {
     console.log('flow', flow)
@@ -35,6 +37,7 @@ const FlowbuilderCollection = () => {
   const [selectedOrgId, setSelectedOrgId] = useState<string>()
 
   const auth = useAppSelector(state => state.firebase.auth)
+  const dispatch = useAppDispatch()
 
   const userId = auth.uid
 
@@ -108,6 +111,7 @@ const FlowbuilderCollection = () => {
   })
 
 
+  const snackbar = useSnackBar()
 
  
 
@@ -117,11 +121,20 @@ const FlowbuilderCollection = () => {
     }
   },[organizations])
 
+  const onCreateNewFlow = () => {
+    if(selectedOrgId) {
+      dispatch(createNewFlow({orgId: selectedOrgId}))
+      snackbar.showSnackBar("Creating Flow...", "info")
+
+    } else {
+      snackbar.showSnackBar("Error Creating Flow...", "error")
+    }
+  }
 
   
   return <div style={{ height: '100%' }}>
     <Box sx={{ flexGrow: 1, padding: 6 }}>
-
+      <Button onClick={onCreateNewFlow} sx={{marginBottom: 8}} variant="contained">Create New Flow</Button>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
         {Object.keys(flows ?? {}).map((flowId, index) => (
           <Grid item xs={2} sm={4} md={4}

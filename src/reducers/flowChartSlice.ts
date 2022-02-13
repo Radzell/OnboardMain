@@ -73,6 +73,16 @@ export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({f
     return;
 })
 
+export const createNewFlow =  createAsyncThunk('flowChart/createFlow', async ({orgId}: {orgId: string}) => {
+  const flowResp = await firebase.firestore().collection('flows').add({
+    name: "New Flow"
+  })
+  await firebase.firestore().collection('organization').doc(orgId).set({
+    flows: firebase.firestore.FieldValue.arrayUnion(flowResp.id)
+  })
+
+})
+
 export const flowChartSlice = createSlice({
   name: 'flowChart',
   initialState,

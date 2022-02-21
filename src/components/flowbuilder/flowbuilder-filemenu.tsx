@@ -34,7 +34,7 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
             snackbar.showSnackBar("Error saving...", "error")
         }
 
-        setAnchorEl(null);
+        handleClose()
     }
 
     const settings = useFlowbuilderSetting()
@@ -47,6 +47,8 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
     const handleDeploy = () => {
         dispatch(deployFlow({ flowId }))
         snackbar.showSnackBar("Deploying flow to production..", "info")
+
+        handleClose()
     }
 
     return (
@@ -63,7 +65,6 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
                 <MenuItem onClick={handleDeploy}>Deploy</MenuItem>
                 <MenuItem onClick={handleSave}>Save</MenuItem>
                 <MenuItem onClick={handleSetting}>Settings</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
             </Menu>
             <Button
                 id="basic-button"

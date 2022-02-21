@@ -155,7 +155,8 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
 
     const onSubmit = async (e: any) => {
         e.preventDefault()
-        if (!name || !tagLine) {
+        if (!name) {
+            snackbar.showSnackBar("Name Required", "error")
             return
         }
         setLoading(true)
@@ -235,7 +236,7 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
                             <Button onClick={onDismiss}>
                                 Cancel
                             </Button>
-                            <Button onClick={onSubmit} autoFocus>
+                            <Button variant="contained" onClick={onSubmit} autoFocus>
                                 Save
                             </Button>
                         </DialogActions>

@@ -25,7 +25,8 @@ export interface Flow {
     elements: Elements,
     stepCount?: number,
     forms?: Record<string, Form>
-    formSettings?: Record<string, FormSetting>
+    formSettings?: Record<string, FormSetting>,
+    logoDownloadUrl?: string
 
 }
 

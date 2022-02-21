@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createAction, createReducer } from '@reduxjs/toolkit'
 import { Elements, FlowExportObject } from 'react-flow-renderer'
 import firebase from 'firebase/compat/app'
+import { clean } from '../utils/clean'
 
 import type { AppState, AppThunk, Flow } from '../app/store'
 
@@ -19,7 +20,7 @@ const initialState: ChartState = {
 export const setElements = createAction<Elements>('flowChart/setElements')
 
 
-export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color, file}: {flowId: string, name: string, tagLine: string, color: string, file: File | undefined}) => {
+export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color, file}: {flowId: string, name: string, tagLine?: string, color: string, file: File | undefined}) => {
   console.log('saveFlowSetting', file)
   if(file) {
 
@@ -37,11 +38,17 @@ export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({fl
     }
 
   }
-  await firebase.firestore().collection('flows').doc(flowId).set({
-    name,
-    tagLine,
-    color
-  }, { merge: true })
+
+  try{
+    await firebase.firestore().collection('flows').doc(flowId).set(clean({
+      name,
+      tagLine,
+      color
+    }), { merge: true })
+  } catch(e){
+    console.error("iron dragon", e)
+
+  }
 
  
   return;
@@ -77,7 +84,7 @@ export const createNewFlow =  createAsyncThunk('flowChart/createFlow', async ({o
   const flowResp = await firebase.firestore().collection('flows').add({
     name: "New Flow"
   })
-  await firebase.firestore().collection('organization').doc(orgId).set({
+  await firebase.firestore().collection('organization').doc(orgId).update({
     flows: firebase.firestore.FieldValue.arrayUnion(flowResp.id)
   })
 

@@ -62,7 +62,7 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
                 {flow.logoDownloadUrl && <Image
                     style={{marginRight: 8}}
                     boxSize='50px'
-                    objectFit='cover'
+                    objectFit='contain'
                     src={flow.logoDownloadUrl}
                     alt='Dan Abramov'
                 />}

@@ -11,6 +11,7 @@ import { useFirestoreConnect } from 'react-redux-firebase';
 import NextLink from 'next/link';
 import {createNewFlow} from '../../reducers/flowChartSlice'
 import { useSnackBar } from '../../components/snackbar';
+import { Organization } from '../../interfaces/Organization';
 
 const card = ({flow, flowId}) => {
     console.log('flow', flow)
@@ -45,33 +46,31 @@ const FlowbuilderCollection = () => {
     ({ firestore: { data } }) => data.junction_user_org
   )
 
-  const organizations = useAppSelector(
+  const organizations:Organization[] = useAppSelector(
     ({ firestore: { data } }) => {
-      return data.organization ?? {}
+
+      return Object.values(junctionUserOrg ?? {}).map((junction) => {
+        return {...data[`myOrg-${junction.orgId}`], uid: junction.orgId} as Organization
+      })
     }
   )
-
-  const flows = useAppSelector(
-    ({ firestore: { data } }) => {
-      console.log('flows fl', data.flows)
-      return data.flows ?? {}
-    }
-  )
-
 
   const organization = useMemo(() => {
     if(!selectedOrgId || !organizations) {
       return null
     }
-    return organizations[selectedOrgId]
-  }, [selectedOrgId])
+    return organizations.find((org) => org.uid == selectedOrgId)
+  }, [selectedOrgId, organizations])
 
   const flowIds: any[] = useMemo(() => {
     return organization?.flows ?? []
   }, [organization])
 
-  console.log('flow', flowIds, flows)
-
+  const flows = useAppSelector(
+    ({ firestore: { data } }) => {
+      return flowIds?.map((flowId) => ({flowId, flow: data[`myFlows-${flowId}`]}))
+    }
+  )
 
   useFirestoreConnect(() => {
 
@@ -79,7 +78,8 @@ const FlowbuilderCollection = () => {
     const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
       return {
         collection: 'organization',
-        doc: junction.orgId
+        doc: junction.orgId,
+        storeAs: `myOrg-${junction.orgId}`
       }
     })
 
@@ -98,7 +98,8 @@ const FlowbuilderCollection = () => {
       const flowRes = flowIds.map(flowId => {
         return {
           collection: 'flows',
-          doc: flowId
+          doc: flowId,
+          storeAs: `myFlows-${flowId}`
         }
       })
 
@@ -116,8 +117,8 @@ const FlowbuilderCollection = () => {
  
 
   useEffect(() => {
-    if(!selectedOrgId && !!organizations) {
-      setSelectedOrgId(Object.keys(organizations)[0])
+    if(!selectedOrgId && !!organizations && organizations.length > 0) {
+      setSelectedOrgId(organizations[0].uid)
     }
   },[organizations])
 
@@ -136,10 +137,10 @@ const FlowbuilderCollection = () => {
     <Box sx={{ flexGrow: 1, padding: 6 }}>
       <Button onClick={onCreateNewFlow} sx={{marginBottom: 8}} variant="contained">Create New Flow</Button>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-        {Object.keys(flows ?? {}).map((flowId, index) => (
+        {flows?.map((flowItem, index) => (
           <Grid item xs={2} sm={4} md={4}
 key={index}>
-            <Card variant="outlined">{card({flow: flows[flowId], flowId})}</Card>
+            <Card variant="outlined">{card({flow: flowItem.flow, flowId: flowItem.flowId})}</Card>
           </Grid>
         ))}
       </Grid>

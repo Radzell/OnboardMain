@@ -21,6 +21,7 @@ import { useAppSelector } from '../app/hooks';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import useFirebaseAuth from '../database/useFirebaseAuth';
+import { Organization } from '../interfaces/Organization';
 
 const items = [
   {
@@ -66,7 +67,9 @@ export const DashboardSidebar = (props) => {
     const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
       return {
         collection: 'organization',
-        doc: junction.orgId
+        doc: junction.orgId,
+        storeAs: `myOrg-${junction.orgId}`
+
       }
     })
 
@@ -86,24 +89,26 @@ export const DashboardSidebar = (props) => {
 
 
 
-  const organizations = useAppSelector(
+  const organizations:Organization[] = useAppSelector(
     ({ firestore: { data } }) => {
-      return data.organization ?? {}
+      return Object.values(junctionUserOrg ?? {}).map((junction) => {
+        return {...data[`myOrg-${junction.orgId}`], uid: junction.orgId} as Organization
+      })
     }
   )
 
   useEffect(() => {
-    if (!selectedOrgId && !!organizations) {
-      setSelectedOrgId(Object.keys(organizations)[0])
+    if (!selectedOrgId && !!organizations && organizations.length > 0) {
+      setSelectedOrgId(organizations[0].uid)
     }
   }, [organizations])
 
   const organization = useMemo(() => {
-    if (!selectedOrgId) {
+    if (!selectedOrgId || !organizations) {
       return null
     }
-    return organizations[selectedOrgId]
-  }, [selectedOrgId])
+    return organizations.find((org) => org.uid == selectedOrgId)
+  }, [selectedOrgId, organizations])
 
   useEffect(
     () => {

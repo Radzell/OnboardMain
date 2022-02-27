@@ -4,13 +4,19 @@ import { useOnboardOS } from "../../../lib/src/useOnboardOS"
 const FlowPreview = ({flowId}: {flowId: string}) => {
     const osboard = useOnboardOS()
 
-    const onValidate = () => {
+    const onValidate = (stepId: string , stepType: string, data: object) => {
+        console.log('onValidate', stepId, stepType, data)
         osboard.goForward()
         return true
     }
+
+    const onEnd = (data:object, schema:object) => {
+        console.log("onEnd", data,schema)
+    }
+
     return (
         <div className="w-full h-full">
-            <OnboardOS register={osboard.register} onValidate={onValidate} flowId={flowId} />
+            <OnboardOS onEnd={onEnd} register={osboard.register}  onValidate={onValidate} flowId={flowId} />
         </div>
     )
 }

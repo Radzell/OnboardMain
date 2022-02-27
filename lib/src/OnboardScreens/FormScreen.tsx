@@ -1,17 +1,43 @@
 import { Button, Heading, Container, Stack, Spacer, Flex } from "@chakra-ui/react"
-import React from "react"
+import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { Form as OSForm, presetMws } from '../GravelForm';
 
-const FormScreen = ({ form, flow, onNext }: { form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
+const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
     const [data, setData] = React.useState<Record<string, any>>();
 
     const onNextClicked = () => {
         onNext(data)
     }
     delete form.dataSchema.name
+
+    const extraProps = {
+        password: {
+            props: { type: 'password' },
+        }
+    }
+
+    const needsValidation = useMemo<boolean>(() => {
+        const formSetting = flow.formSettings
+
+        if(!formSetting || !formSetting[stepId]) {
+            return false
+        }
+
+        if(formSetting[stepId].validate) {
+            return true
+        }
+
+        return false
+    }, [flow.formSettings])
+
+    const onSkip = () => {
+        onNext()
+    }
+    
+
     return (
         <>
  
@@ -33,6 +59,8 @@ const FormScreen = ({ form, flow, onNext }: { form: Form, flow: Flow,onNext: (da
                     </Heading>
 
                     <OSForm
+                        extraProps={extraProps}
+
                         schema={form.dataSchema}
                         data={data}
                         onChange={setData}
@@ -40,6 +68,8 @@ const FormScreen = ({ form, flow, onNext }: { form: Form, flow: Flow,onNext: (da
                         size="md"
                         onSubmit={onNextClicked}
                     />
+
+                    {!needsValidation && <Button onClick={onSkip}>Skip</Button>}
                 </Stack>
             </Container>
         </>

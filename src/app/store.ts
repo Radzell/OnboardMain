@@ -7,10 +7,14 @@ import {
   FirebaseReducer 
 } from 'react-redux-firebase'
 
-
+export interface FlowForm {
+  validate?: boolean
+}
 export interface Flow {
   name?: string,
-  color?: string
+  color?: string,
+  tagLine?: string,
+  logoName?: string
 }
 
 // create schema for the DB

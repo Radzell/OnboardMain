@@ -17,13 +17,13 @@ import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
+import { useRouter } from 'next/router';
 
 const nodeTypes = {
   formNode: FormNode,
   entryNode: EntryNode
 }
 
-const snapGrid = [20, 20];
 
 const getId = () => uuidv4();
 
@@ -37,7 +37,9 @@ const initialElements: Elements = [
 ];
 
 export const FlowBuilderChart = () => {
-  const flowId = "main-app_flow"
+
+  const router = useRouter()
+  const flowId = router.query. flowId as string
 
   const screen = useAppSelector(state => state.ui.screen)
 
@@ -53,7 +55,7 @@ export const FlowBuilderChart = () => {
   const { transform } = useZoomPanHelper();
 
   useEffect(() => {
-    if (flow) {
+    if (flow && flow.position && flow.elements) {
       const [x = 0, y = 0] = flow.position;
       setElements(flow.elements || []);
       transform({ x, y, zoom: flow.zoom || 0 });
@@ -106,7 +108,6 @@ export const FlowBuilderChart = () => {
 
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
-    console.log('onKeyDown', keyName, e, _)
 
     e?.preventDefault()
 
@@ -114,10 +115,6 @@ export const FlowBuilderChart = () => {
     if (keyName === "alt+s" || keyName === "command+s") {
       // save
       const flow = reactFlowInstance?.toObject();
-
-
-      console.log('sarah', elements, flow)
-
 
       if (flow) {
 

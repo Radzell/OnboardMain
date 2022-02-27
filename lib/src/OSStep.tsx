@@ -3,15 +3,17 @@ import { Node } from './types'
 import { useSteps, Steps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';
-import { Box } from '@chakra-ui/react';
-import {Step} from './steps/Step'
+import { Box, Flex, Text, Image } from '@chakra-ui/react';
+import { Step } from './steps/Step'
 import FormScreen from './OnboardScreens/FormScreen';
 import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
+import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
+import { getCheckIcon } from './steps/Icons/Check';
 
 
 const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
-    const { nextStep, prevStep, setStep, reset, activeStep } = useSteps({
+    const { setStep, activeStep } = useSteps({
         initialStep: 0,
     })
 
@@ -19,18 +21,18 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
         console.log('step', step)
         setStep(stepCount)
     }, [stepCount])
-    
+
     if (!step) {
         return <></>
     }
 
 
-    
-    
+
+
     const getForm = () => {
 
         console.log('step.data.formType', step.data.formType)
-        switch(step.data.formType) {
+        switch (step.data.formType) {
             case "welcome": {
                 return <WelcomeScreen flow={flow} onNext={onNext} />
             }
@@ -40,23 +42,41 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
             case 'end_point': {
                 return <EndPointScreen flow={flow} onNext={onNext} />
             }
+            case 'create_or_join_org': {
+                return <CreateOrJoinOrg stepId={step.id} flow={flow} onNext={onNext} />
+            }
         }
 
 
-        console.log('flow info',flow?.forms)
-        if(!!flow?.forms && flow?.forms[step.data.formType]) {
+        console.log('flow info', flow?.forms)
+        if (!!flow?.forms && flow?.forms[step.data.formType]) {
             console.log('flow info 2', flow?.forms[step.data.formType])
-            return <FormScreen form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
+            return <FormScreen stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
         }
     }
 
     console.log("maxSteps", step)
     return <Box maxw="100%" h="100%" pt={8}>
+        <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
+            <Flex flexDirection={"row"} alignItems={"center"} >
+                {flow.logoDownloadUrl && <Image
+                    style={{marginRight: 8}}
+                    boxSize='50px'
+                    objectFit='contain'
+                    src={flow.logoDownloadUrl}
+                    alt='Dan Abramov'
+                />}
+                <Text fontWeight={600} fontSize='md' as={'span'} color={flow.color}>
+                    {flow.name}
+                </Text>
+            </Flex>
+        </Flex>
+
         <Steps colorScheme={color} activeStep={activeStep}>
 
             {Array(maxSteps).fill(1).map((_, index) => (
-                <Step label={`Step ${index+1}`} key={index}>
-                   
+                <Step checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index + 1}`} key={index}>
+
                 </Step>
             ))}
         </Steps>

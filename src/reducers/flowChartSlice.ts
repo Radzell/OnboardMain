@@ -68,7 +68,8 @@ export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, f
     return;
 })
 
-export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId}: {flowId: string}) => {
+export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}, thunkAPI) => {
+  await thunkAPI.dispatch(saveFlow({flowId, flowNodes}))
   const flowSnap = await firebase.firestore().collection('flows').doc(flowId).get()
   const flow = flowSnap.data() as Flow
   await firebase.firestore().collection('prod-flows').doc(flowId).set(flow)

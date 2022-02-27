@@ -24,7 +24,6 @@ const nodeTypes = {
   entryNode: EntryNode
 }
 
-const snapGrid = [20, 20];
 
 const getId = () => uuidv4();
 
@@ -40,7 +39,7 @@ const initialElements: Elements = [
 export const FlowBuilderChart = () => {
 
   const router = useRouter()
-  const { flowId } = router.query
+  const flowId = router.query. flowId as string
 
   const screen = useAppSelector(state => state.ui.screen)
 

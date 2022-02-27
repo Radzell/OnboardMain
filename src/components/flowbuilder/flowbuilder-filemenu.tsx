@@ -45,9 +45,11 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
     }
 
     const handleDeploy = () => {
-        dispatch(deployFlow({ flowId }))
-        snackbar.showSnackBar("Deploying flow to production..", "info")
-
+        const flow = reactFlowInstance?.toObject();
+        if (flow) {
+            dispatch(deployFlow({ flowId, flowNodes: flow }))
+            snackbar.showSnackBar("Deploying flow to production..", "info")
+        }
         handleClose()
     }
 

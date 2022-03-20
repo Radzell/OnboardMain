@@ -24,9 +24,9 @@ export enum ScreenType {
     WELCOME = "welcome",
     EMAIL_AND_PASSWORD = "email_and_password",
     EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name",
-    FOLDER_PICKER = "folder_picker",
-    ADDON_SIGNUP = "addon_signup",
-    VIDEO_TUTORIAL = "video_tutorials"
+    CREATE_OR_JOIN_ORG = "create_or_join_org",
+    PROFILE = "profile",
+    END_POINT = "end_point"
 }
 
 export type ScreenMetaDataType = {
@@ -70,6 +70,22 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
         name: "Video Tutorial",
         type: "formNode",
         schemaChangable: false
+    },
+
+    "create_or_join_org": {
+        name: "Create Or Join Organization",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "profile": {
+        name: "Profile",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "end_point": {
+        name: "EndPoint",
+        type: "formNode",
+        schemaChangable: false
     }
 
 }
@@ -92,7 +108,7 @@ export const ScreenPreviewDataMap: Record<string, ScreenPreviewData> = {
         name: "Create a account",
         dataSchema: {
             type: 'object',
-            title: 'Create an account',
+            title: '',
             properties: {
                 email: {
                     title: 'Email',
@@ -127,5 +143,8 @@ export const ScreenPreviewDataMap: Record<string, ScreenPreviewData> = {
     },
     "video_tutorials": {
         name: "Video Tutorial",
+    },
+    "end_point": {
+        name: "endpoint"
     }
 }

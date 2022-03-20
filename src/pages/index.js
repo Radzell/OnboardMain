@@ -113,4 +113,13 @@ Dashboard.getLayout = (page) => (
   </DashboardLayout>
 );
 
+Dashboard.getInitialProps = ctx => {
+  // We check for ctx.res to make sure we're on the server.
+  if (ctx.res) {
+    ctx.res.writeHead(302, { Location: '/flowbuilder' });
+    ctx.res.end();
+  }
+  return { };
+}
+
 export default Dashboard;

@@ -23,6 +23,20 @@
     "/build"
   ],
   "dependencies": {
-    "axios": "^0.24.0"
+    "@chakra-ui/react": "^1.7.4",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@gravel-form/core-rc": "0.0.3",
+    "@rebass/preset": "^4.0.5",
+    "add": "^2.0.6",
+    "ajv": "^8.9.0",
+    "axios": "^0.24.0",
+    "chakra-ui-steps": "^1.5.0",
+    "emotion-theming": "^11.0.0",
+    "framer-motion": "^5",
+    "localforage": "^1.10.0",
+    "react-hooks-global-state": "^1.0.2",
+    "rebass": "^4.0.7",
+    "yarn": "^1.22.17"
   }
 }

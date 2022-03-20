@@ -25,7 +25,7 @@ const states = [
   }
 ];
 
-export const AccountProfileDetails = (props) => {
+export const AccountProfileDetails = ({profile}) => {
   const [values, setValues] = useState({
     firstName: 'Katarina',
     lastName: 'Smith',
@@ -46,7 +46,6 @@ export const AccountProfileDetails = (props) => {
     <form
       autoComplete="off"
       noValidate
-      {...props}
     >
       <Card>
         <CardHeader
@@ -65,13 +64,14 @@ export const AccountProfileDetails = (props) => {
               xs={12}
             >
               <TextField
+                disabled={true}
                 fullWidth
                 helperText="Please specify the first name"
                 label="First name"
                 name="firstName"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={profile.firstName}
                 variant="outlined"
               />
             </Grid>
@@ -81,12 +81,13 @@ export const AccountProfileDetails = (props) => {
               xs={12}
             >
               <TextField
+                disabled={true}
                 fullWidth
                 label="Last name"
                 name="lastName"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={profile.lastName}
                 variant="outlined"
               />
             </Grid>
@@ -96,12 +97,13 @@ export const AccountProfileDetails = (props) => {
               xs={12}
             >
               <TextField
+                disabled={true}
                 fullWidth
                 label="Email Address"
                 name="email"
                 onChange={handleChange}
                 required
-                value={values.email}
+                value={profile.email}
                 variant="outlined"
               />
             </Grid>
@@ -111,73 +113,19 @@ export const AccountProfileDetails = (props) => {
               xs={12}
             >
               <TextField
+                disabled={true}
                 fullWidth
                 label="Phone Number"
                 name="phone"
                 onChange={handleChange}
                 type="number"
-                value={values.phone}
+                value={profile.phoneNumber}
                 variant="outlined"
               />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
             </Grid>
           </Grid>
         </CardContent>
-        <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Save details
-          </Button>
-        </Box>
+
       </Card>
     </form>
   );

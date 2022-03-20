@@ -20,6 +20,8 @@ import '../styles/globals.css'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+
 import { createFirestoreInstance } from 'redux-firestore'
 import fbConfig from '../database/fbConfig'
 import {
@@ -32,7 +34,7 @@ import { AuthUserProvider } from '../database/FirebaseAuthContext'
 
 
 const rrfConfig = {
-  userProfile: 'users',
+  userProfile: 'profile',
   useFirestoreForProfile: true
 }
 
@@ -47,7 +49,8 @@ const rrfProps = {
 firebase.initializeApp(fbConfig)
 
 firebase.firestore()
-
+firebase.auth()
+firebase.storage()
 
 const clientSideEmotionCache = createEmotionCache();
 

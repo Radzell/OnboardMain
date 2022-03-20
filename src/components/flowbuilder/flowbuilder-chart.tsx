@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams } from 'react-flow-renderer';
+import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams, useStoreState } from 'react-flow-renderer';
 import { ScreenMetaDataMap } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,14 +17,13 @@ import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
-import SayHello from 'onboard-os'
+import { useRouter } from 'next/router';
 
 const nodeTypes = {
   formNode: FormNode,
   entryNode: EntryNode
 }
 
-const snapGrid = [20, 20];
 
 const getId = () => uuidv4();
 
@@ -38,7 +37,9 @@ const initialElements: Elements = [
 ];
 
 export const FlowBuilderChart = () => {
-  const flowId = "main-app_flow"
+
+  const router = useRouter()
+  const flowId = router.query. flowId as string
 
   const screen = useAppSelector(state => state.ui.screen)
 
@@ -54,7 +55,7 @@ export const FlowBuilderChart = () => {
   const { transform } = useZoomPanHelper();
 
   useEffect(() => {
-    if (flow) {
+    if (flow && flow.position && flow.elements) {
       const [x = 0, y = 0] = flow.position;
       setElements(flow.elements || []);
       transform({ x, y, zoom: flow.zoom || 0 });
@@ -103,10 +104,10 @@ export const FlowBuilderChart = () => {
 
   const snackbar = useSnackBar()
   const dispatch = useAppDispatch()
+  const _elements = useStoreState((store) => [...store.nodes, ...store.edges]);
 
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {
-    console.log('onKeyDown', keyName, e, _)
 
     e?.preventDefault()
 
@@ -148,7 +149,7 @@ export const FlowBuilderChart = () => {
             >
               <Controls />
             </ReactFlow>}
-            {screen === "preview" && <FlowPreview />}
+            {screen === "preview" && <FlowPreview flowId={flowId} />}
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -16,27 +16,18 @@ import { XCircle as XCircleIcon } from '../icons/x-circle';
 import MediationIcon from '@mui/icons-material/Mediation';
 import { Logo } from './logo';
 import { NavItem } from './nav-item';
+import { useFirestoreConnect } from 'react-redux-firebase';
+import { useAppSelector } from '../app/hooks';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import useFirebaseAuth from '../database/useFirebaseAuth';
+import { Organization } from '../interfaces/Organization';
 
 const items = [
-  {
-    href: '/',
-    icon: (<ChartBarIcon fontSize="small" />),
-    title: 'Dashboard'
-  },
   {
     href: '/flowbuilder',
     icon: (<MediationIcon fontSize="small" />),
     title: 'Flow Builder'
-  },
-  {
-    href: '/customers',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Customers'
-  },
-  {
-    href: '/products',
-    icon: (<ShoppingBagIcon fontSize="small" />),
-    title: 'Products'
   },
   {
     href: '/account',
@@ -47,31 +38,77 @@ const items = [
     href: '/settings',
     icon: (<CogIcon fontSize="small" />),
     title: 'Settings'
-  },
-  {
-    href: '/secretlogin',
-    icon: (<LockIcon fontSize="small" />),
-    title: 'Login'
-  },
-  {
-    href: '/secretregister',
-    icon: (<UserAddIcon fontSize="small" />),
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: (<XCircleIcon fontSize="small" />),
-    title: 'Error'
   }
 ];
 
 export const DashboardSidebar = (props) => {
+
+
+  const [selectedOrgId, setSelectedOrgId] = useState<string>()
   const { open, onClose } = props;
   const router = useRouter();
+  const { signOut } = useFirebaseAuth()
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
   });
+
+  const auth = useAppSelector(state => state.firebase.auth)
+
+  const userId = auth.uid
+
+  const junctionUserOrg = useAppSelector(
+    ({ firestore: { data } }) => data.junction_user_org
+  )
+
+  useFirestoreConnect(() => {
+
+    const result = []
+    const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
+      return {
+        collection: 'organization',
+        doc: junction.orgId,
+        storeAs: `myOrg-${junction.orgId}`
+
+      }
+    })
+
+    if (userId) {
+      result.push({
+        collection: 'junction_user_org',
+        where: [['userId', '==', userId]]
+      })
+    }
+
+    if (Object.keys(junctions).length > 0) {
+      result.push(...junctions)
+    }
+    
+    return result
+  })
+
+
+
+  const organizations:Organization[] = useAppSelector(
+    ({ firestore: { data } }) => {
+      return Object.values(junctionUserOrg ?? {}).map((junction) => {
+        return {...data[`myOrg-${junction.orgId}`], uid: junction.orgId} as Organization
+      })
+    }
+  )
+
+  useEffect(() => {
+    if (!selectedOrgId && !!organizations && organizations.length > 0) {
+      setSelectedOrgId(organizations[0].uid)
+    }
+  }, [organizations])
+
+  const organization = useMemo(() => {
+    if (!selectedOrgId || !organizations) {
+      return null
+    }
+    return organizations.find((org) => org.uid == selectedOrgId)
+  }, [selectedOrgId, organizations])
 
   useEffect(
     () => {
@@ -87,8 +124,33 @@ export const DashboardSidebar = (props) => {
     [router.asPath]
   );
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('handleClick menu', event)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+
+
+  const goToProfile = () => {
+    router.push("/account")
+    handleClose()
+  }
+
+  const goToLogout = () => {
+    signOut()
+    handleClose()
+  }
+
   const content = (
     <>
+
       <Box
         sx={{
           display: 'flex',
@@ -96,6 +158,18 @@ export const DashboardSidebar = (props) => {
           height: '100%'
         }}
       >
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={openMenu}
+          onClose={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+        >
+          <MenuItem sx={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }} onClick={goToProfile}>Profile</MenuItem>
+          <MenuItem sx={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }} onClick={goToLogout}>Logout</MenuItem>
+        </Menu>
         <div>
           <Box sx={{ p: 3 }}>
             <NextLink
@@ -114,6 +188,7 @@ export const DashboardSidebar = (props) => {
           </Box>
           <Box sx={{ px: 2 }}>
             <Box
+              onClick={handleClick}
               sx={{
                 alignItems: 'center',
                 backgroundColor: 'rgba(255, 255, 255, 0.04)',
@@ -130,7 +205,7 @@ export const DashboardSidebar = (props) => {
                   color="inherit"
                   variant="subtitle1"
                 >
-                  Acme Inc
+                  {organization?.name}
                 </Typography>
                 <Typography
                   color="neutral.400"
@@ -138,7 +213,7 @@ export const DashboardSidebar = (props) => {
                 >
                   Your tier
                   {' '}
-                  : Premium
+                  : Free
                 </Typography>
               </div>
               <SelectorIcon

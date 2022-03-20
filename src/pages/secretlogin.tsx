@@ -3,31 +3,25 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Link,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Facebook as FacebookIcon } from '../icons/facebook';
+import { Google as GoogleIcon } from '../icons/google';
+import { useAuth } from '../database/FirebaseAuthContext';
 
-import { useAuth } from '../database/FirebaseAuthContext' 
+interface SubmitProp { 
+  email: string
+  password: string
+}
 
-const Register = () => {
-  const { createUserWithEmailAndPassword } = useAuth();
+const Login = () => {
+  const { signInWithEmailAndPassword } = useAuth();
+  const router =  useRouter()
 
-  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      policy: false
+      password: ''
     },
     validationSchema: Yup.object({
       email: Yup
@@ -37,42 +31,24 @@ const Register = () => {
         .max(255)
         .required(
           'Email is required'),
-      firstName: Yup
-        .string()
-        .max(255)
-        .required(
-          'First name is required'),
-      lastName: Yup
-        .string()
-        .max(255)
-        .required(
-          'Last name is required'),
       password: Yup
         .string()
         .max(255)
         .required(
-          'Password is required'),
-      policy: Yup
-        .boolean()
-        .oneOf(
-          [true],
-          'This field must be checked'
-        )
+          'Password is required')
     }),
-    onSubmit: async (values) => {
-      
+    onSubmit: async (values:SubmitProp) => {
       console.log('onSubmit', values)
-      await createUserWithEmailAndPassword(email, passwordOne)
-      router.push('/');
+      //signInWithEmailAndPassword()
+      await signInWithEmailAndPassword(values.email, values.password)
+      router.push('/flowbuilder');
     }
   });
 
   return (
     <>
       <Head>
-        <title>
-          Register | Onboard OS
-        </title>
+        <title>Login | Onboard OS</title>
       </Head>
       <Box
         component="main"
@@ -101,40 +77,17 @@ const Register = () => {
                 color="textPrimary"
                 variant="h4"
               >
-                Create a new account
+                Sign in
               </Typography>
               <Typography
                 color="textSecondary"
                 gutterBottom
                 variant="body2"
               >
-                Use your email to create a new account
+                Sign in on the Onboard OS
               </Typography>
             </Box>
-            <TextField
-              error={Boolean(formik.touched.firstName && formik.errors.firstName)}
-              fullWidth
-              helperText={formik.touched.firstName && formik.errors.firstName}
-              label="First Name"
-              margin="normal"
-              name="firstName"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.firstName}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.lastName && formik.errors.lastName)}
-              fullWidth
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              label="Last Name"
-              margin="normal"
-              name="lastName"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.lastName}
-              variant="outlined"
-            />
+
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
@@ -161,43 +114,6 @@ const Register = () => {
               value={formik.values.password}
               variant="outlined"
             />
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                ml: -1
-              }}
-            >
-              <Checkbox
-                checked={formik.values.policy}
-                name="policy"
-                onChange={formik.handleChange}
-              />
-              <Typography
-                color="textSecondary"
-                variant="body2"
-              >
-                I have read the
-                {' '}
-                <NextLink
-                  href="#"
-                  passHref
-                >
-                  <Link
-                    color="primary"
-                    underline="always"
-                    variant="subtitle2"
-                  >
-                    Terms and Conditions
-                  </Link>
-                </NextLink>
-              </Typography>
-            </Box>
-            {Boolean(formik.touched.policy && formik.errors.policy) && (
-              <FormHelperText error>
-                {formik.errors.policy}
-              </FormHelperText>
-            )}
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
@@ -207,24 +123,27 @@ const Register = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign Up Now
+                Sign In Now
               </Button>
             </Box>
             <Typography
               color="textSecondary"
               variant="body2"
             >
-              Have an account?
+              Don&apos;t have an account?
               {' '}
               <NextLink
-                href="/login"
-                passHref
+                href="/register"
               >
                 <Link
+                  to="/register"
                   variant="subtitle2"
                   underline="hover"
+                  sx={{
+                    cursor: 'pointer'
+                  }}
                 >
-                  Sign In
+                  Sign Up
                 </Link>
               </NextLink>
             </Typography>
@@ -235,4 +154,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import firebase from 'firebase/compat/app'
-
 export interface User {
     uid: string,
     email:string
@@ -27,6 +26,20 @@ export default function useFirebaseAuth() {
     setLoading(false);
   };
 
+  const clear = () => {
+    setAuthUser(null);
+    setLoading(true);
+  }
+
+  const signInWithEmailAndPassword = (email:string, password:string) =>
+    firebase.auth().signInWithEmailAndPassword(email, password);
+
+  const createUserWithEmailAndPassword = (email:string, password:string) =>
+    firebase.auth().createUserWithEmailAndPassword(email, password);
+
+  const signOut = () =>
+  firebase.auth().signOut().then(clear);
+
 // listen for Firebase state change
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(authStateChanged);
@@ -35,6 +48,9 @@ export default function useFirebaseAuth() {
 
   return {
     authUser,
-    loading
+    loading,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut
   };
 }

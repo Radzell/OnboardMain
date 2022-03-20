@@ -37,7 +37,36 @@ const formsTemplates: Record<string, Form> = {
             },
             dependencies: {},
             required: [
-                'email'
+                'email',
+                'password'
+            ]
+        },
+
+        name: "Create a account"
+    },
+    email_and_password_and_name: {
+        dataSchema: {
+            type: 'object',
+            title: '',
+            properties: {
+                user_name: {
+                    title: 'User name',
+                    type: 'string'
+                },
+                email: {
+                    title: 'Email',
+                    type: 'string'
+                },
+                password: {
+                    title: 'Password',
+                    type: 'string'
+                }
+            },
+            dependencies: {},
+            required: [
+                'user_name',
+                'email',
+                'password'
             ]
         },
 

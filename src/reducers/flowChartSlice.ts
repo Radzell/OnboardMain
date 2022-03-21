@@ -77,7 +77,7 @@ export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowI
 })
 
 export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowFormId, flowForm}: {flowFormId: string, flowForm: any}) => {
-    await firebase.firestore().collection('flowForms').doc(flowFormId).set(flowForm, { merge: true })
+    await firebase.firestore().collection('flowForms').doc(flowFormId).set(clean(flowForm), { merge: true })
     return;
 })
 

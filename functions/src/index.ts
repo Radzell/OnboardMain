@@ -17,6 +17,10 @@ interface Form {
 
 
 interface FormSetting {
+    title: string,
+    description: string,
+    optionA: string,
+    optionB: string,
     validate: boolean
 }
 

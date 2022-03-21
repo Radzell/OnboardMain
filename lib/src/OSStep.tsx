@@ -10,6 +10,7 @@ import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
 import { getCheckIcon } from './steps/Icons/Check';
+import ThisOrThat from './OnboardScreens/ThisOrThat';
 
 
 const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
@@ -44,6 +45,9 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
             }
             case 'create_or_join_org': {
                 return <CreateOrJoinOrg stepId={step.id} flow={flow} onNext={onNext} />
+            }
+            case 'this_or_that': {
+                return <ThisOrThat stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
             }
         }
 

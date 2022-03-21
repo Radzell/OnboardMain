@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, MiniMap, useZoomPanHelper, ReactFlowProvider, Controls, Position, Connection, Edge, OnLoadParams, useStoreState } from 'react-flow-renderer';
+import ReactFlow, { Node, Elements, removeElements, addEdge, useZoomPanHelper, ReactFlowProvider, Controls, Connection, Edge, OnLoadParams, useStoreState, isEdge } from 'react-flow-renderer';
 import { ScreenMetaDataMap } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,21 +7,25 @@ import { v4 as uuidv4 } from 'uuid';
 import './flowbuilder.module.css'
 import FormNode from '../../nodes/FormNode';
 import EntryNode from '../../nodes/EntryNode';
+import OrNode from '../../nodes/OrNode'
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
-import { AlertColor, Button, ButtonGroup, Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { saveFlow } from '../../reducers/flowChartSlice';
-import { Menu, Transition } from '@headlessui/react'
-import { FileMenu } from './flowbuilder-filemenu';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
 import { useRouter } from 'next/router';
+import ButtonEdge from '../../nodes/ButtonEdge';
 
 const nodeTypes = {
   formNode: FormNode,
-  entryNode: EntryNode
+  entryNode: EntryNode,
+  orNode: OrNode
+}
+
+const edgeTypes = {
+  buttonedge: ButtonEdge,
 }
 
 
@@ -52,12 +56,27 @@ export const FlowBuilderChart = () => {
     ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
   )
 
+  const onDeleteClicked = (edge: Edge<any>) => {
+    return () => {
+      console.log("onDeleteClicked", edge)
+      onElementsRemove([edge])
+    }
+  }
+
   const { transform } = useZoomPanHelper();
 
+  const mapElement = (element: Edge<any> | Node<any>) => {
+    console.log("mapElement", element)
+
+    if(isEdge(element)) {
+      return {...element, type: 'buttonedge', data: {onDeleteClicked: onDeleteClicked(element as Edge<any>)}}
+    }
+    return element
+  }
   useEffect(() => {
     if (flow && flow.position && flow.elements) {
       const [x = 0, y = 0] = flow.position;
-      setElements(flow.elements || []);
+      setElements(flow.elements.map(mapElement) || []);
       transform({ x, y, zoom: flow.zoom || 0 });
     }
   }, [flowId, flow])
@@ -65,12 +84,16 @@ export const FlowBuilderChart = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams<any> | null>(null);
   const [elements, setElements] = useState(initialElements);
-  const onConnect = (params: Edge<any> | Connection) => setElements((els) => addEdge(params, els));
+  const onConnect = (params: Edge<any> | Connection) => {
+    console.log("onConnect", params)
+    setElements((els) => addEdge({...params,type: 'buttonedge', data: {onDeleteClicked: onDeleteClicked(params as Edge<any>)} }, els))
+  };
   const onElementsRemove = (elementsToRemove: Elements<any>) =>
     setElements((els) => removeElements(elementsToRemove, els));
 
   const onLoad = (_reactFlowInstance: OnLoadParams<any>) =>
     setReactFlowInstance(_reactFlowInstance);
+    
 
   const onDragOver = (event: { preventDefault: () => void; dataTransfer: { dropEffect: string; }; }) => {
     event.preventDefault();
@@ -146,6 +169,7 @@ export const FlowBuilderChart = () => {
               onDragOver={onDragOver}
               snapToGrid={true}
               nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
             >
               <Controls />
             </ReactFlow>}

@@ -1,6 +1,13 @@
 import React, { CSSProperties, MouseEvent as ReactMouseEvent, HTMLAttributes, ReactNode } from 'react';
 
 
+export interface FormSetting {
+  title: string,
+  description: string,
+  optionA: string,
+  optionB: string,
+  validate: boolean
+}
 
 export const isNode = (element: Node | Connection | Edge): element is Node =>
   'id' in element && !('source' in element) && !('target' in element);

@@ -127,7 +127,6 @@ export const FlowBuilderChart = () => {
 
   const snackbar = useSnackBar()
   const dispatch = useAppDispatch()
-  const _elements = useStoreState((store) => [...store.nodes, ...store.edges]);
 
 
   const onKeyDown = (keyName: any, e: KeyboardEvent, _: any) => {

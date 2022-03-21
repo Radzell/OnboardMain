@@ -49,7 +49,6 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
           width: 15,
           borderRadius: '8px 0px 0px 8px' 
         }}
-        onConnect={(params) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
       />
     </>

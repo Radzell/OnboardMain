@@ -27,6 +27,7 @@ export enum ScreenType {
     CREATE_OR_JOIN_ORG = "create_or_join_org",
     PROFILE = "profile",
     THIS_OR_THAT="this_or_that",
+    BUTTON_SCREEN="button_screen",
     END_POINT = "end_point"
 }
 
@@ -61,6 +62,11 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     "this_or_that":{
         name: "This Or That",
         type: "orNode",
+        schemaChangable: false
+    },
+    "button_screen": {
+        name: "Button Screen",
+        type: "formNode",
         schemaChangable: false
     },
     "folder_picker": {

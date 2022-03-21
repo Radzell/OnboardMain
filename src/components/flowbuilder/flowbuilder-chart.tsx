@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactFlow, { Node, Elements, removeElements, addEdge, useZoomPanHelper, ReactFlowProvider, Controls, Connection, Edge, OnLoadParams, useStoreState, isEdge } from 'react-flow-renderer';
+import ReactFlow, { Node, Elements, removeElements, addEdge, useZoomPanHelper, ReactFlowProvider, Controls, Connection, Edge, OnLoadParams, useStoreState, isEdge, useUpdateNodeInternals, getConnectedEdges } from 'react-flow-renderer';
 import { ScreenMetaDataMap } from '../../interfaces/GraphNode';
 import Sidebar from './flowbuilder-sidebar';
 import { v4 as uuidv4 } from 'uuid';
@@ -56,12 +56,28 @@ export const FlowBuilderChart = () => {
     ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
   )
 
-  const onDeleteClicked = (edge: Edge<any>) => {
-    return () => {
+  const updateNodeInternals = useUpdateNodeInternals();
+
+  const onDeleteClicked = () => {
+    return (edge: Edge<any>) => {
       console.log("onDeleteClicked", edge)
-      onElementsRemove([edge])
+
+      // Get all edges for the flow
+      
+      setElements((els) => {
+        const end = removeElements([edge], els)
+        console.log("ending", end)
+        return end
+      });
+
+      updateNodeInternals(edge.source)
+      updateNodeInternals(edge.target)
+      updateNodeInternals(edge.id)
+
     }
   }
+
+  
 
   const { transform } = useZoomPanHelper();
 

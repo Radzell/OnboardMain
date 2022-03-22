@@ -23,6 +23,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const [title, setTitle] = useState<string>()
     const [description, setDescription] = useState<string>()
 
+
     useFirestoreConnect([
         { collection: 'flows', doc: flowId },
         { collection: 'flowForms', doc: selectedNodeId}
@@ -57,6 +58,14 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             return firestore.data.flowForms[selectedNodeId]    
         }
     )
+
+    useEffect(() => {
+        setTitle(flowForm?.title ?? "")
+        setDescription(flowForm?.description ?? "")
+        setOptionA(flowForm?.optionA ?? "")
+        setOptionB(flowForm?.optionB ?? "")
+
+    },[flowForm])
 
     console.log("flowForm", flowForm)
 
@@ -105,6 +114,9 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderValidateSection = () => {
+        if(formNode?.data?.formType === "button_screen") {
+            return
+        }
 
         if((formNode?.type === "formNode") || formNode?.data?.formType === "create_or_join_org") {
             return <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
@@ -133,7 +145,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         setOptionB(event.target.value)
     }
 
-    const renderOrButtonSections = () => {
+    const renderOrButtonSection = () => {
         if((formNode?.type === "orNode")) {
             return (
                 <>
@@ -141,8 +153,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                         style={{marginTop: 8, marginBottom: 8}}
                         disabled={false}
                         fullWidth
-                        helperText="Please specify the text for Option A"
-                        label="Option A"
+                        helperText="Please specify the text for Button A"
+                        label="Button A"
                         name="optionA"
                         onChange={handleOptionAChange}
                         value={optionA}
@@ -154,7 +166,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                         multiline={true}
                         disabled={false}
                         fullWidth
-                        helperText="Please specify the text for Option B"
+                        helperText="Please specify the text for Button B"
                         label="Option B"
                         name="optionB"
                         onChange={handleOptionBChange}
@@ -168,15 +180,37 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     }
 
+    const renderButtonSection = () => {
+
+        console.log("formNode?.data", formNode?.data, formNode?.data?.formType !== "button_screen")
+        if(formNode?.data?.formType !== "button_screen") {
+            return
+        }
+
+        return <TextField
+            style={{marginTop: 8, marginBottom: 8}}
+            disabled={false}
+            fullWidth
+            helperText="Please specify the text for your Button"
+            label="Button A"
+            name="optionA"
+            onChange={handleOptionAChange}
+            value={optionA}
+            variant="outlined"
+            defaultValue={flowForm?.optionA ?? "" }
+        />
+    }
+
     const renderBasicInfoSection = () => {
-        if((formNode?.type === "orNode")) {
+        console.log("formNode?.formType", formNode?.data)
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen")) {
             return (
                 <>
                     <TextField
                         style={{marginTop: 8, marginBottom: 8}}
                         disabled={false}
                         fullWidth
-                        helperText="Please specify the a title for you screen"
+                        helperText="Please specify the a title for your screen"
                         label="Title"
                         name="title"
                         onChange={handleTitleChange}
@@ -190,7 +224,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                         multiline={true}
                         disabled={false}
                         fullWidth
-                        helperText="Please specify the a description for you screen"
+                        helperText="Please specify the a description for your screen"
                         label="Description"
                         name="description"
                         onChange={handleDescriptionChange}
@@ -214,7 +248,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                     Settings
                 </Typography>
                 {renderBasicInfoSection()}
-                {renderOrButtonSections()}
+                {renderOrButtonSection()}
+                {renderButtonSection()}
 
                 {renderValidateSection()}
 

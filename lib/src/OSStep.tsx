@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { Node } from './types'
+import { Node, onActionFunc } from './types'
 import { useSteps, Steps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';
@@ -11,9 +11,9 @@ import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
 import { getCheckIcon } from './steps/Icons/Check';
 import ThisOrThat from './OnboardScreens/ThisOrThat';
+import ButtonScreen from './OnboardScreens/ButtonScreen';
 
-
-const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void }) => {
+const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void,  onAction?: onActionFunc }) => {
     const { setStep, activeStep } = useSteps({
         initialStep: 0,
     })
@@ -48,6 +48,9 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext }: { flow: Flow
             }
             case 'this_or_that': {
                 return <ThisOrThat stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
+            }
+            case 'button_screen': {
+                return <ButtonScreen stepId={step.id} stepType={step.data.formType} form={flow?.forms[step.data.formType]} flow={flow} onAction={onAction} onNext={onNext} />
             }
         }
 

@@ -1,19 +1,20 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Flow } from ".";
 import { Box, Center, Container, Heading, Spinner, useToast } from '@chakra-ui/react'
-import { Edge, EndFunc, FlowElement, isEdge, isNode, Node, ValidateFunc } from './types'
+import { Edge, EndFunc, FlowElement, isEdge, isNode, Node, onActionFunc, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
 interface OSProps {
-    flow?: Flow, 
-    flowId:string,
-    onValidate: ValidateFunc,
-    onEnd: EndFunc
+    flow?: Flow,
+    flowId: string,
+    onValidate?: ValidateFunc,
+    onEnd: EndFunc,
+    onAction?: onActionFunc
 }
 const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
     let totalData = {}
-    const {flow, flowId, onValidate, onEnd} = props
-    if(!flow) {
+    const { flow, flowId, onValidate, onEnd, onAction } = props
+    if (!flow) {
         return <></>
     }
 
@@ -27,24 +28,24 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
     const edges = useMemo(() => {
         return flow?.elements.filter((element) => isEdge(element)).map(element => element as Edge)
-    },[flow])
+    }, [flow])
 
     const nodeSet = useMemo(() => {
 
 
-        if(!flow) {
+        if (!flow) {
             return {}
         }
         const nodes = flow.elements.filter((element) => isNode(element)).map(element => element as Node)
 
         return nodes.reduce((prev, cur) => {
-            prev[cur.id] = cur 
+            prev[cur.id] = cur
             return prev
         }, {} as Record<string, Node>)
-    },[flow])
+    }, [flow])
 
     useEffect(() => {
-        if(!nodeSet) {
+        if (!nodeSet) {
             return
         }
 
@@ -52,7 +53,7 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         const rootArr = flow.elements.filter(element => (!!element.data && element.data.formType) === 'entry')
 
 
-        if(!rootArr|| rootArr.length !== 1) {
+        if (!rootArr || rootArr.length !== 1) {
             return
         }
 
@@ -60,38 +61,38 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
         const firstStepArr = outputEdges[root.id]
 
-        if(firstStepArr && firstStepArr.length === 1) {
+        if (firstStepArr && firstStepArr.length === 1) {
             const edge = firstStepArr[0]
 
             const firstStep = nodeSet[edge.target]
             setStep(firstStep)
         }
-        
+
     }, [flowId, nodeSet])
 
 
-    
+
 
     const outputEdges = useMemo(() => {
-        if(!edges) {
+        if (!edges) {
             return {}
         }
         return edges?.reduce((prev, cur) => {
             const edge = cur as Edge
-            if(!prev[edge.source]) {
+            if (!prev[edge.source]) {
                 prev[edge.source] = []
             }
             prev[edge.source].push(edge)
             return prev
         }, {} as Record<string, Edge[]>)
-    },[edges])
+    }, [edges])
 
 
     const toast = useToast()
 
 
     const validateAsync = async (data?: object) => {
-        if(!step || !data) {
+        if (!step || !data || !onValidate) {
             return
         }
         const validationMessage = await onValidate(step.id, step.data.formType, data);
@@ -106,62 +107,94 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             });
         }
 
-        if(validationMessage === true) {
+        if (validationMessage === true) {
             goForward()
         }
     }
 
-    const onNext =  (data?: object) => {
-        console.log('onNext', data, step?.id)
+    const onNext = (data?: Record<string, any>) => {
+        console.log('onNext', data, step)
 
-        if(!step) {
+        if (!step) {
             return
         }
-        
-        if(data) {
+
+        if (data) {
             _currentData.current = data
         }
-        
+
         const formSetting = flow.formSettings
 
-        if(data && formSetting && formSetting[step.id] && formSetting[step.id].validate) {
+        if (data && formSetting && formSetting[step.id] && formSetting[step.id].validate) {
+            console.log("validate", formSetting[step.id])
             validateAsync(data);
             return
         }
-        goForward()
+        goForward(data?.option)
 
-        
+
     }
 
 
-    const goForward = () => {
+    const goForward = (optionPath?: string) => {
         console.log("goForward", step)
-        if(!step) {
+        console.log("outputEdges", outputEdges)
+
+        if (!step) {
             return
         }
 
 
-        _totalData.current = {..._totalData.current, 
+        _totalData.current = {
+            ..._totalData.current,
             [step.id]: {
                 data: _currentData.current,
                 type: step.data.formType
             }
         }
 
+
         const outputEdge = outputEdges[step.id]
 
         //For now assuming one edge
+        moveToNextStep(outputEdge, optionPath)
+    }
 
-        if(!outputEdge || outputEdge.length !== 1) {
+    const moveToNextStep = (outputEdges: Edge[], option?: string) => {
+        //For now assuming one edge
+
+        if (!outputEdges || outputEdges.length === 0) {
             onEnd(_totalData.current, {})
             return
         }
 
-        const edge = outputEdge[0]
+        let edge = null
+        if(!option) {
+            edge = outputEdges[0]
+        }
+
+        if(option === "option_b") {
+            const foundEdge = outputEdges.find((value) => value.sourceHandle === "optionB")
+            edge = foundEdge
+        }
+
+        if(option === "option_a") {
+            const foundEdge = outputEdges.find((value) => value.sourceHandle === "optionA")
+            edge = foundEdge
+        }
+
+        if(!edge) {
+            console.error("couldn't find a next step")
+            onEnd(_totalData.current, {})
+            return
+        }
+
         const node = nodeSet[edge.target]
 
         setStep(node)
-        setStepCount(stepCount+1)
+        setStepCount(stepCount + 1)
+
+
     }
 
     const startLoader = (message: string) => {
@@ -175,12 +208,12 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
     useImperativeHandle(ref, () => ({ goForward, startLoader, stopLoader }));
 
-    
 
-    
-    return ( 
-        <Box as={Container}  w='100%' h="100%">
-            {!!isLoading && 
+
+
+    return (
+        <Box as={Container} w='100%' h="100%">
+            {!!isLoading &&
                 <Center>
                     <Box display='flex' flexDirection="column" alignItems="center">
                         <Spinner size='xl' />
@@ -188,8 +221,8 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
                     </Box>
                 </Center>
             }
-            {!isLoading && <OSStep onNext ={onNext} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1}
-step={step} color={flow?.color} />}
+            {!isLoading && <OSStep onNext={onNext} onAction={onAction} flow={flow} stepCount={stepCount} maxSteps={!!flow.stepCount ? flow.stepCount : 1}
+                step={step} color={flow?.color} />}
         </Box>
     )
 

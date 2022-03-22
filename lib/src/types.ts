@@ -89,6 +89,8 @@ export interface Edge<T = any> {
   className?: string;
 }
 
+export type onActionFunc = (stepId: string, stepType:string, data: Record<string, any>) => void
+
 export type ValidateFunc = (stepId: string , stepType: string, data: object) => Promise<boolean | string>
 
 export type EndFunc = (data: object, schema: object) => void

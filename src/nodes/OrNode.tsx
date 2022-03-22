@@ -18,7 +18,7 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
             <Handle
                 type="source"
                 position={Position.Right}
-                id="optionOne"
+                id="optionA"
                 style={{
                     background: '#555',
                     width: 25,
@@ -35,7 +35,7 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
             </Handle>
 
             <Handle
-                id="B"
+                id="optionB"
                 type="source"
                 position={Position.Right}
                 style={{

@@ -3,9 +3,10 @@ import React from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
+import { onActionFunc } from "../types"
 
-const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
-    console.log("ThisOrThatScreen", form)
+const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
+    console.log("ButtonScreen", form)
 
     const formSetting = flow?.formSettings ?  flow?.formSettings[stepId] ?? {} : {}
 
@@ -33,13 +34,18 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                     </Text>
 
                     <Stack
-                        direction={'row'}
+                        marginBottom={"30px"}
+                        direction={'column'}
                         spacing={3}
                         align={'center'}
                         alignSelf={'center'}
                         position={'relative'}>
                         <Button
-                            onClick={() => onNext({option: "option_a"})}
+                            onClick={() => {
+                                if(onAction) {
+                                    onAction(stepId, stepType,{})
+                                }
+                            }}
                             colorScheme={'green'}
                             bg={'green.400'}
                             px={6}
@@ -47,27 +53,24 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                                 bg: 'green.500',
                             }}>
                                 {formSetting.optionA ?? "Option A"}
-                        </Button>
+                        </Button>                    
+                    </Stack>
+                    <Button
+                            isFullWidth
 
-                        {formSetting.optionB && <Button
-                            onClick={() => onNext({option: "option_b"})}
+                            onClick={() => onNext()}
                             colorScheme={'green'}
                             bg={'green.400'}
                             px={6}
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                                {formSetting.optionB ?? "Option B"}
-                        </Button>}
-
-
-
-                        
-                    </Stack>
+                                Next
+                        </Button>
                 </Stack>
             </Container>
         </>
     )
 }
 
-export default ThisOrThatScreen
+export default ButtonScreen

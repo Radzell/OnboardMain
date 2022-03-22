@@ -1,7 +1,7 @@
-import React, { DragEvent, useEffect, useMemo, useState } from "react";
-import { useStoreState, useStoreActions } from "react-flow-renderer";
+import React, { useEffect, useMemo, useState } from "react";
+import { useStoreState } from "react-flow-renderer";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Button, Checkbox, Divider, FormControlLabel, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, TextField, Typography } from "@mui/material";
 
 import { withTheme } from '@rjsf/core';
 import { Theme as Bootstrap4Theme } from '@rjsf/bootstrap-4';
@@ -17,6 +17,12 @@ const Form = withTheme(Bootstrap4Theme)
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const selectedNodeId = useAppSelector((state) => state.ui.previewing)
     const [shouldValidate, setShouldValidate] = useState<boolean>(false)
+    const [formData, setFormData] = useState({})
+    const [optionA, setOptionA] = useState<string>()
+    const [optionB, setOptionB] = useState<string>()
+    const [title, setTitle] = useState<string>()
+    const [description, setDescription] = useState<string>()
+
 
     useFirestoreConnect([
         { collection: 'flows', doc: flowId },
@@ -54,9 +60,17 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     )
 
     useEffect(() => {
-        console.log('setShouldValidate', flowForm?.validate)
+        setTitle(flowForm?.title ?? "")
+        setDescription(flowForm?.description ?? "")
+        setOptionA(flowForm?.optionA ?? "")
+        setOptionB(flowForm?.optionB ?? "")
 
-        setShouldValidate(flowForm?.validate)
+    },[flowForm])
+
+
+    useEffect(() => {
+
+        setShouldValidate(flowForm?.validate ?? false)
     }, [flowForm])
 
     const nodes = useStoreState((store) => store.nodes);
@@ -71,10 +85,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         return foundNodes[0]
     }, [selectedNodeId, nodes])
 
-    console.log('nodes on board', nodes, selectedNodeId)
-    console.log('formNode', formNode)
-
-    const [formData, setFormData] = useState({})
 
     const schemas = useMemo(() => {
         const schemaData = ScreenPreviewDataMap[formNode?.data.formType]
@@ -94,16 +104,130 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             return
         }
 
-        await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: { ...formData, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
     const renderValidateSection = () => {
+        if(formNode?.data?.formType === "button_screen") {
+            return
+        }
 
         if((formNode?.type === "formNode") || formNode?.data?.formType === "create_or_join_org") {
             return <FormControlLabel control={<Checkbox defaultChecked checked={shouldValidate}  onChange={(e) => {
                 setShouldValidate(e.target.checked)
             }} />} label="Validate" />
+        }
+    }
+
+
+    const handleTitleChange = (event: { target: { name: any; value: any; }; }) => {
+        setTitle(event.target.value)
+    }
+
+
+    const handleDescriptionChange = (event: { target: { name: any; value: any; }; }) => {
+        setDescription(event.target.value)
+    }
+
+
+
+
+    const handleOptionAChange = (event: { target: { name: any; value: any; }; }) => {
+        setOptionA(event.target.value)
+    }
+    const handleOptionBChange = (event: { target: { name: any; value: any; }; }) => {
+        setOptionB(event.target.value)
+    }
+
+    const renderOrButtonSection = () => {
+        if((formNode?.type === "orNode")) {
+            return (
+                <>
+                    <TextField
+                        style={{marginTop: 8, marginBottom: 8}}
+                        disabled={false}
+                        fullWidth
+                        helperText="Please specify the text for Button A"
+                        label="Button A"
+                        name="optionA"
+                        onChange={handleOptionAChange}
+                        value={optionA}
+                        variant="outlined"
+                        defaultValue={flowForm?.optionA ?? "" }
+                    />
+                    <TextField
+                        style={{marginTop: 8, marginBottom: 8}}
+                        multiline={true}
+                        disabled={false}
+                        fullWidth
+                        helperText="Please specify the text for Button B"
+                        label="Option B"
+                        name="optionB"
+                        onChange={handleOptionBChange}
+                        value={optionB}
+                        variant="outlined"
+                        defaultValue={flowForm?.optionB ?? "" }
+
+                    />
+                </>
+            )
+        }
+    }
+
+    const renderButtonSection = () => {
+
+        if(formNode?.data?.formType !== "button_screen") {
+            return
+        }
+
+        return <TextField
+            style={{marginTop: 8, marginBottom: 8}}
+            disabled={false}
+            fullWidth
+            helperText="Please specify the text for your Button"
+            label="Button A"
+            name="optionA"
+            onChange={handleOptionAChange}
+            value={optionA}
+            variant="outlined"
+            defaultValue={flowForm?.optionA ?? "" }
+        />
+    }
+
+    const renderBasicInfoSection = () => {
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen")) {
+            return (
+                <>
+                    <TextField
+                        style={{marginTop: 8, marginBottom: 8}}
+                        disabled={false}
+                        fullWidth
+                        helperText="Please specify the a title for your screen"
+                        label="Title"
+                        name="title"
+                        onChange={handleTitleChange}
+                        value={title}
+                        variant="outlined"
+                        defaultValue={flowForm?.title ?? "" }
+
+                    />
+                    <TextField
+                        style={{marginTop: 8, marginBottom: 8}}
+                        multiline={true}
+                        disabled={false}
+                        fullWidth
+                        helperText="Please specify the a description for your screen"
+                        label="Description"
+                        name="description"
+                        onChange={handleDescriptionChange}
+                        value={description}
+                        variant="outlined"
+                        defaultValue={flowForm?.description ?? "" }
+
+                    />
+                </>
+            )
         }
     }
 
@@ -116,6 +240,10 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>
+                {renderBasicInfoSection()}
+                {renderOrButtonSection()}
+                {renderButtonSection()}
+
                 {renderValidateSection()}
 
             </div>

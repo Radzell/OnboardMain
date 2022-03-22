@@ -26,6 +26,8 @@ export enum ScreenType {
     EMAIL_PASSWORD_AND_NAME = "email_and_password_and_name",
     CREATE_OR_JOIN_ORG = "create_or_join_org",
     PROFILE = "profile",
+    THIS_OR_THAT="this_or_that",
+    BUTTON_SCREEN="button_screen",
     END_POINT = "end_point"
 }
 
@@ -46,6 +48,7 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
         type: "formNode",
         schemaChangable: false
     },
+    
     "email_and_password": {
         name: "Email and Password",
         type: "formNode",
@@ -53,6 +56,16 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     },
     "email_and_password_and_name": {
         name: "Email, Password and Name",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "this_or_that":{
+        name: "This Or That",
+        type: "orNode",
+        schemaChangable: false
+    },
+    "button_screen": {
+        name: "Button Screen",
         type: "formNode",
         schemaChangable: false
     },

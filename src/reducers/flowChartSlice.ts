@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createAction, createReducer } from '@reduxjs/toolkit'
-import { Elements, FlowExportObject } from 'react-flow-renderer'
+import { Elements, FlowExportObject, isEdge } from 'react-flow-renderer'
 import firebase from 'firebase/compat/app'
-import { clean } from '../utils/clean'
+import { clean, cleanFunctions } from '../utils/clean'
 
 import type { AppState, AppThunk, Flow } from '../app/store'
 
@@ -64,7 +64,16 @@ export const deleteFlowLogo = createAsyncThunk('flowChart/deleteFlowLogo', async
 })
 
 export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}) => {
-    await firebase.firestore().collection('flows').doc(flowId).set(flowNodes, { merge: true })
+    try {
+      flowNodes.elements.forEach(element => {
+        if(isEdge(element)) {
+          delete element.data.onDeleteClicked
+        }
+      })
+      await firebase.firestore().collection('flows').doc(flowId).set(flowNodes, { merge: true })
+    }catch(e) {
+      console.error("saving fail", e)
+    }
     return;
 })
 
@@ -77,7 +86,7 @@ export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowI
 })
 
 export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowFormId, flowForm}: {flowFormId: string, flowForm: any}) => {
-    await firebase.firestore().collection('flowForms').doc(flowFormId).set(flowForm, { merge: true })
+    await firebase.firestore().collection('flowForms').doc(flowFormId).set(clean(flowForm), { merge: true })
     return;
 })
 

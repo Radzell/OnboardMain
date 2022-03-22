@@ -8,6 +8,10 @@ import {
 } from 'react-redux-firebase'
 
 export interface FlowForm {
+  title?: string,
+  description?: string,
+  optionA?: string,
+  optionB?: string,
   validate?: boolean
 }
 export interface Flow {

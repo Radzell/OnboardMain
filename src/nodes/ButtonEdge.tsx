@@ -21,7 +21,6 @@ export default function CustomEdge({
     target,
     ...rest
 }:{id: string, sourceX: any, source: string, target:string, sourceY: any, targetX: any, targetY: any, sourcePosition: any, targetPosition:any, style: any, markerEnd:any, data:any}) {
-    console.log("rest",rest)
 
     const onEdgeClick = (evt: React.MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
         evt.stopPropagation();

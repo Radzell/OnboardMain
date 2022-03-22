@@ -67,10 +67,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
     },[flowForm])
 
-    console.log("flowForm", flowForm)
 
     useEffect(() => {
-        console.log('setShouldValidate', flowForm?.validate)
 
         setShouldValidate(flowForm?.validate ?? false)
     }, [flowForm])
@@ -86,9 +84,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
         return foundNodes[0]
     }, [selectedNodeId, nodes])
-
-    console.log('nodes on board', nodes, selectedNodeId)
-    console.log('formNode', formNode)
 
 
     const schemas = useMemo(() => {
@@ -182,7 +177,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
     const renderButtonSection = () => {
 
-        console.log("formNode?.data", formNode?.data, formNode?.data?.formType !== "button_screen")
         if(formNode?.data?.formType !== "button_screen") {
             return
         }
@@ -202,7 +196,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderBasicInfoSection = () => {
-        console.log("formNode?.formType", formNode?.data)
         if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen")) {
             return (
                 <>

@@ -6,14 +6,12 @@ import { Box } from '@chakra-ui/react'
 import { onActionFunc } from "../types"
 
 const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
-    console.log("ButtonScreen", form)
 
-    const formSetting = flow?.formSettings ?  flow?.formSettings[stepId] ?? {} : {}
-
+    const formSetting = flow?.formSettings ? flow?.formSettings[stepId] ?? {} : {}
 
     return (
         <>
- 
+
 
             <Container maxW={'3xl'}>
                 <Stack
@@ -26,7 +24,7 @@ const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { step
                         fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
                         lineHeight={'110%'}>
                         {formSetting.title ?? "This Or That"}
-                        
+
                     </Heading>
                     <Text fontWeight={600}>
                         {formSetting.description ?? "This Or That"}
@@ -42,8 +40,8 @@ const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { step
                         position={'relative'}>
                         <Button
                             onClick={() => {
-                                if(onAction) {
-                                    onAction(stepId, stepType,{})
+                                if (onAction) {
+                                    onAction(stepId, stepType, {})
                                 }
                             }}
                             colorScheme={'green'}
@@ -52,21 +50,21 @@ const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { step
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                                {formSetting.optionA ?? "Option A"}
-                        </Button>                    
+                            {formSetting.optionA ?? "Option A"}
+                        </Button>
                     </Stack>
                     <Button
-                            isFullWidth
+                        isFullWidth
 
-                            onClick={() => onNext()}
-                            colorScheme={'green'}
-                            bg={'green.400'}
-                            px={6}
-                            _hover={{
-                                bg: 'green.500',
-                            }}>
-                                Next
-                        </Button>
+                        onClick={() => onNext()}
+                        colorScheme={'green'}
+                        bg={'green.400'}
+                        px={6}
+                        _hover={{
+                            bg: 'green.500',
+                        }}>
+                        Next
+                    </Button>
                 </Stack>
             </Container>
         </>

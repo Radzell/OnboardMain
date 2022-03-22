@@ -96,7 +96,6 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             return
         }
         const validationMessage = await onValidate(step.id, step.data.formType, data);
-        console.log('validationMessage', validationMessage);
         if (typeof validationMessage === 'string') {
             toast({
                 title: 'Error',
@@ -113,7 +112,6 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
     }
 
     const onNext = (data?: Record<string, any>) => {
-        console.log('onNext', data, step)
 
         if (!step) {
             return
@@ -126,7 +124,6 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
         const formSetting = flow.formSettings
 
         if (data && formSetting && formSetting[step.id] && formSetting[step.id].validate) {
-            console.log("validate", formSetting[step.id])
             validateAsync(data);
             return
         }
@@ -137,8 +134,6 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
 
     const goForward = (optionPath?: string) => {
-        console.log("goForward", step)
-        console.log("outputEdges", outputEdges)
 
         if (!step) {
             return

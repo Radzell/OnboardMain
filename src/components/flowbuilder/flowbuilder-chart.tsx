@@ -60,13 +60,11 @@ export const FlowBuilderChart = () => {
 
   const onDeleteClicked = () => {
     return (edge: Edge<any>) => {
-      console.log("onDeleteClicked", edge)
 
       // Get all edges for the flow
       
       setElements((els) => {
         const end = removeElements([edge], els)
-        console.log("ending", end)
         return end
       });
 
@@ -82,7 +80,6 @@ export const FlowBuilderChart = () => {
   const { transform } = useZoomPanHelper();
 
   const mapElement = (element: Edge<any> | Node<any>) => {
-    console.log("mapElement", element)
 
     if(isEdge(element)) {
       return {...element, type: 'buttonedge', data: {onDeleteClicked: onDeleteClicked(element as Edge<any>)}}
@@ -101,7 +98,6 @@ export const FlowBuilderChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams<any> | null>(null);
   const [elements, setElements] = useState(initialElements);
   const onConnect = (params: Edge<any> | Connection) => {
-    console.log("onConnect", params)
     setElements((els) => addEdge({...params,type: 'buttonedge', data: {onDeleteClicked: onDeleteClicked(params as Edge<any>)} }, els))
   };
   const onElementsRemove = (elementsToRemove: Elements<any>) =>
@@ -149,7 +145,6 @@ export const FlowBuilderChart = () => {
 
     e?.preventDefault()
 
-    console.log('onKeyDown', keyName)
     if (keyName === "alt+s" || keyName === "command+s") {
       // save
       const flow = reactFlowInstance?.toObject();

@@ -4,15 +4,13 @@ import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 
-const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
-    console.log("ThisOrThatScreen", form)
+const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void }) => {
 
-    const formSetting = flow?.formSettings ?  flow?.formSettings[stepId] ?? {} : {}
-
+    const formSetting = flow?.formSettings ? flow?.formSettings[stepId] ?? {} : {}
 
     return (
         <>
- 
+
 
             <Container maxW={'3xl'}>
                 <Stack
@@ -25,7 +23,7 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                         fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
                         lineHeight={'110%'}>
                         {formSetting.title ?? "This Or That"}
-                        
+
                     </Heading>
                     <Text fontWeight={600}>
                         {formSetting.description ?? "This Or That"}
@@ -39,30 +37,30 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                         alignSelf={'center'}
                         position={'relative'}>
                         <Button
-                            onClick={() => onNext({option: "option_a"})}
+                            onClick={() => onNext({ option: "option_a" })}
                             colorScheme={'green'}
                             bg={'green.400'}
                             px={6}
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                                {formSetting.optionA ?? "Option A"}
+                            {formSetting.optionA ?? "Option A"}
                         </Button>
 
                         {formSetting.optionB && <Button
-                            onClick={() => onNext({option: "option_b"})}
+                            onClick={() => onNext({ option: "option_b" })}
                             colorScheme={'green'}
                             bg={'green.400'}
                             px={6}
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                                {formSetting.optionB ?? "Option B"}
+                            {formSetting.optionB ?? "Option B"}
                         </Button>}
 
 
 
-                        
+
                     </Stack>
                 </Stack>
             </Container>

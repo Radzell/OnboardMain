@@ -29,7 +29,7 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
                 }}
                 isConnectable={isConnectable}
             >
-                <div onDrop={(e) => {console.log("onDrop",e)}} style={{ height: "100%", width: "100%", display: "flex", alignItems: "center", justifyContent: "center",pointerEvents:'none' }}>
+                <div style={{ height: "100%", width: "100%", display: "flex", alignItems: "center", justifyContent: "center",pointerEvents:'none' }}>
                     <Typography color="#fff" style={{ fontWeight: "bold" }} variant='body2'>A</Typography>
                 </div>
             </Handle>
@@ -46,11 +46,6 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
                     top: 65,
                     borderRadius: '0px 10px 10px 0px'
                 }}
-                isValidConnection={(connection) => {
-                    console.log("isValidConnection")
-                    return true
-                }}
-                onConnect={(params) => console.log('handle onConnect', params)}
                 isConnectable={isConnectable}
             >
                 <div style={{ height: "100%", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents:'none' }}>
@@ -78,7 +73,6 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
                     width: 15,
                     borderRadius: '8px 0px 0px 8px'
                 }}
-                onConnect={(params) => console.log('handle onConnect', params)}
                 isConnectable={isConnectable}
             />
         </>

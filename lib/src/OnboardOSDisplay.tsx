@@ -1,19 +1,19 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Flow } from ".";
 import { Box, Center, Container, Heading, Spinner, useToast } from '@chakra-ui/react'
-import { Edge, EndFunc, FlowElement, isEdge, isNode, Node, onActionFunc, ValidateFunc } from './types'
+import { Edge, EndFunc, isEdge, isNode, Node, onActionFunc, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
 interface OSProps {
     flow?: Flow,
-    flowId: string,
+    apiKey: string,
     onValidate?: ValidateFunc,
     onEnd: EndFunc,
     onAction?: onActionFunc
 }
 const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
     let totalData = {}
-    const { flow, flowId, onValidate, onEnd, onAction } = props
+    const { flow, apiKey, onValidate, onEnd, onAction } = props
     if (!flow) {
         return <></>
     }
@@ -68,7 +68,7 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             setStep(firstStep)
         }
 
-    }, [flowId, nodeSet])
+    }, [apiKey, nodeSet])
 
 
 

@@ -60,7 +60,7 @@ function deepEqual(object1?:any, object2?:any) {
 
 
 
-export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc }): JSX.Element => {
+export const OnboardOS = ({ apiKey, register, onValidate, onEnd }: { apiKey: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
     const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
 
@@ -86,21 +86,21 @@ export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: str
 
         useEffect(() => {
             const getFlow = async () => {
-                const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?flowId=${flowId}`)
-
+                const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?apiKey=${apiKey}`)
+                
                 const flow = result.data as Flow
                 console.log('flow', flow)
 
-                await localforage.setItem(flowId, flow)
+                await localforage.setItem(apiKey, flow)
                 setFlow(flow)
             }
 
             getFlow()
-        }, [flowId])
+        }, [apiKey])
 
         useEffect(() => {
             const getFlow = async () => {
-                const _flow = await localforage.getItem(flowId) as Flow | null
+                const _flow = await localforage.getItem(apiKey) as Flow | null
 
                 if(_flow && deepEqual(_flow, flow)) {
                     setFlow(flow)
@@ -116,7 +116,7 @@ export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: str
         <ChakraProvider theme={theme} >
                 <CSSReset />
                 {!flow && <Center><Text>Loading From OnboardOS...</Text></Center>}
-                <OnboardOsDisplay onEnd={onEnd} onValidate={onValidate} ref={osRef} flowId={flowId}
+                <OnboardOsDisplay onEnd={onEnd} onValidate={onValidate} ref={osRef} apiKey={apiKey}
 flow={flow} />
         </ChakraProvider>
     )

@@ -69,20 +69,21 @@ const closeButton = {
 
 
 const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss: any, flowId: string }) => {
-    const [file, setFile] = useState<{file: File} & { preview: string; }>();
+    const [file, setFile] = useState<{ file: File } & { preview: string; }>();
     const [defaultFile, setDefaultFile] = useState<string>()
 
     useFirestoreConnect([
-        { collection: 'flows', doc: flowId } // or 'todos'
+        { collection: 'flows', doc: flowId },
+        { collection: 'prod-flows', doc: flowId }
     ])
 
     const onDeleteLogo = () => {
-        console.log('onDeleteLogo',flow.logoName)
+        console.log('onDeleteLogo', flow.logoName)
 
         setFile(undefined)
         setDefaultFile(undefined)
-        if(flow.logoName) {
-            dispatch(deleteFlowLogo({flowId, logoName: flow.logoName}))
+        if (flow.logoName) {
+            dispatch(deleteFlowLogo({ flowId, logoName: flow.logoName }))
         }
     }
 
@@ -113,6 +114,16 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
         ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
     )
 
+    const prodFlow: Flow = useAppSelector(
+        ({ firestore }): any => {
+
+
+            return firestore.data["prod-flows"] && firestore.data["prod-flows"][flowId]
+        }
+    )
+
+    console.log("prodFlow", prodFlow)
+
     const firebase = useFirebase()
 
     useEffect(() => {
@@ -122,8 +133,8 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
                 setAppName(flow.name)
                 setColor(flow.color)
                 setTagLine(flow.tagLine)
-                if(flow.logoName) {
-                    
+                if (flow.logoName) {
+
                     const downloadUrl = await firebase.storage().ref(`images/${flow.logoName}`).getDownloadURL()
                     setDefaultFile(downloadUrl)
                 }
@@ -162,7 +173,7 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
         setLoading(true)
         try {
             setLoading(false)
-            
+
             dispatch(saveFlowSetting({ flowId, name, tagLine, color, file: file?.file }))
 
             snackbar.showSnackBar("Saving...", "info")
@@ -230,6 +241,11 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
                                 <aside style={thumbsContainer}>
                                     {thumbs()}
                                 </aside>
+                            </section>
+
+                            <section style={{ marginTop: 8 }}>
+                                <TextField disabled={true} margin="normal" defaultValue={prodFlow?.apiKey ?? "not set"} fullWidth={true}
+                                    label="API Key" variant="outlined" />
                             </section>
                         </DialogContent>
                         <DialogActions>

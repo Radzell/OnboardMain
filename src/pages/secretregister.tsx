@@ -134,7 +134,7 @@ const Register = () => {
               Login
             </Button>
           </NextLink>
-          <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} flowId={"main-app_flow"} />
+          <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={"0DgOKRqIo0tUQiMfxmsq"} />
         </Container>
       </Box>
     </>

@@ -22,6 +22,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import useFirebaseAuth from '../database/useFirebaseAuth';
 import { Organization } from '../interfaces/Organization';
+import Image from 'next/image'
 
 const items = [
   {
@@ -41,7 +42,7 @@ const items = [
   }
 ];
 
-export const DashboardSidebar = (props) => {
+export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
 
 
   const [selectedOrgId, setSelectedOrgId] = useState<string>()
@@ -178,6 +179,7 @@ export const DashboardSidebar = (props) => {
             >
               <a>
                 <Logo
+                width={42} height={42}
                   sx={{
                     height: 42,
                     width: 42

@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect } from 'react'
 import { Node, onActionFunc } from './types'
+import React, { useEffect } from 'react'
+import { Node } from './types'
 import { useSteps, Steps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';
 import { Box, Flex, Text, Image } from '@chakra-ui/react';
 import { Step } from './steps/Step'
 import FormScreen from './OnboardScreens/FormScreen';
-import FolderSelectScreen from './OnboardScreens/FolderSelectScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
 import { getCheckIcon } from './steps/Icons/Check';
@@ -37,9 +37,6 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
             case "welcome": {
                 return <WelcomeScreen flow={flow} onNext={onNext} />
             }
-            case "folder_picker": {
-                return <FolderSelectScreen flow={flow} onNext={onNext} />
-            }
             case 'end_point': {
                 return <EndPointScreen flow={flow} onNext={onNext} />
             }
@@ -63,7 +60,7 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
     }
 
     console.log("maxSteps", step)
-    return <Box maxw="100%" h="100%" pt={8}>
+    return <Box h="100%" pt={8}>
         <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
             <Flex flexDirection={"row"} alignItems={"center"} >
                 {flow.logoDownloadUrl && <Image
@@ -82,7 +79,9 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
         <Steps colorScheme={color} activeStep={activeStep}>
 
             {Array(maxSteps).fill(1).map((_, index) => (
-                <Step checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index + 1}`} key={index}>
+                //@ts-ignore
+                <Step //@ts-ignore 
+                checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index + 1}`} key={index}>
 
                 </Step>
             ))}

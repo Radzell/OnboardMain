@@ -12,7 +12,7 @@ export const ErrorListMw: React.ComponentType<MiddlewareProps> = (props) => {
       {errors.map((error, i) => (
         <Alert key={i} status="error">
           <AlertDescription>
-            {error.dataPath} {error.message}
+            {error.message}
           </AlertDescription>
         </Alert>
       ))}

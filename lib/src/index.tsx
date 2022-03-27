@@ -87,7 +87,7 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd }: { apiKey: str
         useEffect(() => {
             const getFlow = async () => {
                 const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?apiKey=${apiKey}`)
-                
+
                 const flow = result.data as Flow
                 console.log('flow', flow)
 

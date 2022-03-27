@@ -19,7 +19,7 @@ export const SubmitButtonMw: React.ComponentType<MiddlewareProps> = (props) => {
             e.preventDefault();
             onSubmit && onSubmit(data);
           }}
-          variantColor="teal"
+          
         >
           Submit
         </Button>
@@ -53,7 +53,7 @@ export const SubmitButtonWithValidationMw: React.ComponentType<MiddlewareProps> 
     <>
       {props.next(errors === props.errors ? props : { ...props, errors })}
       <FormControl {...get(extraProps, 'formControl')}>
-        <Button size={size || formProps.size} onClick={handleClick} variantColor="teal">
+        <Button size={size || formProps.size} onClick={handleClick} >
           Submit
         </Button>
       </FormControl>

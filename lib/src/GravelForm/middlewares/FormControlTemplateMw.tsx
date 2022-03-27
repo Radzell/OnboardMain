@@ -10,7 +10,8 @@ export const FormControlTemplateMw: React.ComponentType<MiddlewareProps> = (prop
   if (typeof schema === 'boolean') return next(props);
 
   const id = toJSONSchemaPath(dataPath);
-  const error = errors && errors.find(({ dataPath }) => dataPath === id);
+  
+  const error = errors && errors.find(({instancePath }) => instancePath === id);
 
   return (
     <FormControl isRequired={isRequired(props)} isInvalid={!!error} my={4} {...get(extraProps, 'formControl')}>

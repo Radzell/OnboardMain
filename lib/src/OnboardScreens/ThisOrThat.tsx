@@ -22,11 +22,13 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                         fontWeight={600}
                         fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
                         lineHeight={'110%'}>
-                        {formSetting.title ?? "This Or That"}
+                        {//@ts-ignore
+                        formSetting.title ?? "This Or That"}
 
                     </Heading>
                     <Text fontWeight={600}>
-                        {formSetting.description ?? "This Or That"}
+                        {//@ts-ignore
+                        formSetting.description ?? "This Or That"}
 
                     </Text>
 
@@ -44,10 +46,13 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                            {formSetting.optionA ?? "Option A"}
+                            {//@ts-ignore
+                            formSetting.optionA ?? "Option A"}
                         </Button>
 
-                        {formSetting.optionB && <Button
+                        {
+                        //@ts-ignore
+                        formSetting.optionB && <Button
                             onClick={() => onNext({ option: "option_b" })}
                             colorScheme={'green'}
                             bg={'green.400'}
@@ -55,7 +60,9 @@ const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                            {formSetting.optionB ?? "Option B"}
+                            {
+                            //@ts-ignore
+                            formSetting.optionB ?? "Option B"}
                         </Button>}
 
 

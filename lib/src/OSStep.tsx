@@ -1,6 +1,5 @@
 import { Node, onActionFunc } from './types'
 import React, { useEffect } from 'react'
-import { Node } from './types'
 import { useSteps, Steps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';

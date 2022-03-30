@@ -215,7 +215,6 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
     return corsHandler(req, res, async () => {
         const apiKey = req.query.apiKey as string
 
-        console.log('flowId', apiKey)
         if (!apiKey) {
             res.status(400).send("invalid apiKey")
             return
@@ -230,7 +229,6 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
 
         const flow = flowSnap.docs[0].data() as Flow
 
-        console.log("flow.logoName", flow.logoName)
         if(flow.logoName){
             const [logoUrl] = await admin.storage().bucket().file(`images/${flow.logoName}`).getSignedUrl({
                 version: 'v2',                            // default value

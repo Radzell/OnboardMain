@@ -21,7 +21,6 @@ export const setElements = createAction<Elements>('flowChart/setElements')
 
 
 export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color, file}: {flowId: string, name: string, tagLine?: string, color: string, file: File | undefined}) => {
-  console.log('saveFlowSetting', file)
   if(file) {
 
     try {
@@ -32,7 +31,6 @@ export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({fl
         },
         { merge: true }
       )
-      console.log('fileResult', `${flowId}.${fileExtension}`)
     }catch(e) {
       console.error("iron dragon", e)
     }

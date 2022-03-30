@@ -3,7 +3,6 @@ import firebase from 'firebase/compat/app'
 
 export const saveProfile = createAsyncThunk('user/saveProfile', async ({firstName, lastName, phoneNumber, email}: {firstName: string, lastName:string, phoneNumber: string, email:string}) => {
     const userId = firebase.auth().currentUser?.uid
-    console.log('saveProfile', userId, firstName, lastName, phoneNumber)
     await firebase.firestore().collection('profile').doc(userId).set({
         firstName,
         lastName,
@@ -14,7 +13,6 @@ export const saveProfile = createAsyncThunk('user/saveProfile', async ({firstNam
 
 export const saveOrganization = createAsyncThunk('user/saveOrganization', async ({name}: {name: string}) => {
     const userId = firebase.auth().currentUser?.uid
-    console.log('saveOrganization', userId, name)
     const orgRef = await firebase.firestore().collection('organization').add({
         name,
     })

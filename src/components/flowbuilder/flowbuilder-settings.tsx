@@ -78,7 +78,6 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
     ])
 
     const onDeleteLogo = () => {
-        console.log('onDeleteLogo', flow.logoName)
 
         setFile(undefined)
         setDefaultFile(undefined)
@@ -122,8 +121,6 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
         }
     )
 
-    console.log("prodFlow", prodFlow)
-
     const firebase = useFirebase()
 
     useEffect(() => {
@@ -157,7 +154,6 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
         onDrop: acceptedFiles => {
             if (acceptedFiles && acceptedFiles.length > 0) {
                 const file = acceptedFiles[0]
-                console.log('file onDrop', { ...file, preview: URL.createObjectURL(file) })
                 setFile({ file, preview: URL.createObjectURL(file) })
             }
 

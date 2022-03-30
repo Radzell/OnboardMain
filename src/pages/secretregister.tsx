@@ -38,11 +38,6 @@ const Register = () => {
         osboard.stopLoader()
       })
 
-
-    console.log('result', result)
-
-    console.log('onValidate 3')
-
     if (typeof result === "string") {
       return result
     }
@@ -78,10 +73,6 @@ const Register = () => {
   const dispatch = useAppDispatch()
 
   const onEnd = (data: object) => {
-    console.log('onEnd', data)
-
-
-
     const steps = Object.keys(data).map(stepId => {
       const step = data[stepId]
       return step

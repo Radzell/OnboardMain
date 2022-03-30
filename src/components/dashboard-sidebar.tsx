@@ -129,7 +129,6 @@ export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
   const openMenu = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('handleClick menu', event)
     setAnchorEl(event.currentTarget);
   };
 

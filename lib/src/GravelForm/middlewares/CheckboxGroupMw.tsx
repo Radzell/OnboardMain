@@ -36,7 +36,6 @@ export const CheckboxGroupMw: React.ComponentType<MiddlewareProps> = (props) => 
     <CheckboxGroup
       value={data}
       onChange={(value) => {
-        console.log(value);
         onChange(value);
       }}
       {...get(extraProps, 'props')}

@@ -240,6 +240,20 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>
+                <TextField
+                        style={{marginTop: 8, marginBottom: 8}}
+                        multiline={true}
+                        disabled={true}
+                        fullWidth
+                        helperText="ID for this screen"
+                        label="ID"
+                        name="ID"
+                        value={selectedNodeId}
+                        variant="outlined"
+
+                        defaultValue={selectedNodeId}
+
+                />
                 {renderBasicInfoSection()}
                 {renderOrButtonSection()}
                 {renderButtonSection()}

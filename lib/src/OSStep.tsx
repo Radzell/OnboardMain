@@ -18,7 +18,6 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
     })
 
     useEffect(() => {
-        console.log('step', step)
         setStep(stepCount)
     }, [stepCount])
 
@@ -31,7 +30,6 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
 
     const getForm = () => {
 
-        console.log('step.data.formType', step.data.formType)
         switch (step.data.formType) {
             case "welcome": {
                 return <WelcomeScreen flow={flow} onNext={onNext} />
@@ -51,14 +49,11 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
         }
 
 
-        console.log('flow info', flow?.forms)
         if (!!flow?.forms && flow?.forms[step.data.formType]) {
-            console.log('flow info 2', flow?.forms[step.data.formType])
             return <FormScreen stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
         }
     }
 
-    console.log("maxSteps", step)
     return <Box h="100%" pt={8}>
         <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
             <Flex flexDirection={"row"} alignItems={"center"} >

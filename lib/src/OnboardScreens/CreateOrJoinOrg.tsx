@@ -30,7 +30,6 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
     const [screen, setScreen] = React.useState<"join_org" | "create_org">("create_org");
 
     const onCreateOrgClicked = () => {
-        console.log("onCreateOrgClicked")
         onNext(newOrg)
     }
 
@@ -45,7 +44,6 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
 
     const needsValidation = useMemo<boolean>(() => {
         const formSetting = flow.formSettings
-        console.log('formSetting',formSetting, stepId)
 
         if(!formSetting || !formSetting[stepId]) {
             return false

@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@chakra-ui/react';
 import { MiddlewareProps, validate } from '../share';
 
-export const LiveValidateMw: React.FC<MiddlewareProps> = (props) => {
+export const LiveValidateMw = (props) => {
   const { schema, data, next, parent } = props;
   const [errors, ajvException] = React.useMemo(() => {
     try {
@@ -12,10 +12,12 @@ export const LiveValidateMw: React.FC<MiddlewareProps> = (props) => {
     }
   }, [schema, data]);
   const newProps = React.useMemo(() => ({ ...props, errors }), [errors, props]);
+  //@ts-ignore
   return ajvException ? (
     <>
       <Alert status="error" title="Ajv exception">
         <AlertTitle mr={2}>Ajv exception</AlertTitle>
+        
         <AlertDescription>{ajvException.message}</AlertDescription>
       </Alert>
       {next(props)}

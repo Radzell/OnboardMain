@@ -4,7 +4,7 @@ import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 
-const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void }) => {
+const ThisOrThatScreen = ({ stepId, form, flow, onNext }: { stepId: string, form?: Form, flow: Flow, onNext: (data?: Record<string, any>) => void }) => {
 
     const formSetting = flow?.formSettings ? flow?.formSettings[stepId] ?? {} : {}
 

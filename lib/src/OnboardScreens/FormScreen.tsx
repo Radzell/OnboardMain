@@ -63,7 +63,10 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
 
                         schema={form.dataSchema}
                         data={data}
-                        onChange={setData}
+                        onChange={(e) => {
+                            const data = e as Record<string, any>
+                            setData(data)
+                        }}
                         middlewares={presetMws}
                         size="md"
                         onSubmit={onNextClicked}

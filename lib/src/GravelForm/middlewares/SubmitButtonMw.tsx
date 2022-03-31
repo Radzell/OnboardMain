@@ -44,7 +44,7 @@ export const SubmitButtonWithValidationMw: React.ComponentType<MiddlewareProps> 
       if (!errors && onSubmit) onSubmit(data);
       setErrors(errors);
       setAjvException(null);
-    } catch (err) {
+    } catch (err: any) {
       setAjvException(err);
     }
   };

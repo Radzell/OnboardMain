@@ -41,16 +41,25 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
                 return <CreateOrJoinOrg stepId={step.id} flow={flow} onNext={onNext} />
             }
             case 'this_or_that': {
-                return <ThisOrThat stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
+
+                const forms = flow.forms ?? {}
+
+                return <ThisOrThat stepId={step.id} form={forms[step.data.formType]} flow={flow} onNext={onNext} />
             }
             case 'button_screen': {
-                return <ButtonScreen stepId={step.id} stepType={step.data.formType} form={flow?.forms[step.data.formType]} flow={flow} onAction={onAction} onNext={onNext} />
+                const forms = flow.forms ?? {}
+
+                return <ButtonScreen stepId={step.id} stepType={step.data.formType} form={forms[step.data.formType]} flow={flow}
+onAction={onAction} onNext={onNext} />
             }
         }
 
+        if (!!flow?.forms) {
+            const form = flow?.forms[step.data.formType]
 
-        if (!!flow?.forms && flow?.forms[step.data.formType]) {
-            return <FormScreen stepId={step.id} form={flow?.forms[step.data.formType]} flow={flow} onNext={onNext} />
+            if(form) {
+                return <FormScreen stepId={step.id} form={form} flow={flow} onNext={onNext} />
+            }
         }
     }
 

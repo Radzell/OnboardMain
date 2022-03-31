@@ -125,7 +125,10 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
                                 }
                             }}
                             data={newOrg}
-                            onChange={setNewOrg}
+                            onChange={(e) => {
+                                const data = e as Record<string, any>
+                                setNewOrg(data)
+                            }}
                             middlewares={presetMws}
                             size="md"
                             onSubmit={onCreateOrgClicked}

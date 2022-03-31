@@ -49,7 +49,7 @@ export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
   const { open, onClose } = props;
   const router = useRouter();
   const { signOut } = useFirebaseAuth()
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+  const lgUp = useMediaQuery((theme:any) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
   });
@@ -62,7 +62,9 @@ export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
     ({ firestore: { data } }) => data.junction_user_org
   )
 
-  useFirestoreConnect(() => {
+  
+  useFirestoreConnect(//@ts-ignore
+  () => {
 
     const result = []
     const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
@@ -148,9 +150,10 @@ export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
     handleClose()
   }
 
+  //@ts-ignore
   const content = (
     <>
-
+      
       <Box
         sx={{
           display: 'flex',

@@ -5,7 +5,7 @@ import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { FormSetting, onActionFunc } from "../types"
 
-const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
+const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form?: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
 
     const formSetting = flow?.formSettings ? flow?.formSettings[stepId] ?? {} : {}
 

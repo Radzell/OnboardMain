@@ -116,7 +116,8 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction }: { a
         <ChakraProvider theme={theme} >
                 <CSSReset />
                 {!flow && <Center><Text>Loading From OnboardOS...</Text></Center>}
-                <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef} apiKey={apiKey} flow={flow} />
+                <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef}
+apiKey={apiKey} flow={flow} />
         </ChakraProvider>
     )
 }

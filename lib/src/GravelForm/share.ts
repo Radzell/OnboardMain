@@ -1,6 +1,6 @@
-import Ajv from 'ajv';
+import Ajv, {ErrorObject as AJVErrorObject} from 'ajv';
 import { JSONSchema7 } from 'json-schema';
-import { IInput } from '@chakra-ui/react';
+import { InputProps } from '@chakra-ui/react';
 import {
   MiddlewareProps as CoreMiddlewareProps,
   FormProps as CoreFormProps,
@@ -8,7 +8,8 @@ import {
   ExtraPropsMiddlewareProps,
 } from './core';
 
-export type ErrorObject = Ajv.ErrorObject;
+//@ts-ignore
+export type ErrorObject = AJVErrorObject;
 
 const ajv = new Ajv({
   allErrors: true,
@@ -25,7 +26,7 @@ export interface FormProps extends CoreFormProps, ExtraPropsFormProps {
   onSubmit?: (data: unknown) => void;
   extraProps?: unknown;
   defaultData?: unknown;
-  size?: IInput['size'];
+  size?: InputProps['size'];
 }
 
 export interface MiddlewareProps<P extends FormProps = FormProps>
@@ -33,5 +34,5 @@ export interface MiddlewareProps<P extends FormProps = FormProps>
     ExtraPropsMiddlewareProps<P> {
   errors?: ErrorObject[];
   onSubmit?: (data: unknown) => void;
-  size?: IInput['size'];
+  size?: InputProps['size'];
 }

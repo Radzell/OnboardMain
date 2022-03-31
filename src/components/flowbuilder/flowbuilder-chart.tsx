@@ -48,12 +48,17 @@ export const FlowBuilderChart = () => {
   const screen = useAppSelector(state => state.ui.screen)
 
   useFirestoreConnect([
-    { collection: 'flows', doc: flowId } // or 'todos'
+    { collection: 'flows', doc: flowId },
+    { collection: 'prod-flows', doc: flowId }
   ])
 
 
   const flow = useAppSelector(
     ({ firestore }): any => firestore.data.flows && firestore.data.flows[flowId]
+  )
+
+  const prodFlow: Flow = useAppSelector(
+    ({ firestore }): any => firestore.data['prod-flows'] && firestore.data['prod-flows'][flowId]
   )
 
   const updateNodeInternals = useUpdateNodeInternals();
@@ -183,7 +188,7 @@ export const FlowBuilderChart = () => {
             >
               <Controls />
             </ReactFlow>}
-            {screen === "preview" && <FlowPreview flowId={flowId} />}
+            {screen === "preview" && <FlowPreview apiKey={prodFlow?.apiKey ?? ""} />}
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
 

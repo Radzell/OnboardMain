@@ -3,9 +3,9 @@ import React from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { onActionFunc } from "../types"
+import { FormSetting, onActionFunc } from "../types"
 
-const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
+const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { stepId: string, stepType: string, form?: Form, flow: Flow, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
 
     const formSetting = flow?.formSettings ? flow?.formSettings[stepId] ?? {} : {}
 
@@ -23,11 +23,14 @@ const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { step
                         fontWeight={600}
                         fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
                         lineHeight={'110%'}>
-                        {formSetting.title ?? "This Or That"}
+                        {//@ts-ignore 
+                        formSetting.title ?? "This Or That"}
 
                     </Heading>
                     <Text fontWeight={600}>
-                        {formSetting.description ?? "This Or That"}
+                        
+                        {//@ts-ignore
+                        formSetting.description ?? "This Or That"}
 
                     </Text>
 
@@ -50,7 +53,8 @@ const ButtonScreen = ({ stepId, stepType, form, flow, onNext, onAction }: { step
                             _hover={{
                                 bg: 'green.500',
                             }}>
-                            {formSetting.optionA ?? "Option A"}
+                            {//@ts-ignore
+                            formSetting.optionA ?? "Option A"}
                         </Button>
                     </Stack>
                     <Button

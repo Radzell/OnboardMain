@@ -5,12 +5,15 @@ import Button from '@mui/material/Button';
 import { useAppDispatch } from '../app/hooks';
 import { showPreviewOfNode } from '../reducers/uiSlice';
 import { Typography } from '@mui/material';
+import { openSidebar } from '../reducers/flowChartSlice';
 
 export default memo(({ data, id, isConnectable }: { data: any, id: string, isConnectable: boolean }) => {
     const dispatch = useAppDispatch()
 
     const showPreview = () => {
         dispatch(showPreviewOfNode(id))
+        dispatch(openSidebar())
+
     }
     return (
         <>

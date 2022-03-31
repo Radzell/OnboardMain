@@ -7,7 +7,10 @@ export const NotSupportedMw: React.FC<MiddlewareProps> = ({ schemaPath, size, fo
   const s = size || formProps.size;
   return (
     <Alert size={s}>
-      <AlertDescription size={s}>schema not supported, location {toJSONSchemaPath(schemaPath)}</AlertDescription>
+      
+      <AlertDescription 
+        //@ts-ignore
+        size={s}>schema not supported, location {toJSONSchemaPath(schemaPath)}</AlertDescription>
     </Alert>
   );
 };

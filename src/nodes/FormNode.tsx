@@ -4,12 +4,15 @@ import { Handle, Position } from 'react-flow-renderer';
 import Button from '@mui/material/Button';
 import { useAppDispatch } from '../app/hooks';
 import { showPreviewOfNode } from '../reducers/uiSlice';
+import { openSidebar } from '../reducers/flowChartSlice';
 
 export default memo(({ data, id, isConnectable}: { data: any, id:string, isConnectable: boolean }) => {
   
   const dispatch = useAppDispatch()
 
   const showPreview = () => {
+    dispatch(openSidebar())
+
     dispatch(showPreviewOfNode(id))
   }
   

@@ -1,4 +1,4 @@
-import { Button, Heading, Container, Stack, Spacer, Flex } from "@chakra-ui/react"
+import { Button, Heading, Container, Stack } from "@chakra-ui/react"
 import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
@@ -63,7 +63,10 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
 
                         schema={form.dataSchema}
                         data={data}
-                        onChange={setData}
+                        onChange={(e) => {
+                            const data = e as Record<string, any>
+                            setData(data)
+                        }}
                         middlewares={presetMws}
                         size="md"
                         onSubmit={onNextClicked}

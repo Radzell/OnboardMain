@@ -38,8 +38,6 @@ const Login = () => {
           'Password is required')
     }),
     onSubmit: async (values:SubmitProp) => {
-      console.log('onSubmit', values)
-      //signInWithEmailAndPassword()
       await signInWithEmailAndPassword(values.email, values.password)
       router.push('/flowbuilder');
     }

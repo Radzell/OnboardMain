@@ -22,6 +22,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import useFirebaseAuth from '../database/useFirebaseAuth';
 import { Organization } from '../interfaces/Organization';
+import Image from 'next/image'
 
 const items = [
   {
@@ -41,14 +42,14 @@ const items = [
   }
 ];
 
-export const DashboardSidebar = (props) => {
+export const DashboardSidebar = (props: { open: any; onClose: any; }) => {
 
 
   const [selectedOrgId, setSelectedOrgId] = useState<string>()
   const { open, onClose } = props;
   const router = useRouter();
   const { signOut } = useFirebaseAuth()
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+  const lgUp = useMediaQuery((theme:any) => theme.breakpoints.up('lg'), {
     defaultMatches: true,
     noSsr: false
   });
@@ -61,7 +62,9 @@ export const DashboardSidebar = (props) => {
     ({ firestore: { data } }) => data.junction_user_org
   )
 
-  useFirestoreConnect(() => {
+  
+  useFirestoreConnect(//@ts-ignore
+  () => {
 
     const result = []
     const junctions = Object.values(junctionUserOrg ?? {}).map((junction) => {
@@ -128,7 +131,6 @@ export const DashboardSidebar = (props) => {
   const openMenu = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('handleClick menu', event)
     setAnchorEl(event.currentTarget);
   };
 
@@ -148,9 +150,10 @@ export const DashboardSidebar = (props) => {
     handleClose()
   }
 
+  //@ts-ignore
   const content = (
     <>
-
+      
       <Box
         sx={{
           display: 'flex',
@@ -178,6 +181,7 @@ export const DashboardSidebar = (props) => {
             >
               <a>
                 <Logo
+                width={42} height={42}
                   sx={{
                     height: 42,
                     width: 42

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import localforage from 'localforage'
-import { Elements, EndFunc, ValidateFunc } from "./types";
+import { Elements, EndFunc, onActionFunc, ValidateFunc } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
 import { Center, ChakraProvider, CSSReset, extendTheme, Text } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
@@ -27,8 +27,10 @@ export interface Flow {
     forms?: Record<string, Form>
     formSettings?: Record<string, FormSetting>,
     logoDownloadUrl?: string
-
 }
+
+export { useOnboardOS } from './useOnboardOS';
+
 
 function isObject(object:any) {
     return object != null && typeof object === 'object';
@@ -60,7 +62,7 @@ function deepEqual(object1?:any, object2?:any) {
 
 
 
-export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc }): JSX.Element => {
+export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction }: { apiKey: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc, onAction: onActionFunc }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
     const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
 
@@ -86,21 +88,20 @@ export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: str
 
         useEffect(() => {
             const getFlow = async () => {
-                const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?flowId=${flowId}`)
+                const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?apiKey=${apiKey}`)
 
                 const flow = result.data as Flow
-                console.log('flow', flow)
 
-                await localforage.setItem(flowId, flow)
+                await localforage.setItem(apiKey, flow)
                 setFlow(flow)
             }
 
             getFlow()
-        }, [flowId])
+        }, [apiKey])
 
         useEffect(() => {
             const getFlow = async () => {
-                const _flow = await localforage.getItem(flowId) as Flow | null
+                const _flow = await localforage.getItem(apiKey) as Flow | null
 
                 if(_flow && deepEqual(_flow, flow)) {
                     setFlow(flow)
@@ -110,14 +111,13 @@ export const OnboardOS = ({ flowId, register, onValidate, onEnd }: { flowId: str
             getFlow()
         }, [])
 
-    console.log('flowing', flow)
 
     return (
         <ChakraProvider theme={theme} >
                 <CSSReset />
                 {!flow && <Center><Text>Loading From OnboardOS...</Text></Center>}
-                <OnboardOsDisplay onEnd={onEnd} onValidate={onValidate} ref={osRef} flowId={flowId}
-flow={flow} />
+                <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef}
+apiKey={apiKey} flow={flow} />
         </ChakraProvider>
     )
 }

@@ -115,7 +115,9 @@ interface Flow {
     forms?: Record<string, Form>
     formSettings?: Record<string, FormSetting>
     logoName?: string
-    logoDownloadUrl?: string
+    logoDownloadUrl?: string,
+    apiKey?: string,
+    testApiKey?: string
 }
 
 export const helloWorld = functions.https.onRequest((request, response) => {
@@ -137,26 +139,96 @@ exports.restoreFlow = functions.https.onRequest(async (req, res) => {
     })
 })
 
-exports.getFlow = functions.https.onRequest(async (req, res) => {
-    return corsHandler(req, res, async () => {
-        const flowId = req.query.flowId as string
+exports.createProdFlowApiKey = functions.firestore
+    .document('prod-flows/{flowId}')
+    .onCreate(async (_snapshot, context) => {
+        const flowId = context.params.flowId
+        const ref = admin.firestore().collection("prod-flows").doc()
+        const apiKey = ref.id
+        await  admin.firestore().collection("/prod-flows").doc(flowId).update({
+            apiKey
+        })
+})
 
-        console.log('flowId', flowId)
-        if (!flowId) {
-            res.status(400).send("invalid flowId")
-            return
-        }
+exports.createFlowApiKey = functions.firestore
+    .document('flows/{flowId}')
+    .onCreate(async (_snapshot, context) => {
+        const flowId = context.params.flowId
+        const ref = admin.firestore().collection("flows").doc()
+        const apiKey = ref.id
+        await  admin.firestore().collection("/flows").doc(flowId).update({
+            testApiKey: apiKey
+        })
+})
 
-        const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
+exports.updateProdFlowApiKey = functions.firestore
+    .document('prod-flows/{flowId}')
+    .onUpdate(async (_snapshot, context) => {
+        const flowId = context.params.flowId
 
-        if (!flowSnap.exists) {
-            res.status(400).send("invalid flowId")
+        //check if has apikey already
+        const flowSnap = await  admin.firestore().collection("/prod-flows").doc(flowId).get()
+
+        if(!flowSnap.exists) {
             return
         }
 
         const flow = flowSnap.data() as Flow
 
-        console.log("flow.logoName", flow.logoName)
+        if(!!flow.apiKey) {
+            return
+        }
+
+        const ref = admin.firestore().collection("prod-flows").doc()
+        const apiKey = ref.id
+        await  admin.firestore().collection("/prod-flows").doc(flowId).update({
+            apiKey
+        })
+})
+
+exports.updateFlowApiKey = functions.firestore
+    .document('flows/{flowId}')
+    .onUpdate(async (_snapshot, context) => {
+        const flowId = context.params.flowId
+
+        //check if has apikey already
+        const flowSnap = await  admin.firestore().collection("/flows").doc(flowId).get()
+
+        if(!flowSnap.exists) {
+            return
+        }
+
+        const flow = flowSnap.data() as Flow
+
+        if(!!flow.testApiKey) {
+            return
+        }
+
+        const ref = admin.firestore().collection("flows").doc()
+        const apiKey = ref.id
+        await  admin.firestore().collection("/flows").doc(flowId).update({
+            testApiKey: apiKey
+        })
+})
+
+exports.getFlow = functions.https.onRequest(async (req, res) => {
+    return corsHandler(req, res, async () => {
+        const apiKey = req.query.apiKey as string
+
+        if (!apiKey) {
+            res.status(400).send("invalid apiKey")
+            return
+        }
+
+        const flowSnap = await admin.firestore().collection(`/prod-flows`).where('apiKey', '==', apiKey).limit(1).get()
+
+        if (flowSnap.size != 1 || !flowSnap.docs[0].exists) {
+            res.status(400).send("invalid flowId")
+            return
+        }
+
+        const flow = flowSnap.docs[0].data() as Flow
+
         if(flow.logoName){
             const [logoUrl] = await admin.storage().bucket().file(`images/${flow.logoName}`).getSignedUrl({
                 version: 'v2',                            // default value

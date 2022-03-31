@@ -14,7 +14,6 @@ import { useSnackBar } from '../../components/snackbar';
 import { Organization } from '../../interfaces/Organization';
 
 const card = ({flow, flowId}) => {
-    console.log('flow', flow)
     return (
     <React.Fragment>
       <CardContent>
@@ -105,8 +104,6 @@ const FlowbuilderCollection = () => {
 
       result.push(...flowRes)
     }
-
-    console.log('useFirestore', result)
 
     return result
   })

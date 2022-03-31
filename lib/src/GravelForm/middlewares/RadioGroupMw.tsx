@@ -10,7 +10,7 @@ export const RadioGroupMw: React.FC<MiddlewareProps> = (props) => {
   const labels = get(extraProps, 'labels', schema.enum);
 
   return (
-    <RadioGroup onChange={(e) => onChange(e.currentTarget.value)} value={data} {...get(extraProps, 'props')}>
+    <RadioGroup onChange={(e) => onChange(e)} value={data} {...get(extraProps, 'props')}>
       {schema.enum.map((value, index) => (
         <Radio
           key={JSON.stringify(value)}

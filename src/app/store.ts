@@ -18,7 +18,8 @@ export interface Flow {
   name?: string,
   color?: string,
   tagLine?: string,
-  logoName?: string
+  logoName?: string,
+  apiKey?: string
 }
 
 // create schema for the DB

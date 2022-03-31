@@ -33,7 +33,6 @@ export const DashboardLayout = (props: Props) => {
 
   // Listen for changes on loading and authUser, redirect if needed
   useEffect(() => {
-    console.log('path',router.basePath)
     if (!loading && !authUser && router.asPath !== "/secretregister" && router.asPath !== "/secretlogin"){
       router.push('/secretregister')
     }

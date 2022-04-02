@@ -3,7 +3,7 @@ import axios from 'axios';
 import localforage from 'localforage'
 import { Elements, EndFunc, onActionFunc, ValidateFunc } from "./types";
 import OnboardOsDisplay from "./OnboardOSDisplay";
-import { Center, ChakraProvider, CSSReset, extendTheme, Text } from '@chakra-ui/react'
+import { Center, ChakraProvider, CSSReset, extendTheme, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 import { RefObject, RegisterReturn } from "./useOnboardOS";
 
@@ -65,6 +65,7 @@ function deepEqual(object1?:any, object2?:any) {
 export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction }: { apiKey: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc, onAction: onActionFunc }): JSX.Element => {
     const [flow, setFlow] = useState <Flow>()
     const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
+    const [hasGetFlowError, setGetFlowError] = useState<boolean>(false)
 
 
     useEffect(() => {
@@ -88,12 +89,17 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction }: { a
 
         useEffect(() => {
             const getFlow = async () => {
-                const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?apiKey=${apiKey}`)
+                try{
+                  const result = await axios.get(`https://us-central1-onboard-os.cloudfunctions.net/getFlow?apiKey=${apiKey}`)
 
-                const flow = result.data as Flow
-
-                await localforage.setItem(apiKey, flow)
-                setFlow(flow)
+                  const flow = result.data as Flow
+  
+                  await localforage.setItem(apiKey, flow)
+                  setFlow(flow)
+                }catch(e) {
+                  setGetFlowError(true)
+                }
+                
             }
 
             getFlow()
@@ -115,9 +121,15 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction }: { a
     return (
         <ChakraProvider theme={theme} >
                 <CSSReset />
-                {!flow && <Center><Text>Loading From OnboardOS...</Text></Center>}
-                <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef}
-apiKey={apiKey} flow={flow} />
+                {(!flow && !hasGetFlowError) && <Center h='100%'><Text>Loading From OnboardOS...</Text></Center>}
+                <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef} apiKey={apiKey} flow={flow} />
+                {hasGetFlowError && 
+                  <Center  h='100%'>
+                    <VStack>
+                      <Text>sign up form not found</Text>
+                    </VStack>
+                  </Center>
+                }
         </ChakraProvider>
     )
 }

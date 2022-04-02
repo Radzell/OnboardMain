@@ -2,6 +2,7 @@ import { OnboardOS } from "../../../lib/src"
 import { useOnboardOS } from "../../../lib/src/useOnboardOS"
 
 const FlowPreview = ({apiKey}: {apiKey: string}) => {
+
     const osboard = useOnboardOS()
 
     const onValidate = async (stepId: string , stepType: string, data: object) => {
@@ -18,8 +19,7 @@ const FlowPreview = ({apiKey}: {apiKey: string}) => {
 
     return (
         <div className="w-full h-full">
-            <OnboardOS onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate}
-apiKey={apiKey} />
+            <OnboardOS onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={apiKey} />
         </div>
     )
 }

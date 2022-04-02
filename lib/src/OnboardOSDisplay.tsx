@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Flow } from ".";
-import { Box, Center, Container, Heading, Spinner, useToast } from '@chakra-ui/react'
+import { Box, Center, Container, Heading, Spinner, useToast, Text } from '@chakra-ui/react'
 import { Edge, EndFunc, isEdge, isNode, Node, onActionFunc, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
@@ -20,6 +20,7 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
     const [stepCount, setStepCount] = useState<number>(0)
     const [step, setStep] = useState<Node>()
+    const [showEmptyScreen, setShowEmptyScreen] = useState<boolean>()
 
     const _currentData = useRef<object>({})
     const _totalData = useRef<object>({})
@@ -68,6 +69,11 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             setStep(firstStep)
         }
 
+
+        //if array after entry is null then show empty screen
+        if(!firstStepArr) {
+            setShowEmptyScreen(true)
+        }
     }, [apiKey, nodeSet])
 
 
@@ -216,9 +222,16 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
                     </Box>
                 </Center>
             }
-            {!isLoading && <OSStep onNext={onNext} onAction={onAction} flow={flow} stepCount={stepCount}
+            {(!isLoading && !showEmptyScreen) && <OSStep onNext={onNext} onAction={onAction} flow={flow} stepCount={stepCount}
 maxSteps={!!flow.stepCount ? flow.stepCount : 1}
-                step={step} color={flow?.color ?? "#000"} />}
+                step={step} color={flow?.color ?? "#000"} />
+            }
+
+            {showEmptyScreen && 
+                <Center h='100%'>
+                    <Text>Onboarding Flow Empty</Text>
+                </Center>
+            }
         </Box>
     )
 

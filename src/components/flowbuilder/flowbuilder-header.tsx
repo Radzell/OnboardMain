@@ -3,7 +3,7 @@ import { OnLoadParams } from "react-flow-renderer"
 import { useDispatch } from "react-redux"
 import { useAppDispatch,  useAppSelector } from "../../app/hooks"
 import { toggleSidebar } from "../../reducers/flowChartSlice"
-import { screenChartClicked, screenPreviewClicked } from "../../reducers/uiSlice"
+import { screenChartClicked, screenPreviewClicked, screenReleasesClicked } from "../../reducers/uiSlice"
 import { FileMenu } from "./flowbuilder-filemenu"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { useRouter } from "next/router"
@@ -29,7 +29,9 @@ const FlowBuilderHeader = ({ reactFlowInstance }: { reactFlowInstance: OnLoadPar
                 <div className="w-full flex justify-center h-8 items-center">
                     <ButtonGroup size="small" variant="outlined" aria-label="outlined button group">
                         <Button onClick={() => dispatch(screenChartClicked())} variant={screen === "chart" ? "contained" : "outlined"}>Chart</Button>
-                        <Button onClick={() => dispatch(screenPreviewClicked())}  variant={screen === "preview" ? "contained" : "outlined"}>Preview</Button>
+                        <Button onClick={() => dispatch(screenPreviewClicked())}  variant={screen === "preview" ? "contained" : "outlined"}>Production Preview</Button>
+                        <Button onClick={() => dispatch(screenReleasesClicked())}  variant={screen === "releases" ? "contained" : "outlined"}>Releases</Button>
+
                     </ButtonGroup>
                 </div>
                 

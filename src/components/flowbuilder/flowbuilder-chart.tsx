@@ -17,6 +17,7 @@ import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
 import { useRouter } from 'next/router';
 import ButtonEdge from '../../nodes/ButtonEdge';
+import FlowReleases from './flowbuilder-releases';
 
 const nodeTypes = {
   formNode: FormNode,
@@ -189,6 +190,7 @@ export const FlowBuilderChart = () => {
               <Controls />
             </ReactFlow>}
             {screen === "preview" && <FlowPreview apiKey={prodFlow?.apiKey ?? ""} />}
+            {screen === "releases" && <FlowReleases flowId={flowId} />}
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}
 

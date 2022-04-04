@@ -5,7 +5,7 @@ import type { AppState, AppThunk } from '../app/store'
 
 export interface UIState {
   tab: 'screens' | 'preview',
-  screen: 'chart' | 'preview',
+  screen: 'chart' | 'preview' | 'releases',
   previewing?: string
 }
 
@@ -33,6 +33,9 @@ export const uiSlice = createSlice({
     },
     screenPreviewClicked: (state) => {
       state.screen = "preview"
+    },
+    screenReleasesClicked: (state) => {
+      state.screen = "releases"
     }
     
   },
@@ -46,6 +49,6 @@ export const uiSlice = createSlice({
   },
 })
 
-export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked } = uiSlice.actions
+export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked, screenReleasesClicked } = uiSlice.actions
 
 export default uiSlice.reducer

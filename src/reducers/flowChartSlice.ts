@@ -75,11 +75,9 @@ export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, f
 
 export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}, thunkAPI) => {
   await thunkAPI.dispatch(saveFlow({flowId, flowNodes}))
-  console.log("deployFlow")
 
   try{
     const createProdFlow = firebase.functions().httpsCallable('createProdFlow');
-    console.log("createProdFlow", createProdFlow)
     createProdFlow({flowId})
   }catch(e) {
     console.error(e)

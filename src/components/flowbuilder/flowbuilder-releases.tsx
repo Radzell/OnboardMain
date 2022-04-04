@@ -19,17 +19,12 @@ const FlowReleases = ({ flowId }: { flowId: string }) => {
     ])
 
     const sortReleases = (releases: Record<string, Release>) => {
-        console.log("releases", releases)
         return Object.keys(releases).map(releaseId => releases[releaseId]).sort((a, b) => b.createdAt.seconds - a.createdAt.seconds)
     }
 
     const flowReleases = useAppSelector(
         ({ firestore }): any => sortReleases(firestore.data.flowReleases ?? {}) 
     )
-
-
-    console.log("flowReleases", flowReleases)
-
 
     const renderStatus = (index: number) => {
         if(index === 0) {

@@ -45,12 +45,22 @@ exports.logProdUpdatePubSub = functions.pubsub.topic(NEW_PROD_FLOW).onPublish(as
         settings[formSetting.id] = formSetting.data()
     }
 
-    await admin.firestore().collection(`flow-log`).doc(flowId).collection("release").add({
+    const newCurrentRelease = {
+        status: "Current",
         flowId,
         flow,
         settings,
         createdAt: admin.firestore.FieldValue.serverTimestamp()
-    })
+    }
+
+    const currentRelease = await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").where("status", "==", "Current").get()
+    for(const release of currentRelease.docs) {
+        await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").doc(release.id).update({
+            status: "Deployed"
+        })
+    }
+
+    await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").add(newCurrentRelease)
 })
 
 interface Form {
@@ -163,11 +173,6 @@ interface Flow {
     testApiKey?: string
 }
 
-export const helloWorld = functions.https.onRequest((request, response) => {
-    functions.logger.info("Hello logs!", { structuredData: true });
-    response.send("Hello from Firebase!");
-});
-
 exports.restoreFlow = functions.https.onRequest(async (req, res) => {
     return corsHandler(req, res, async () => {
         const flowId = req.query.flowId as string
@@ -185,7 +190,21 @@ exports.restoreFlow = functions.https.onRequest(async (req, res) => {
 exports.createProdFlowApiKey = functions.firestore
     .document('prod-flows/{flowId}')
     .onCreate(async (_snapshot, context) => {
-        const flowId = context.params.flowId
+        const flowId = context.params.flowId     
+
+        //check if has apikey already created
+        const flowSnap = await  admin.firestore().collection("/prod-flows").doc(flowId).get()
+
+        if(!flowSnap.exists) {
+            return
+        }
+
+        const flow = flowSnap.data() as Flow
+
+        if(!!flow.apiKey) {
+            return
+        }
+
         const ref = admin.firestore().collection("prod-flows").doc()
         const apiKey = ref.id
         await  admin.firestore().collection("/prod-flows").doc(flowId).update({
@@ -199,6 +218,19 @@ exports.createFlowApiKey = functions.firestore
         const flowId = context.params.flowId
         const ref = admin.firestore().collection("flows").doc()
         const apiKey = ref.id
+
+        //check if has apikey already created
+        const flowSnap = await  admin.firestore().collection("/prod-flows").doc(flowId).get()
+
+        if(!flowSnap.exists) {
+            return
+        }
+
+        const flow = flowSnap.data() as Flow
+
+        if(!!flow.testApiKey) {
+            return
+        }
         await  admin.firestore().collection("/flows").doc(flowId).update({
             testApiKey: apiKey
         })
@@ -209,7 +241,7 @@ exports.updateProdFlowApiKey = functions.firestore
     .onUpdate(async (_snapshot, context) => {
         const flowId = context.params.flowId
 
-        //check if has apikey already
+        //check if has apikey already created
         const flowSnap = await  admin.firestore().collection("/prod-flows").doc(flowId).get()
 
         if(!flowSnap.exists) {
@@ -413,7 +445,11 @@ exports.createProdFlow = functions.https.onCall(async (data, context) => {
     const flowSnap = await admin.firestore().collection('flows').doc(flowId).get()
     const flow = flowSnap.data() as Flow
 
-    await admin.firestore().collection('prod-flows').doc(flowId).set(flow)
+    if(!!flow.apiKey) {
+        delete flow['apiKey']
+    }
+
+    await admin.firestore().collection('prod-flows').doc(flowId).set(flow, {merge: true})
 
     await copyFormSettings({flow, flowId})
 

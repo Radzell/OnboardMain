@@ -14,7 +14,7 @@ import { Container } from '@mui/material';
 const FlowReleases = ({ flowId }: { flowId: string }) => {
 
     useFirestoreConnect([
-        { collection: `flow-log/${flowId}/release`, storeAs: "flowReleases" },
+        { collection: `flow-logs/${flowId}/releases`, storeAs: "flowReleases" },
 
     ])
 
@@ -26,12 +26,7 @@ const FlowReleases = ({ flowId }: { flowId: string }) => {
         ({ firestore }): any => sortReleases(firestore.data.flowReleases ?? {}) 
     )
 
-    const renderStatus = (index: number) => {
-        if(index === 0) {
-            return "Current"
-        }
-        return "Deployed"
-    }
+    
     return (
         <Container sx={{marginTop: 16}} maxWidth="md">
 
@@ -52,7 +47,7 @@ const FlowReleases = ({ flowId }: { flowId: string }) => {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {renderStatus(index)}
+                                    {release.status}
                                 </TableCell>
                                 <TableCell align="right">{moment.utc(release.createdAt.seconds*1000).tz(moment.tz.guess()).format("lll")}</TableCell>
                                 <TableCell align="right">{release.flow.elements.length}</TableCell>

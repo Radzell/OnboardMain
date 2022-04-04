@@ -1,10 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { createAction, createReducer } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAction } from '@reduxjs/toolkit'
 import { Elements, FlowExportObject, isEdge } from 'react-flow-renderer'
 import firebase from 'firebase/compat/app'
-import { clean, cleanFunctions } from '../utils/clean'
-
-import type { AppState, AppThunk, Flow } from '../app/store'
+import { clean } from '../utils/clean'
 
 export interface ChartState {
   elements: Elements,
@@ -77,9 +75,15 @@ export const saveFlow = createAsyncThunk('flowChart/saveFlow', async ({flowId, f
 
 export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowId, flowNodes}: {flowId: string, flowNodes: FlowExportObject<any>}, thunkAPI) => {
   await thunkAPI.dispatch(saveFlow({flowId, flowNodes}))
-  const flowSnap = await firebase.firestore().collection('flows').doc(flowId).get()
-  const flow = flowSnap.data() as Flow
-  await firebase.firestore().collection('prod-flows').doc(flowId).set(flow)
+
+  try{
+    const createProdFlow = firebase.functions().httpsCallable('createProdFlow');
+    createProdFlow({flowId})
+  }catch(e) {
+    console.error(e)
+  }
+  
+
   return;
 })
 

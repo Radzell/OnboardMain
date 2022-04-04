@@ -2,13 +2,56 @@ import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 import * as cors from 'cors'
 import { Connection, Edge, Elements, Node } from "./types";
+const {PubSub} = require('@google-cloud/pubsub');
 
 admin.initializeApp()
 
 const corsHandler = cors({ origin: true });
 
 
+// Creates a client; cache this for further use
+const pubSubClient = new PubSub();
 
+const NEW_PROD_FLOW = "NEW_PROD_FLOW"
+
+
+exports.logProdUpdatePubSub = functions.pubsub.topic(NEW_PROD_FLOW).onPublish(async (message) => {
+    
+
+    functions.logger.info("logging prod save", message, message.json)
+
+    const flowId =  message.json.flowId
+    const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
+
+    if (!flowSnap.exists) {
+        return
+    }
+
+    const flow = flowSnap.data() as Flow
+
+    const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
+    const nodeIds = nodes.map(node => node.id)
+
+    const flowFormsRef = admin.firestore().collection('prod-flowForms')
+
+    const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
+
+
+    const formSettings = formSettingSnap.docs
+
+    const settings: Record<string, any> = {}
+
+    for(const formSetting of formSettings) {
+        settings[formSetting.id] = formSetting.data()
+    }
+
+    await admin.firestore().collection(`flow-log`).doc(flowId).collection("release").add({
+        flowId,
+        flow,
+        settings,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+    })
+})
 
 interface Form {
     dataSchema: any,
@@ -296,7 +339,7 @@ const findMaxPath = (count: number, node: Node, outputNodes: Record<string, Edge
         return findMaxPath(count + 1, root, outputNodes, nodes)
     }))
 }
-
+/*
 exports.onFlowDeploy_FormSetting = functions.firestore
     .document('prod-flows/{flowId}')
     .onWrite(async (_change, context) => {
@@ -327,7 +370,64 @@ exports.onFlowDeploy_FormSetting = functions.firestore
         }
 
         batch.commit()
-    })
+
+        const dataBuffer = Buffer.from(JSON.stringify({
+            flowId
+        }));
+
+        const messageId = await pubSubClient
+            .topic(NEW_PROD_FLOW)
+            .publish(dataBuffer);
+
+        functions.logger.info(`Message ${messageId} published.`)
+})
+*/
+
+const copyFormSettings = async ({flowId, flow}: {flowId: string, flow: Flow}) => {
+  
+
+    const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
+    const nodeIds = nodes.map(node => node.id)
+
+    const flowFormsRef = admin.firestore().collection('flowForms')
+
+    const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
+
+
+    const formSettings = formSettingSnap.docs
+
+    const batch = admin.firestore().batch();
+
+    for(const formSetting of formSettings) {
+        const flowFormRef = admin.firestore().collection("prod-flowForms").doc(formSetting.id);
+        batch.set(flowFormRef, formSetting.data())
+    }
+
+    batch.commit()
+}
+
+exports.createProdFlow = functions.https.onCall(async (data, context) => {
+    const flowId = data.flowId
+
+
+    const flowSnap = await admin.firestore().collection('flows').doc(flowId).get()
+    const flow = flowSnap.data() as Flow
+
+    await admin.firestore().collection('prod-flows').doc(flowId).set(flow)
+
+    await copyFormSettings({flow, flowId})
+
+    const dataBuffer = Buffer.from(JSON.stringify({
+        flowId
+    }));
+
+    const messageId = await pubSubClient
+        .topic(NEW_PROD_FLOW)
+        .publish(dataBuffer);
+
+    functions.logger.info(`Message ${messageId} published.`)
+
+})
 
 exports.onFlowStats = functions.firestore
     .document('flows/{flowId}')

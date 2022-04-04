@@ -38,6 +38,8 @@
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "localforage": "^1.10.0",
+    "moment": "^2.29.2",
+    "moment-timezone": "^0.5.34",
     "next": "^12.0.3-canary.7",
     "nprogress": "^0.2.0",
     "onboard-os": "link:~/lib",

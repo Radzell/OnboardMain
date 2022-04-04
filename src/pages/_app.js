@@ -21,6 +21,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage';
+import 'firebase/compat/functions'
 
 import { createFirestoreInstance } from 'redux-firestore'
 import fbConfig from '../database/fbConfig'
@@ -51,6 +52,7 @@ firebase.initializeApp(fbConfig)
 firebase.firestore()
 firebase.auth()
 firebase.storage()
+firebase.functions()
 
 const clientSideEmotionCache = createEmotionCache();
 

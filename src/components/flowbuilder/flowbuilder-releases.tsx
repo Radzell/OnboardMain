@@ -12,10 +12,11 @@ import moment from "moment-timezone"
 import { Container, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { rollbackFlow } from '../../reducers/flowChartSlice';
+import { useSnackBar } from '../snackbar';
 
 const FlowReleases = ({ flowId }: { flowId: string }) => {
+    const snackbar = useSnackBar()
 
     useFirestoreConnect([
         { collection: `flow-logs/${flowId}/releases`, storeAs: "flowReleases" },
@@ -57,6 +58,9 @@ const FlowReleases = ({ flowId }: { flowId: string }) => {
         if(releaseId) {
             dispatch(rollbackFlow({flowId, releaseId}))
         }
+
+        snackbar.showSnackBar("Rolling back...", "info")
+
 
         handleClose()
     }

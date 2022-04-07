@@ -8,6 +8,34 @@ export interface FormSetting {
   validate: boolean
 }
 
+type ReleaseStatus = "Current" | "Deployed" | "Rollback"
+
+export interface Flow {
+  elements?: any[]
+  name?: string,
+  color?: string,
+  tagLine?: string,
+  logoName?: string,
+  apiKey?: string
+}
+
+export interface Timestamp {
+
+  seconds: number;
+  
+  nanoseconds: number;
+}
+
+export interface Release {
+  status: ReleaseStatus,
+  createdAt: Timestamp,
+  flow:Flow,
+  flowId: string,
+  settings: Record<string, FormSetting>,
+  releaseId?: string
+}
+
+
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
   'id' in element && 'source' in element && 'target' in element;
 

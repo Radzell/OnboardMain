@@ -82,7 +82,18 @@ export const deployFlow = createAsyncThunk('flowChart/deployFlow', async ({flowI
   }catch(e) {
     console.error(e)
   }
-  
+
+  return;
+})
+
+export const rollbackFlow = createAsyncThunk('flowChart/rollbackFlow', async ({releaseId, flowId}: { releaseId: string, flowId: string }, thunkAPI) => {
+
+  try{
+    const rollbackProdFlow = firebase.functions().httpsCallable('rollbackProdFlow');
+    rollbackProdFlow({releaseId, flowId})
+  }catch(e) {
+    console.error(e)
+  }
 
   return;
 })

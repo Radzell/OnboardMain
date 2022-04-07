@@ -15,6 +15,7 @@ export interface FlowForm {
   validate?: boolean
 }
 export interface Flow {
+  elements?: any[]
   name?: string,
   color?: string,
   tagLine?: string,

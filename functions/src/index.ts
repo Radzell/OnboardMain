@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 import * as cors from 'cors'
-import { Connection, Edge, Elements, Node } from "./types";
+import { Connection, Edge, Elements, Node, Release } from "./types";
 const {PubSub} = require('@google-cloud/pubsub');
 
 admin.initializeApp()
@@ -53,12 +53,7 @@ exports.logProdUpdatePubSub = functions.pubsub.topic(NEW_PROD_FLOW).onPublish(as
         createdAt: admin.firestore.FieldValue.serverTimestamp()
     }
 
-    const currentRelease = await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").where("status", "==", "Current").get()
-    for(const release of currentRelease.docs) {
-        await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").doc(release.id).update({
-            status: "Deployed"
-        })
-    }
+    await setCurrentFlowsToDeployed(flowId);
 
     await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").add(newCurrentRelease)
 })
@@ -371,49 +366,6 @@ const findMaxPath = (count: number, node: Node, outputNodes: Record<string, Edge
         return findMaxPath(count + 1, root, outputNodes, nodes)
     }))
 }
-/*
-exports.onFlowDeploy_FormSetting = functions.firestore
-    .document('prod-flows/{flowId}')
-    .onWrite(async (_change, context) => {
-        const flowId = context.params.flowId
-
-        functions.logger.log('onFlowDeploy', flowId)
-        const flowSnap = await admin.firestore().collection(`/prod-flows`).doc(flowId).get()
-        if (!flowSnap.exists) {
-            return
-        }
-
-        const flow = flowSnap.data() as Flow
-        const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
-        const nodeIds = nodes.map(node => node.id)
-
-        const flowFormsRef = admin.firestore().collection('flowForms')
-
-        const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
-
-
-        const formSettings = formSettingSnap.docs
-
-        const batch = admin.firestore().batch();
-
-        for(const formSetting of formSettings) {
-            const flowFormRef = admin.firestore().collection("prod-flowForms").doc(formSetting.id);
-            batch.set(flowFormRef, formSetting.data())
-        }
-
-        batch.commit()
-
-        const dataBuffer = Buffer.from(JSON.stringify({
-            flowId
-        }));
-
-        const messageId = await pubSubClient
-            .topic(NEW_PROD_FLOW)
-            .publish(dataBuffer);
-
-        functions.logger.info(`Message ${messageId} published.`)
-})
-*/
 
 const copyFormSettings = async ({flowId, flow}: {flowId: string, flow: Flow}) => {
   
@@ -437,6 +389,44 @@ const copyFormSettings = async ({flowId, flow}: {flowId: string, flow: Flow}) =>
 
     batch.commit()
 }
+
+exports.rollbackProdFlow = functions.https.onCall(async (data, context) => {
+    const releaseId = data.releaseId
+    const flowId = data.flowId
+    const rollbackSnap = await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").doc(releaseId).get()
+
+    if(!rollbackSnap.exists) {
+        return
+    }
+
+    const release = rollbackSnap.data() as Release
+
+    if(release.status == "Current"){
+        return
+    }
+
+    await setCurrentFlowsToDeployed(flowId)
+
+    const batch = admin.firestore().batch();
+
+    await admin.firestore().collection('prod-flows').doc(flowId).set(release.flow, {merge: true})
+
+    const formKeys = Object.keys(release.settings)
+    for(let settingId of formKeys) {
+        const setting = release.settings[settingId]
+        await admin.firestore().collection('prod-flowForms').doc(settingId).update(setting)
+    }
+
+
+    batch.commit()
+
+
+    await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").doc(releaseId).update({
+        status: "Rollback",
+        formerDate: release.createdAt,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+    })
+})
 
 exports.createProdFlow = functions.https.onCall(async (data, context) => {
     const flowId = data.flowId
@@ -528,3 +518,14 @@ exports.onFlowStats = functions.firestore
         // ... and ...
         // change.after.data() == {name: "Marie"}
     })
+
+
+async function setCurrentFlowsToDeployed(flowId: any) {
+    const currentRelease = await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").where("status", "in", ["Rollback", "Current"]).get();
+    for (const release of currentRelease.docs) {
+        await admin.firestore().collection(`flow-logs`).doc(flowId).collection("releases").doc(release.id).update({
+            status: "Deployed"
+        });
+    }
+}
+

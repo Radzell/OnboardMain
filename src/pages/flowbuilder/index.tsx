@@ -9,11 +9,21 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useState, useMemo } from 'react';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import NextLink from 'next/link';
-import {createNewFlow} from '../../reducers/flowChartSlice'
+import {createNewFlow, duplicateFlow} from '../../reducers/flowChartSlice'
 import { useSnackBar } from '../../components/snackbar';
 import { Organization } from '../../interfaces/Organization';
+import { Flow } from '../../app/store';
 
-const card = ({flow, flowId}) => {
+const card = ({flow, flowId, organizationId}: {flow:Flow, flowId: string, organizationId: string}) => {
+    const dispatch = useAppDispatch()
+    const snackbar = useSnackBar()
+    
+    const onDuplicate = () => {
+      dispatch(duplicateFlow({flowId, organizationId}))
+
+      snackbar.showSnackBar("Duplicating...", "info")
+    }
+    
     return (
     <React.Fragment>
       <CardContent>
@@ -22,6 +32,8 @@ const card = ({flow, flowId}) => {
         </Typography>
       </CardContent>
       <CardActions>
+ 
+      {process.env.NODE_ENV == "development" && <Button onClick={onDuplicate} size="small">Duplicate</Button>}
       <NextLink
             href={`/flowbuilder/${flowId}`}
             passHref
@@ -137,7 +149,7 @@ const FlowbuilderCollection = () => {
         {flows?.map((flowItem, index) => (
           <Grid item xs={2} sm={4} md={4}
 key={index}>
-            <Card variant="outlined">{card({flow: flowItem.flow, flowId: flowItem.flowId})}</Card>
+            <Card variant="outlined">{card({flow: flowItem.flow, flowId: flowItem.flowId, organizationId: selectedOrgId})}</Card>
           </Grid>
         ))}
       </Grid>

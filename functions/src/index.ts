@@ -94,7 +94,7 @@ const formsTemplates: Record<string, Form> = {
             ]
         },
 
-        name: "Create a account"
+        name: "Create an account"
     },
     email_and_password_and_name: {
         dataSchema: {

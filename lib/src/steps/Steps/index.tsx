@@ -73,7 +73,7 @@ export const Steps = forwardRef<StepsProps, 'div'>(
         <chakra.div
           ref={ref}
           __css={{
-            justifyContent: stepCount === 1 ? 'flex-end' : 'space-between',
+            justifyContent: stepCount === 1 ? 'center' : 'space-between',
             flexDir: orientation === 'vertical' ? 'column' : 'row',
             ...stepsStyles,
           }}

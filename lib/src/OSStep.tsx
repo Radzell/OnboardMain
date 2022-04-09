@@ -1,10 +1,12 @@
 import { Node, onActionFunc } from './types'
 import React, { useEffect } from 'react'
-import { useSteps, Steps } from 'chakra-ui-steps';
+import { useSteps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow } from '.';
 import { Box, Flex, Text, Image } from '@chakra-ui/react';
 import { Step } from './steps/Step'
+import { Steps } from './steps/Steps'
+
 import FormScreen from './OnboardScreens/FormScreen';
 import EndPointScreen from './OnboardScreens/EndPointScreen';
 import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';

@@ -283,18 +283,19 @@ exports.updateFlowApiKey = functions.firestore
 
 const getFlowSnapById = async ({apiKey, istest}: {apiKey: string, istest?: boolean}) => {
 
-    if(!istest) {
-        return await admin.firestore().collection(`/prod-flows`).where('apiKey', '==', apiKey).limit(1).get()
+    if(istest ) {
+        return await admin.firestore().collection(`/flows`).where('testApiKey', '==', apiKey).limit(1).get()
     }
-
-    return await admin.firestore().collection(`/flows`).where('apiKey', '==', apiKey).limit(1).get()
-
+    
+    return await admin.firestore().collection(`/prod-flows`).where('apiKey', '==', apiKey).limit(1).get()
 }
 
 exports.getFlow = functions.https.onRequest(async (req, res) => {
     return corsHandler(req, res, async () => {
         const apiKey = req.query.apiKey as string
-        const istest = req.query.istest as boolean | undefined
+        const istestQuery = req.query.istest as string
+
+        const istest = istestQuery == "true" ? true : false
 
         if (!apiKey) {
             res.status(400).send("invalid apiKey")

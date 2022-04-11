@@ -1,7 +1,10 @@
 import { OnboardOS } from "../../../lib/src"
 import { useOnboardOS } from "../../../lib/src/useOnboardOS"
+import { useAppSelector } from "../../app/hooks"
 
-const FlowPreview = ({apiKey}: {apiKey: string}) => {
+const FlowPreview = ({apiKey, testApiKey}: {apiKey: string, testApiKey: string}) => {
+
+    const isPreviewTest = useAppSelector((state) => state.ui.isPreviewTest)
 
     const osboard = useOnboardOS()
 
@@ -19,7 +22,7 @@ const FlowPreview = ({apiKey}: {apiKey: string}) => {
 
     return (
         <div className="w-full h-full">
-            <OnboardOS onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={apiKey} />
+            <OnboardOS onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={isPreviewTest ? testApiKey : apiKey} testing={isPreviewTest} />
         </div>
     )
 }

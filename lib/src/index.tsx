@@ -104,7 +104,7 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, testi
     }
 
     getFlow()
-  }, [apiKey])
+  }, [apiKey, testing])
 
   useEffect(() => {
     const getFlow = async () => {
@@ -115,8 +115,10 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, testi
       }
     }
 
+
+
     getFlow()
-  }, [])
+  }, [apiKey])
 
 
   return (

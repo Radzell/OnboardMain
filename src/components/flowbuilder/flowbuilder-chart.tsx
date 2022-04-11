@@ -189,7 +189,7 @@ export const FlowBuilderChart = () => {
             >
               <Controls />
             </ReactFlow>}
-            {screen === "preview" && <FlowPreview apiKey={prodFlow?.apiKey ?? ""} />}
+            {screen === "preview" && <FlowPreview testApiKey={flow?.testApiKey} apiKey={prodFlow?.apiKey ?? ""} />}
             {screen === "releases" && <FlowReleases flowId={flowId} />}
           </div>
           {screen === "chart" && <Sidebar flowId={flowId} />}

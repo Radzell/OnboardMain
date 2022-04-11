@@ -241,7 +241,9 @@ const SettingsDialog = ({ open, onDismiss, flowId }: { open: boolean, onDismiss:
 
                             <section style={{ marginTop: 8 }}>
                                 <TextField disabled={true} margin="normal" defaultValue={prodFlow?.apiKey ?? "not set"} fullWidth={true}
-                                    label="API Key" variant="outlined" />
+                                    label="Prod API Key" variant="outlined" />
+                                <TextField disabled={true} margin="normal" defaultValue={flow?.testApiKey ?? "not set"} fullWidth={true}
+                                    label="Testing API Key" variant="outlined" />
                             </section>
                         </DialogContent>
                         <DialogActions>

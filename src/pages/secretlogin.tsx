@@ -59,7 +59,7 @@ const Login = () => {
       >
         <Container maxWidth="sm">
           <NextLink
-            href="/"
+            href="/flowbuilder"
             passHref
           >
             <Button

@@ -1,9 +1,9 @@
-import { Button, ButtonGroup, Divider, IconButton } from "@mui/material"
+import { Button, ButtonGroup, Divider, FormControlLabel, IconButton, Switch } from "@mui/material"
 import { OnLoadParams } from "react-flow-renderer"
 import { useDispatch } from "react-redux"
 import { useAppDispatch,  useAppSelector } from "../../app/hooks"
 import { toggleSidebar } from "../../reducers/flowChartSlice"
-import { screenChartClicked, screenPreviewClicked, screenReleasesClicked } from "../../reducers/uiSlice"
+import { screenChartClicked, screenPreviewClicked, screenReleasesClicked, togglePreviewTesting } from "../../reducers/uiSlice"
 import { FileMenu } from "./flowbuilder-filemenu"
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { useRouter } from "next/router"
@@ -13,6 +13,7 @@ const FlowBuilderHeader = ({ reactFlowInstance }: { reactFlowInstance: OnLoadPar
     const { flowId }: {flowId: string} = router.query
     const screen = useAppSelector(state => state.ui.screen)
     const flowSideOpen = useAppSelector((state) => state.flowChart.flowSideOpen)
+    const isPreviewTest = useAppSelector((state) => state.ui.isPreviewTest)
 
     const dispatch = useAppDispatch()
 
@@ -29,13 +30,15 @@ const FlowBuilderHeader = ({ reactFlowInstance }: { reactFlowInstance: OnLoadPar
                 <div className="w-full flex justify-center h-8 items-center">
                     <ButtonGroup size="small" variant="outlined" aria-label="outlined button group">
                         <Button onClick={() => dispatch(screenChartClicked())} variant={screen === "chart" ? "contained" : "outlined"}>Chart</Button>
-                        <Button onClick={() => dispatch(screenPreviewClicked())}  variant={screen === "preview" ? "contained" : "outlined"}>Production Preview</Button>
+                        <Button onClick={() => dispatch(screenPreviewClicked())}  variant={screen === "preview" ? "contained" : "outlined"}>Preview</Button>
                         <Button onClick={() => dispatch(screenReleasesClicked())}  variant={screen === "releases" ? "contained" : "outlined"}>Releases</Button>
 
                     </ButtonGroup>
                 </div>
                 
-                { <IconButton style={{"display": displayNone}} onClick={onSideBarOpen} className=""><MenuOpenIcon /></IconButton>}
+                {screen === "chart" && <IconButton style={{"display": displayNone}} onClick={onSideBarOpen} className=""><MenuOpenIcon /></IconButton>}
+                {screen === "preview" && <FormControlLabel control={<Switch checked={!isPreviewTest} onChange={() => dispatch(togglePreviewTesting())} defaultChecked />} label={isPreviewTest ? "Testing" : "Production"} />}
+
 
             </div>
 

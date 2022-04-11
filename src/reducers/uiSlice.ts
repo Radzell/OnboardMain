@@ -7,11 +7,13 @@ export interface UIState {
   tab: 'screens' | 'preview',
   screen: 'chart' | 'preview' | 'releases',
   previewing?: string
+  isPreviewTest: boolean
 }
 
 const initialState: UIState = {
   tab: 'screens',
-  screen: "chart"
+  screen: "chart",
+  isPreviewTest: false
 }
 
 export const showPreviewOfNode = createAction<string>('ui/showPreview')
@@ -36,6 +38,9 @@ export const uiSlice = createSlice({
     },
     screenReleasesClicked: (state) => {
       state.screen = "releases"
+    },
+    togglePreviewTesting: (state) => {
+      state.isPreviewTest = !state.isPreviewTest 
     }
     
   },
@@ -49,6 +54,6 @@ export const uiSlice = createSlice({
   },
 })
 
-export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked, screenReleasesClicked } = uiSlice.actions
+export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked, screenReleasesClicked, togglePreviewTesting } = uiSlice.actions
 
 export default uiSlice.reducer

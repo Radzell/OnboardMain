@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Button } from '@mui/material';
@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../app/hooks';
 import { deployFlow, saveFlow } from '../../reducers/flowChartSlice';
 import { useSnackBar } from '../snackbar';
 import { useFlowbuilderSetting } from './flowbuilder-settings';
+import { InstallDialog } from './flowbuilder-install-dialog';
 
 
 export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactFlowInstance?: OnLoadParams<any> | null }) => {
@@ -53,8 +54,23 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
         handleClose()
     }
 
+    const [installDialogOpen,  setInstallDialogOpen] = useState<boolean>(false)
+
+    const handleInstallDialogClose = () => {
+        setInstallDialogOpen(false)
+    }
+
+    const handleInstallDialogOpen = () => {
+        setInstallDialogOpen(true)
+    }
+
     return (
         <div>
+            <InstallDialog
+                flowId={flowId}
+                open={installDialogOpen}
+                onClose={handleInstallDialogClose}
+            />
             <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -66,6 +82,7 @@ export const FileMenu = ({ flowId, reactFlowInstance }: { flowId: string, reactF
             >
                 <MenuItem onClick={handleDeploy}>Deploy</MenuItem>
                 <MenuItem onClick={handleSave}>Save</MenuItem>
+                <MenuItem onClick={handleInstallDialogOpen}>Install the SDK</MenuItem>
                 <MenuItem onClick={handleSetting}>Settings</MenuItem>
             </Menu>
             <Button

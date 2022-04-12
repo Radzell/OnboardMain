@@ -114,9 +114,6 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, testi
         setFlow(flow)
       }
     }
-
-
-
     getFlow()
   }, [apiKey])
 

@@ -22,7 +22,7 @@ const FlowPreview = ({apiKey, testApiKey}: {apiKey: string, testApiKey: string})
 
     return (
         <div className="w-full h-full">
-            <OnboardOS onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={isPreviewTest ? testApiKey : apiKey} testing={isPreviewTest} />
+            <OnboardOS trackAnalytics={false} onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={isPreviewTest ? testApiKey : apiKey} testing={isPreviewTest} />
         </div>
     )
 }

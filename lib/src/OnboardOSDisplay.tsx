@@ -4,8 +4,10 @@ import { Box, Center, Container, Heading, Spinner, useToast, Text } from '@chakr
 import { Edge, EndFunc, isEdge, isNode, Node, onActionFunc, ValidateFunc } from './types'
 import OSStep from "./OSStep";
 import { RefObject } from "./useOnboardOS";
+import { trackEvent } from "./analytics";
 interface OSProps {
     flow?: Flow,
+    trackAnalytics?: boolean
     apiKey: string,
     onValidate?: ValidateFunc,
     onEnd: EndFunc,
@@ -13,7 +15,7 @@ interface OSProps {
 }
 const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref) => {
     let totalData = {}
-    const { flow, apiKey, onValidate, onEnd, onAction } = props
+    const { flow, apiKey, trackAnalytics, onValidate, onEnd, onAction } = props
     if (!flow) {
         return <></>
     }
@@ -30,6 +32,29 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
     const edges = useMemo(() => {
         return flow?.elements.filter((element) => isEdge(element)).map(element => element as Edge)
     }, [flow])
+
+    const setStepWrapper = (node: Node) => {
+        setStep(node)
+
+
+
+        if(trackAnalytics && !!step) {
+
+            if(step){
+                const stepId = step.id
+                const stepType = step.data.formType
+    
+                trackEvent({
+                    metaData: {
+                        stepId,
+                        stepType
+                    },
+                    type: "flow-step",
+                    apiKey
+                })
+            }
+        }
+    }
 
     const nodeSet = useMemo(() => {
 
@@ -66,7 +91,7 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
             const edge = firstStepArr[0]
 
             const firstStep = nodeSet[edge.target]
-            setStep(firstStep)
+            setStepWrapper(firstStep)
         }
 
 
@@ -192,7 +217,7 @@ const OnboardOsDisplay = forwardRef<RefObject | undefined, OSProps>((props, ref)
 
         const node = nodeSet[edge.target]
 
-        setStep(node)
+        setStepWrapper(node)
         setStepCount(stepCount + 1)
 
 

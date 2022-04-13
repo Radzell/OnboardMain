@@ -72,6 +72,22 @@ interface FormSetting {
     validate: boolean
 }
 
+interface EventResp { 
+    metaData: object,
+    type: string,
+ 
+    apiKey: string,
+    sessionId: string,
+}
+
+interface Event { 
+    metaData: object
+    type: string,
+    sessionId: string,
+    flowId: string,
+    createdAt: any
+}
+
 const formsTemplates: Record<string, Form> = {
     email_and_password: {
         dataSchema: {
@@ -349,6 +365,35 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
         res.send(flow);
     })
 });
+
+exports.trackEvent = functions.https.onRequest(async (req, res) => {
+    return corsHandler(req, res, async () => {
+        const data = req.body as EventResp;
+        console.log("tracking event", typeof data, data)
+        const flowSnap = await getFlowSnapById({apiKey: data.apiKey, istest: false})
+        if(flowSnap.size != 1) {
+            return res.status(400).send("to many flows")
+        }
+
+        if(!flowSnap.docs[0].exists) {
+            return res.status(400).send("flow null")
+        }
+
+        const flowId = flowSnap.docs[0].id
+        const event:Event = {
+            metaData: data.metaData,
+            sessionId: data.sessionId,
+            flowId: flowId,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            type: data.type
+        }
+
+        await admin.firestore().collection(`flow-event`).add(event)
+
+        res.send()
+        return
+    })
+})
 
 export const isEdge = (element: Node | Connection | Edge): element is Edge =>
     'id' in element && 'source' in element && 'target' in element;

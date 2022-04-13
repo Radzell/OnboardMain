@@ -6,6 +6,7 @@ import OnboardOsDisplay from "./OnboardOSDisplay";
 import { Center, ChakraProvider, CSSReset, extendTheme, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepsStyleConfig as Steps } from 'chakra-ui-steps';
 import { RefObject, RegisterReturn } from "./useOnboardOS";
+import { createOrGetSession } from "./analytics";
 
 export interface Form {
   dataSchema: any,
@@ -61,8 +62,7 @@ function deepEqual(object1?: any, object2?: any) {
 }
 
 
-
-export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, testing }: { apiKey: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc, onAction: onActionFunc, testing?: boolean }): JSX.Element => {
+export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, trackAnalytics, testing }: { apiKey: string, register: () => RegisterReturn, onValidate: ValidateFunc, onEnd: EndFunc, onAction: onActionFunc, trackAnalytics?:boolean, testing?: boolean }): JSX.Element => {
   const [flow, setFlow] = useState<Flow>()
   const [osRef, setOSRef] = useState<React.MutableRefObject<RefObject | undefined>>()
   const [hasGetFlowError, setGetFlowError] = useState<boolean>(false)
@@ -117,12 +117,17 @@ export const OnboardOS = ({ apiKey, register, onValidate, onEnd, onAction, testi
     getFlow()
   }, [apiKey])
 
+  useEffect(() => {
+    createOrGetSession()
+
+  }, [apiKey])
+
 
   return (
     <ChakraProvider theme={theme} >
       <CSSReset />
       {(!flow && !hasGetFlowError) && <Center h='100%'><Text>Loading From OnboardOS...</Text></Center>}
-      <OnboardOsDisplay onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef} apiKey={apiKey} flow={flow} />
+      <OnboardOsDisplay trackAnalytics={trackAnalytics} onAction={onAction} onEnd={onEnd} onValidate={onValidate} ref={osRef} apiKey={apiKey} flow={flow} />
       {hasGetFlowError &&
         <Center h='100%'>
           <VStack>

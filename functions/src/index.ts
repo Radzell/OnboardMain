@@ -369,7 +369,6 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
 exports.trackEvent = functions.https.onRequest(async (req, res) => {
     return corsHandler(req, res, async () => {
         const data = req.body as EventResp;
-        console.log("tracking event", typeof data, data)
         const flowSnap = await getFlowSnapById({apiKey: data.apiKey, istest: false})
         if(flowSnap.size != 1) {
             return res.status(400).send("to many flows")

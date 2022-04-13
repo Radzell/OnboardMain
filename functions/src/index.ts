@@ -182,6 +182,44 @@ exports.restoreFlow = functions.https.onRequest(async (req, res) => {
     })
 })
 
+
+exports.duplicateFlow = functions.https.onRequest(async (req, res) => {
+    return corsHandler(req, res, async () => {
+        const flowId = req.query.flowId as string
+        const organizationId  = req.query.organizationId as string
+
+        const flowSnap = await admin.firestore().collection(`/flows`).doc(flowId).get()
+
+        if (!flowSnap.exists || !organizationId) {
+            res.status(400).send("invalid flowId")
+            return
+        }
+
+        const ref = admin.firestore().collection("flows").doc()
+        const newFlowKey = ref.id
+
+        const apiref = admin.firestore().collection("flows").doc()
+        const newApiKey = apiref.id
+
+        
+        const flow = flowSnap.data() as Flow
+
+        flow.apiKey = newApiKey
+        flow.name = flow.name + " - New"
+
+        await admin.firestore().collection(`/flows`).doc(newFlowKey).set(flow)
+
+
+
+        await admin.firestore().collection(`organization`)
+        .doc(organizationId).update({flows: admin.firestore.FieldValue.arrayUnion(newFlowKey) })
+    
+    
+        
+    })
+})
+
+
 exports.createProdFlowApiKey = functions.firestore
     .document('prod-flows/{flowId}')
     .onCreate(async (_snapshot, context) => {

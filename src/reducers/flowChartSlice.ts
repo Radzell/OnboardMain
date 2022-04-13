@@ -113,6 +113,12 @@ export const createNewFlow =  createAsyncThunk('flowChart/createFlow', async ({o
 
 })
 
+export const duplicateFlow = createAsyncThunk('flowChart/duplicateFlow', async ({flowId, organizationId}: {flowId: string, organizationId: string }, _thunkAPI) => {
+  await fetch(`https://us-central1-onboard-os.cloudfunctions.net/duplicateFlow?flowId=${flowId}&organizationId=${organizationId}`, {
+    method: "GET"
+  })
+})
+
 export const flowChartSlice = createSlice({
   name: 'flowChart',
   initialState,

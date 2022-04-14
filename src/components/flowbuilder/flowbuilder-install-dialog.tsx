@@ -79,7 +79,7 @@ export interface InstallDialogProps {
             <p>2. Import your signup flow to your app</p>
           </DialogContentText>
           <CopyBlock 
-            text={code({apiKey: prodFlow.apiKey ?? ""})}
+            text={code({apiKey: prodFlow?.apiKey ?? ""})}
             language={"javascript"}
             showLineNumbers={false}
             theme={codepen}

@@ -97,6 +97,10 @@ const Register = () => {
     router.push("/flowbuilder")
   }
 
+  const onAction = (stepId: string, stepType: string, data: object) =>{
+
+  }
+
   return (
     <>
       <Head>
@@ -125,7 +129,7 @@ const Register = () => {
               Login
             </Button>
           </NextLink>
-          <OnboardOS onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={"0DgOKRqIo0tUQiMfxmsq"} />
+          <OnboardOS trackAnalytics={true} onAction={onAction} onEnd={onEnd} register={osboard.register} onValidate={onValidate} apiKey={"0DgOKRqIo0tUQiMfxmsq"} />
         </Container>
       </Box>
     </>

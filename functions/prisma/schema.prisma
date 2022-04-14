@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+    previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Event {
+  id      String   @id @default(uuid())
+  type    String
+  sessionId String
+  flowId String
+  stepId String?
+  stepType String?
+  metaData String?
+  updatedAt DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+
+}

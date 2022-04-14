@@ -2,6 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 import * as cors from 'cors'
 import { Connection, Edge, Elements, Node, Release } from "./types";
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 const {PubSub} = require('@google-cloud/pubsub');
 
 admin.initializeApp()
@@ -73,7 +75,7 @@ interface FormSetting {
 }
 
 interface EventResp { 
-    metaData: object,
+    metaData: Record<string, string>,
     type: string,
  
     apiKey: string,
@@ -81,11 +83,10 @@ interface EventResp {
 }
 
 interface Event { 
-    metaData: object
+    metaData: Record<string, string>
     type: string,
     sessionId: string,
     flowId: string,
-    createdAt: any
 }
 
 const formsTemplates: Record<string, Form> = {
@@ -421,12 +422,11 @@ exports.trackEvent = functions.https.onRequest(async (req, res) => {
             metaData: data.metaData,
             sessionId: data.sessionId,
             flowId: flowId,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
             type: data.type
         }
 
-        await admin.firestore().collection(`flow-event`).add(event)
-
+        await admin.firestore().collection(`flow-event`).add({...event, createdAt: admin.firestore.FieldValue.serverTimestamp()})
+        await prisma.event.create({data: {...event, metaData: JSON.stringify(event.metaData), stepId: event.metaData.stepId, stepType: event.metaData.stepType}})
         res.send()
         return
     })

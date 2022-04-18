@@ -114,7 +114,8 @@ const Register = () => {
           alignItems: 'center',
           display: 'flex',
           flexGrow: 1,
-          minHeight: '100%'
+          minHeight: '100%',
+          paddingTop: 2
         }}
       >
         <Container maxWidth="lg">

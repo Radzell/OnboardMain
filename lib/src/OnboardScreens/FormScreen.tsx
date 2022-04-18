@@ -3,7 +3,35 @@ import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { Form as OSForm, presetMws } from '../GravelForm';
+import { CheckboxGroupMw, CheckboxMw, ErrorListMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, InputMw, NotSupportedMw, NumberInputMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
+import { FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
+
+
+const middlewares = [
+    // root middlewares
+    SubmitButtonWithValidationMw,
+    // preprocessor
+    LocalRefMw,
+    // template & schemas
+    ErrorListMw,
+    FieldsetTemplateMw,
+    FixedObjectMw,
+    FixedArrayMw,
+    FormControlTemplateMw,
+    // form controls
+    withName(CheckboxMw, undefined),
+    FormControlLabelMw,
+    withName(RadioGroupMw, 'RadioGroup'),
+    withName(SliderMw, 'Slider'),
+    withName(SwitchMw, 'Switch'),
+    withName(TextAreaMw, 'TextArea'),
+    CheckboxGroupMw,
+    SelectMw,
+    InputMw,
+    NumberInputMw,
+    // default fallback
+    NotSupportedMw,
+];
 
 const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
     const [data, setData] = React.useState<Record<string, any>>();
@@ -14,8 +42,10 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
     delete form.dataSchema.name
 
     const extraProps = {
-        password: {
-            props: { type: 'password' },
+        properties: {
+            password: {
+                props: { type: 'password' },
+            }
         }
     }
 
@@ -67,7 +97,7 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
                             const data = e as Record<string, any>
                             setData(data)
                         }}
-                        middlewares={presetMws}
+                        middlewares={middlewares}
                         size="md"
                         onSubmit={onNextClicked}
                     />

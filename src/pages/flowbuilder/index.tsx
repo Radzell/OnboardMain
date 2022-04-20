@@ -23,54 +23,6 @@ import Paper from '@mui/material/Paper';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-const card = ({ flow, flowId, organizationId }: { flow: Flow, flowId: string, organizationId: string }) => {
-  const dispatch = useAppDispatch()
-  const snackbar = useSnackBar()
-
-  const onDuplicate = () => {
-    dispatch(duplicateFlow({ flowId, organizationId }))
-
-    snackbar.showSnackBar("Duplicating...", "info")
-  }
-
-  return (
-    <React.Fragment>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {flow?.name}
-        </Typography>
-      </CardContent>
-      <CardActions>
-
-        {process.env.NODE_ENV == "development" && <Button onClick={onDuplicate} size="small">Duplicate</Button>}
-        <NextLink
-          href={`/flowbuilder/${flowId}`}
-          passHref
-        >
-          <Button size="small">Edit</Button>
-        </NextLink>
-      </CardActions>
-    </React.Fragment>
-  );
-}
 
 const flowFlow = ({ flow, flowId, organizationId }: { flow: Flow, flowId: string, organizationId: string }) => {
   const dispatch = useAppDispatch()
@@ -223,13 +175,6 @@ const FlowbuilderCollection = () => {
   }
 
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
 
   return <div style={{ height: '100%' }}>
     <Box sx={{ flexGrow: 1, padding: 6 }}>
@@ -270,7 +215,7 @@ const FlowbuilderCollection = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {flows?.map((flowItem, index) => (
+            {flows?.map((flowItem) => (
               flowFlow({ flow: flowItem.flow, flowId: flowItem.flowId, organizationId: selectedOrgId })
             ))}
           </TableBody>

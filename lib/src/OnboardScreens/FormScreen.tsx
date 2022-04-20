@@ -13,11 +13,11 @@ const middlewares = [
     // preprocessor
     LocalRefMw,
     // template & schemas
-    ErrorListMw,
     FieldsetTemplateMw,
     FixedObjectMw,
     FixedArrayMw,
     FormControlTemplateMw,
+    
     // form controls
     withName(CheckboxMw, undefined),
     FormControlLabelMw,

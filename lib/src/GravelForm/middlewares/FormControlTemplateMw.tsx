@@ -11,13 +11,17 @@ export const FormControlTemplateMw: React.ComponentType<MiddlewareProps> = (prop
 
   const id = toJSONSchemaPath(dataPath);
   
-  const error = errors && errors.find(({instancePath }) => instancePath === id);
+  const error = errors && errors.find(({instancePath, params }) => 
+    instancePath == id || 
+    instancePath == `.${id}` || 
+    (!!params && !!params.missingProperty && `.${params.missingProperty}`  == id));
+
 
   return (
     <FormControl isRequired={isRequired(props)} isInvalid={!!error} my={4} {...get(extraProps, 'formControl')}>
       {next(props)}
       <FormHelperText>{schema.description}</FormHelperText>
-      <FormErrorMessage>{error ? error.message : null}</FormErrorMessage>
+      <FormErrorMessage>{error ? "error!" : null}</FormErrorMessage>
     </FormControl>
   );
 };

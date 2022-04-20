@@ -48,6 +48,7 @@ const flowFlow = ({ flow, flowId, organizationId }: { flow: Flow, flowId: string
       <TableCell align="center" >-</TableCell>
       <TableCell align="center">-</TableCell>
       <TableCell align="center">-</TableCell>
+      <TableCell align="center">-</TableCell>
 
       <TableCell align="right"> {process.env.NODE_ENV == "development" && <IconButton onClick={onDuplicate}><ContentCopyIcon /></IconButton>}
         <NextLink
@@ -184,7 +185,6 @@ const FlowbuilderCollection = () => {
         {StatItem({ name: "View -> Conversion", stat: "~" })}
         {StatItem({ name: "Churn percent", stat: "~" })}
         {StatItem({ name: "Total conversion", stat: "~" })}
-
       </Grid>
       <Button onClick={onCreateNewFlow} sx={{ marginBottom: 4 }} variant="contained">Create New Flow</Button>
 
@@ -201,6 +201,8 @@ const FlowbuilderCollection = () => {
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
               <TableCell align="right"></TableCell>
+              <TableCell align="right"></TableCell>
+
             </TableRow>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -211,6 +213,7 @@ const FlowbuilderCollection = () => {
               <TableCell align="right">Opens</TableCell>
               <TableCell align="right">Unique Opens</TableCell>
               <TableCell align="right">Conversion Rate</TableCell>
+              <TableCell align="right"></TableCell>
 
             </TableRow>
           </TableHead>

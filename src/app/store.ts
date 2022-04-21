@@ -8,6 +8,7 @@ import {
 } from 'react-redux-firebase'
 
 export interface FlowForm {
+  name?: string,
   title?: string,
   description?: string,
   optionA?: string,

@@ -15,6 +15,8 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
 
     dispatch(showPreviewOfNode(id))
   }
+
+  console.log("FormNode", data)
   
   return (
     <>

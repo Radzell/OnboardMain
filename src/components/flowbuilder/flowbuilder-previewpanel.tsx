@@ -109,7 +109,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderValidateSection = () => {
-        if(formNode?.data?.formType === "button_screen") {
+        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome") {
             return
         }
 

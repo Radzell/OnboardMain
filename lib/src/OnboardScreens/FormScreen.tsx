@@ -3,11 +3,13 @@ import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { CheckboxGroupMw, CheckboxMw, ErrorListMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, InputMw, NotSupportedMw, NumberInputMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
-import { FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
+import { CheckboxGroupMw, CheckboxMw, ErrorListMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
+import { ExtraPropsMw, FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
 
 
 const middlewares = [
+
+    ExtraPropsMw,
     // root middlewares
     SubmitButtonWithValidationMw,
     // preprocessor
@@ -18,6 +20,7 @@ const middlewares = [
     FixedArrayMw,
     FormControlTemplateMw,
     
+    
     // form controls
     withName(CheckboxMw, undefined),
     FormControlLabelMw,
@@ -25,6 +28,8 @@ const middlewares = [
     withName(SliderMw, 'Slider'),
     withName(SwitchMw, 'Switch'),
     withName(TextAreaMw, 'TextArea'),
+    withName(PasswordMw, 'Password'),
+
     CheckboxGroupMw,
     SelectMw,
     InputMw,
@@ -32,6 +37,19 @@ const middlewares = [
     // default fallback
     NotSupportedMw,
 ];
+
+const extraProps = {
+    properties: {
+      textarea: { component: 'TextArea' },
+      password: { component: 'Password' },
+      date: { component: 'DatePicker' },
+      time: { component: 'TimePicker' },
+      rate: { component: 'Rate' },
+      slider: { component: 'Slider' },
+      radioGroup: { component: 'RadioGroup' },
+      switch: { component: 'Switch' }
+    }
+}
 
 const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
     const [data, setData] = React.useState<Record<string, any>>();
@@ -41,13 +59,7 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
     }
     delete form.dataSchema.name
 
-    const extraProps = {
-        properties: {
-            password: {
-                props: { type: 'password' },
-            }
-        }
-    }
+
 
     const needsValidation = useMemo<boolean>(() => {
         const formSetting = flow.formSettings

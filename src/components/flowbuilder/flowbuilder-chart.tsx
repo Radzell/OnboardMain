@@ -18,6 +18,7 @@ import FlowPreview from './flowbuilder-flowpreview';
 import { useRouter } from 'next/router';
 import ButtonEdge from '../../nodes/ButtonEdge';
 import FlowReleases from './flowbuilder-releases';
+import { Flow } from '../../app/store';
 
 const nodeTypes = {
   formNode: FormNode,
@@ -50,7 +51,8 @@ export const FlowBuilderChart = () => {
 
   useFirestoreConnect([
     { collection: 'flows', doc: flowId },
-    { collection: 'prod-flows', doc: flowId }
+    { collection: 'prod-flows', doc: flowId },
+    { collection: 'flowForms', doc: flowId, subcollections: [{ collection: 'forms' }], storeAs: 'allFlowForms' }
   ])
 
 
@@ -60,6 +62,12 @@ export const FlowBuilderChart = () => {
 
   const prodFlow: Flow = useAppSelector(
     ({ firestore }): any => firestore.data['prod-flows'] && firestore.data['prod-flows'][flowId]
+  )
+
+  const flowForms = useAppSelector(
+    ({ firestore }): any => {
+      return firestore.data.allFlowForms  ?? {}
+    }
   )
 
   const updateNodeInternals = useUpdateNodeInternals();

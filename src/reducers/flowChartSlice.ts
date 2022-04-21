@@ -98,7 +98,7 @@ export const rollbackFlow = createAsyncThunk('flowChart/rollbackFlow', async ({r
   return;
 })
 
-export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowId, flowFormId, flowForm}: {flowId, flowFormId: string, flowForm: any}) => {
+export const saveFlowForm = createAsyncThunk('flowChart/saveFlowForm', async ({flowId, flowFormId, flowForm}: {flowId:string, flowFormId: string, flowForm: any}) => {
     await firebase.firestore().collection('flowForms').doc(flowId).collection("forms").doc(flowFormId).set(clean(flowForm), { merge: true })
     return;
 })

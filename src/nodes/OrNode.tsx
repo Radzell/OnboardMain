@@ -56,9 +56,10 @@ export default memo(({ data, id, isConnectable }: { data: any, id: string, isCon
                 </div>
             </Handle>
             <div style={{ border: '1px solid #777', padding: 8 }}>
-                <div>
+                <Typography variant="subtitle1" >
+
                     {data.label}
-                </div>
+                </Typography >
                 {data.formType !== "end_point" && <Button onClick={showPreview} size="small" variant="contained">
                     Preview
                 </Button>

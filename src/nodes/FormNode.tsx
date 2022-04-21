@@ -2,11 +2,29 @@ import React, { memo, useMemo } from 'react';
 
 import { Handle, Position } from 'react-flow-renderer';
 import Button from '@mui/material/Button';
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { showPreviewOfNode } from '../reducers/uiSlice';
 import { openSidebar } from '../reducers/flowChartSlice';
+import { Typography } from '@mui/material';
 
 export default memo(({ data, id, isConnectable}: { data: any, id:string, isConnectable: boolean }) => {
+  
+
+  const flowForms = useAppSelector(
+    ({ firestore }): any => {
+      return firestore.data.allFlowForms  ?? {}
+    }
+  )
+
+
+
+  const flowForm = useMemo(() => {
+    if(!id || !flowForms || !flowForms[id]) {
+      return
+    }
+
+    return flowForms[id]
+  },[flowForms, id])
   
   const dispatch = useAppDispatch()
 
@@ -17,6 +35,14 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
   }
 
   console.log("FormNode", data)
+
+  const renderName = () => {
+
+    if(data.formType === "end_point") {
+      return "End Point"
+    }
+    return flowForm?.name ?? "Untitled"
+  }
   
   return (
     <>
@@ -35,9 +61,14 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
         isConnectable={isConnectable}
       />
       <div style={{border: '1px solid #777', padding: 8}}>
-        <div>
+        <Typography variant="subtitle1" >
+          {renderName()}
+        </Typography >
+        {data.formType !== "end_point" &&
+          <Typography variant="caption" component="div">
           {data.label}
-        </div>
+          </Typography >
+        }
         {data.formType !== "end_point" && <Button onClick={showPreview} size="small" variant="contained">
           Preview
         </Button>

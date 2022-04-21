@@ -1,9 +1,7 @@
-import React, { memo, useMemo } from 'react';
+import { Typography } from '@mui/material';
+import React, { memo } from 'react';
 
 import { Handle, Position } from 'react-flow-renderer';
-import Button from '@mui/material/Button';
-import { useAppDispatch } from '../app/hooks';
-import { showPreviewOfNode } from '../reducers/uiSlice';
 
 export default memo(({ data, id, isConnectable}: { data: any, id:string, isConnectable: boolean }) => {
   
@@ -24,9 +22,9 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
         isConnectable={isConnectable}
       />
       <div style={{border: '1px solid #777', padding: 8}}>
-        <div>
+        <Typography variant="subtitle1" >
           Entry
-        </div>
+        </Typography >
 
       </div>
     

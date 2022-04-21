@@ -26,23 +26,20 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
     useFirestoreConnect([
         { collection: 'flows', doc: flowId },
-        { collection: `flowForms/${flowId}/forms`, doc: selectedNodeId}
+        { collection: `flowForms`, doc: flowId, subcollections: [{collection: "forms", doc: selectedNodeId}], storeAs: 'currentFlowForm' }
     ])
 
 
 
     const flowForm: FlowForm | undefined = useAppSelector(
         ({ firestore }): any =>  {
-            if(!firestore.data.flowForms || !firestore.data.flowForms[flowId] || !selectedNodeId) {
-                return
-            }
 
-            if(!firestore.data.flowForms[flowId][selectedNodeId]) {
+            if(!firestore.data.currentFlowForm || !selectedNodeId) {
                 return
             }
 
             
-            return firestore.data.flowForms[flowId][selectedNodeId]    
+            return firestore.data.currentFlowForm 
         }
     )
 
@@ -85,7 +82,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             return
         }
 
-        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 

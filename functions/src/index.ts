@@ -623,6 +623,7 @@ async function setCurrentFlowsToDeployed(flowId: any) {
     }
 }
 
+/*
 async function fixFlowForms(flowsSnap: any, flowFormsName: string) {
     for (const flowSnap of flowsSnap.docs) {
         const flowId = flowSnap.id;
@@ -635,7 +636,6 @@ async function fixFlowForms(flowsSnap: any, flowFormsName: string) {
         const oldFlowFormsRef = admin.firestore().collection(flowFormsName);
 
         if(nodeIds.length > 0) {
-            functions.logger.info("nodeIds", nodeIds)
             const formSettingSnap = await oldFlowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get();
 
 
@@ -664,6 +664,7 @@ exports.formFixScript = functions.runWith({
    
     })
 })
+*/
 
 
 

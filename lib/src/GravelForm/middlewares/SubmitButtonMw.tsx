@@ -38,10 +38,12 @@ export const SubmitButtonWithValidationMw: React.ComponentType<MiddlewareProps> 
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+
     try {
       const onSubmit = props.onSubmit || props.formProps.onSubmit;
       const errors = validate(formProps.schema, data);
       if (!errors && onSubmit) onSubmit(data);
+
       setErrors(errors);
       setAjvException(null);
     } catch (err: any) {

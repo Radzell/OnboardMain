@@ -18,7 +18,7 @@ const ajv = new Ajv({
 });
 
 export function validate(schema: JSONSchema7, data: any) {
-  ajv.validate(schema, data);
+  ajv.validate(schema, data ?? {});
   return ajv.errors;
 }
 

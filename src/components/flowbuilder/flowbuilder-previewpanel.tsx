@@ -11,7 +11,6 @@ import { saveFlowForm } from "../../reducers/flowChartSlice";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Flow, FlowForm } from "../../app/store";
 
-const Form = withTheme(Bootstrap4Theme)
 
 
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
@@ -21,41 +20,26 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const [optionA, setOptionA] = useState<string>()
     const [optionB, setOptionB] = useState<string>()
     const [title, setTitle] = useState<string>()
+    const [name, setName] = useState<string>()
     const [description, setDescription] = useState<string>()
 
 
     useFirestoreConnect([
         { collection: 'flows', doc: flowId },
-        { collection: 'flowForms', doc: selectedNodeId}
+        { collection: `flowForms`, doc: flowId, subcollections: [{collection: "forms", doc: selectedNodeId}], storeAs: 'currentFlowForm' }
     ])
 
 
-    const flow: Flow | undefined = useAppSelector(
-        ({ firestore }): any =>  {
-            if(!firestore.data.flows) {
-                return
-            }
-
-            if(!firestore.data.flows[flowId]) {
-                return
-            }
-
-            return firestore.data.flows[flowId]    
-        }
-    )
 
     const flowForm: FlowForm | undefined = useAppSelector(
         ({ firestore }): any =>  {
-            if(!firestore.data.flowForms || !selectedNodeId) {
-                return
-            }
 
-            if(!firestore.data.flowForms[selectedNodeId]) {
+            if(!firestore.data.currentFlowForm || !selectedNodeId) {
                 return
             }
 
             
-            return firestore.data.flowForms[selectedNodeId]    
+            return firestore.data.currentFlowForm 
         }
     )
 
@@ -64,6 +48,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         setDescription(flowForm?.description ?? "")
         setOptionA(flowForm?.optionA ?? "")
         setOptionB(flowForm?.optionB ?? "")
+        setName(flowForm?.name ?? "Untitled")
+
 
     },[flowForm])
 
@@ -86,14 +72,6 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }, [selectedNodeId, nodes])
 
 
-    const schemas = useMemo(() => {
-        const schemaData = ScreenPreviewDataMap[formNode?.data.formType]
-        if (!schemaData) {
-            return
-        }
-
-        return schemaData
-    }, [formNode])
 
     const snackbar = useSnackBar()
     const dispatch = useAppDispatch()
@@ -104,12 +82,12 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             return
         }
 
-        await dispatch(saveFlowForm({ flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
     const renderValidateSection = () => {
-        if(formNode?.data?.formType === "button_screen") {
+        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome") {
             return
         }
 
@@ -123,6 +101,10 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 
     const handleTitleChange = (event: { target: { name: any; value: any; }; }) => {
         setTitle(event.target.value)
+    }
+
+    const handleNameChange = (event: { target: { name: any; value: any; }; }) => {
+        setName(event.target.value)
     }
 
 
@@ -231,6 +213,22 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     }
 
+    const renderStepName = () => {
+        return <TextField
+            style={{marginTop: 8, marginBottom: 8}}
+            disabled={false}
+            fullWidth
+            helperText="Please specify the a title for your step"
+            label="Name"
+            name="name"
+            onChange={handleNameChange}
+            value={name}
+            variant="outlined"
+            defaultValue={flowForm?.name ?? "Untitled" }
+
+        />
+    }
+
     return (
         <div className="flex flex-col justify-between h-full w-full">
             <div className="flex full flex-col">
@@ -254,6 +252,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                         defaultValue={selectedNodeId}
 
                 />
+                {renderStepName()}
                 {renderBasicInfoSection()}
                 {renderOrButtonSection()}
                 {renderButtonSection()}

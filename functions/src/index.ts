@@ -34,7 +34,7 @@ exports.logProdUpdatePubSub = functions.pubsub.topic(NEW_PROD_FLOW).onPublish(as
     const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
     const nodeIds = nodes.map(node => node.id)
 
-    const flowFormsRef = admin.firestore().collection('prod-flowForms')
+    const flowFormsRef = admin.firestore().collection('prod-flowForms').doc(flowId).collection("forms")
 
     const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
 
@@ -379,7 +379,7 @@ exports.getFlow = functions.https.onRequest(async (req, res) => {
         const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
         const nodeIds = nodes.map(node => node.id)
 
-        const flowFormsRef = admin.firestore().collection('flowForms')
+        const flowFormsRef = admin.firestore().collection('flowForms').doc(flowSnap.docs[0].id).collection("forms")
 
         const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
 
@@ -467,7 +467,7 @@ const copyFormSettings = async ({flowId, flow}: {flowId: string, flow: Flow}) =>
     const nodes = flow.elements.filter(element => exports.isNode(element)).map(element => element as Node);
     const nodeIds = nodes.map(node => node.id)
 
-    const flowFormsRef = admin.firestore().collection('flowForms')
+    const flowFormsRef = admin.firestore().collection('flowForms').doc(flowId).collection("forms")
 
     const formSettingSnap = await flowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get()
 
@@ -477,7 +477,7 @@ const copyFormSettings = async ({flowId, flow}: {flowId: string, flow: Flow}) =>
     const batch = admin.firestore().batch();
 
     for(const formSetting of formSettings) {
-        const flowFormRef = admin.firestore().collection("prod-flowForms").doc(formSetting.id);
+        const flowFormRef = admin.firestore().collection("prod-flowForms").doc(flowId).collection("forms").doc(formSetting.id);
         batch.set(flowFormRef, formSetting.data())
     }
 
@@ -508,7 +508,7 @@ exports.rollbackProdFlow = functions.https.onCall(async (data, context) => {
     const formKeys = Object.keys(release.settings)
     for(let settingId of formKeys) {
         const setting = release.settings[settingId]
-        await admin.firestore().collection('prod-flowForms').doc(settingId).update(setting)
+        await admin.firestore().collection('prod-flowForms').doc(flowId).collection("forms").doc(settingId).update(setting)
     }
 
 
@@ -622,4 +622,49 @@ async function setCurrentFlowsToDeployed(flowId: any) {
         });
     }
 }
+
+/*
+async function fixFlowForms(flowsSnap: any, flowFormsName: string) {
+    for (const flowSnap of flowsSnap.docs) {
+        const flowId = flowSnap.id;
+
+        const flow = flowSnap.data() as Flow;
+
+        const nodes = (flow.elements ?? []).filter(element => exports.isNode(element)).map(element => element as Node);
+        const nodeIds = nodes.map(node => node.id);
+
+        const oldFlowFormsRef = admin.firestore().collection(flowFormsName);
+
+        if(nodeIds.length > 0) {
+            const formSettingSnap = await oldFlowFormsRef.where(admin.firestore.FieldPath.documentId(), "in", nodeIds).get();
+
+
+            const newFlowFormsRef = admin.firestore().collection(flowFormsName).doc(flowId).collection("forms");
+    
+            for (const formForm of formSettingSnap.docs) {
+                newFlowFormsRef.doc(formForm.id).set(formForm.data());
+            } 
+        }
+    }
+}
+
+exports.formFixScript = functions.runWith({
+    timeoutSeconds: 60 * 9 // 9 minutes,
+  }).https.onRequest(async (req, res) => {
+    return corsHandler(req, res, async () => {
+
+        const flowsSnap = await admin.firestore().collection(`/flows`).get()
+
+        await fixFlowForms(flowsSnap, 'flowForms'); 
+        const prodFlowsSnap = await admin.firestore().collection(`/prod-flows`).get()
+
+        await fixFlowForms(prodFlowsSnap, 'prod-flowForms'); 
+
+        res.send()
+   
+    })
+})
+*/
+
+
 

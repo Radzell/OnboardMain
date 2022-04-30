@@ -11,14 +11,17 @@ import OrNode from '../../nodes/OrNode'
 import Hotkeys from 'react-hot-keys';
 import { useSnackBar } from '../snackbar';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { saveFlow } from '../../reducers/flowChartSlice';
+import { saveFlow, setFlowForms } from '../../reducers/flowChartSlice';
 import { useFirestoreConnect } from 'react-redux-firebase'
 import FlowBuilderHeader from './flowbuilder-header';
 import FlowPreview from './flowbuilder-flowpreview';
 import { useRouter } from 'next/router';
 import ButtonEdge from '../../nodes/ButtonEdge';
 import FlowReleases from './flowbuilder-releases';
-import { Flow } from '../../app/store';
+import { Flow, FlowForm } from '../../app/store';
+import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
+import firebase from 'firebase/compat/app'
+import { getFirestore, collection, getDocs, getDoc } from 'firebase/firestore';
 
 const nodeTypes = {
   formNode: FormNode,
@@ -51,9 +54,22 @@ export const FlowBuilderChart = () => {
 
   useFirestoreConnect([
     { collection: 'flows', doc: flowId },
-    { collection: 'prod-flows', doc: flowId },
-    { collection: 'flowForms', doc: flowId, subcollections: [{ collection: 'forms' }], storeAs: 'allFlowForms' }
+    { collection: 'prod-flows', doc: flowId }
   ])
+
+  const [forms, formloading, formserror] = useCollection<FlowForm>(
+    collection(getFirestore(),"flowForms", flowId ?? "blah", "forms"),
+    {}
+  )
+
+  useEffect(() => {
+    const formData = forms?.docs.reduce((prev, cur) => {
+      prev[cur.id] = cur.data()
+      return prev
+    }, {} as Record<string, FlowForm>)
+    dispatch(setFlowForms( formData ?? {}))
+  },[forms])
+  //{ collection: 'flowForms', doc: flowId, subcollections: [{ collection: 'forms' }], storeAs: 'allFlowForms' }
 
 
   const flow = useAppSelector(
@@ -62,12 +78,6 @@ export const FlowBuilderChart = () => {
 
   const prodFlow: Flow = useAppSelector(
     ({ firestore }): any => firestore.data['prod-flows'] && firestore.data['prod-flows'][flowId]
-  )
-
-  const flowForms = useAppSelector(
-    ({ firestore }): any => {
-      return firestore.data.allFlowForms  ?? {}
-    }
   )
 
   const updateNodeInternals = useUpdateNodeInternals();

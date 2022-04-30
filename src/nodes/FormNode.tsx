@@ -11,8 +11,8 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
   
 
   const flowForms = useAppSelector(
-    ({ firestore }): any => {
-      return firestore.data.allFlowForms  ?? {}
+    (state): any => {
+      return state.flowChart.flowForms ?? {}
     }
   )
 

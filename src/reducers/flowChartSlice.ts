@@ -3,20 +3,24 @@ import { createAction } from '@reduxjs/toolkit'
 import { Elements, FlowExportObject, isEdge } from 'react-flow-renderer'
 import firebase from 'firebase/compat/app'
 import { clean } from '../utils/clean'
+import { FlowForm } from '../app/store'
 
 export interface ChartState {
   elements: Elements,
-  flowSideOpen: boolean
+  flowSideOpen: boolean,
+  flowForms: Record<string, FlowForm>
 
 }
 
 const initialState: ChartState = {
     elements: [],
-    flowSideOpen: true
+    flowSideOpen: true,
+    flowForms: {}
 }
 
 export const setElements = createAction<Elements>('flowChart/setElements')
 
+export const setFlowForms = createAction<Record<string, FlowForm>>('flowChart/setFlowForms')
 
 export const saveFlowSetting = createAsyncThunk('flowChart/saveFlow', async ({flowId, name, tagLine, color, file}: {flowId: string, name: string, tagLine?: string, color: string, file: File | undefined}) => {
   if(file) {
@@ -146,6 +150,9 @@ export const flowChartSlice = createSlice({
     })
     builder.addCase(saveFlow.pending, (state, action) => {
 
+    })
+    builder.addCase(setFlowForms, (state, action) => {
+      state.flowForms = action.payload
     })
   },
 })

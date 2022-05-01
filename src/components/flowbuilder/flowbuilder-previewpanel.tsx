@@ -10,8 +10,13 @@ import { useSnackBar } from "../snackbar";
 import { saveFlowForm } from "../../reducers/flowChartSlice";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Flow, FlowForm } from "../../app/store";
+import Ajv, {ErrorObject as AJVErrorObject} from 'ajv';
 
-
+const ajv = new Ajv({
+    allErrors: true,
+    multipleOfPrecision: 8,
+    schemaId: undefined,
+})
 
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const selectedNodeId = useAppSelector((state) => state.ui.previewing)
@@ -22,6 +27,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const [title, setTitle] = useState<string>()
     const [name, setName] = useState<string>()
     const [description, setDescription] = useState<string>()
+    const [schema, setSchema] = useState<string>()
+    const [schemaError, setSchemaError] = useState<boolean>(false)
 
 
     useFirestoreConnect([
@@ -49,6 +56,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         setOptionA(flowForm?.optionA ?? "")
         setOptionB(flowForm?.optionB ?? "")
         setName(flowForm?.name ?? "Untitled")
+        setSchema(flowForm?.schema ?? "")
 
 
     },[flowForm])
@@ -81,8 +89,16 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         if(!selectedNodeId) {
             return
         }
+        if(formNode?.data?.formType === "custom_form_screen") {
+            try {
+                validateSchema(schema ?? "")
+            }catch(e) {
+                snackbar.showSnackBar("Invalid Schema", "error")
+                return
+            }
+        }
 
-        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, schema, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
@@ -120,6 +136,20 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
     const handleOptionBChange = (event: { target: { name: any; value: any; }; }) => {
         setOptionB(event.target.value)
+    }
+
+    const handleSchemaChange = (event: { target: { name: any; value: any; }; }) => {
+        setSchema(event.target.value)
+
+        try{
+
+            validateSchema(event.target.value);
+            setSchemaError(false)
+        }catch(e) {
+
+            setSchemaError(true)
+        }
+
     }
 
     const renderOrButtonSection = () => {
@@ -178,7 +208,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderBasicInfoSection = () => {
-        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen")) {
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen")) {
             return (
                 <>
                     <TextField
@@ -229,8 +259,30 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         />
     }
 
+    const renderCustomFormSection = () => {
+        return(
+            <TextField
+                maxRows={4}
+                error={schemaError}
+                id="outlined-textarea"
+                label="Form Schema"
+                placeholder="schema"
+                style={{marginTop: 8, marginBottom: 8}}
+                disabled={false}
+                fullWidth
+                helperText="Add a valid json schema for your custom form"
+                name="schema"
+                onChange={handleSchemaChange}
+                value={schema}
+                variant="outlined"
+                defaultValue={flowForm?.schema ?? "Untitled" }
+                multiline
+            />
+        )
+    }
+
     return (
-        <div className="flex flex-col justify-between h-full w-full">
+        <div className="relative flex flex-col justify-between h-full w-full">
             <div className="flex full flex-col">
                 <Typography>
                     {formNode?.data.label}
@@ -256,12 +308,12 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                 {renderBasicInfoSection()}
                 {renderOrButtonSection()}
                 {renderButtonSection()}
-
+                {renderCustomFormSection()}
                 {renderValidateSection()}
 
             </div>
 
-            <div className="mt-16">
+            <div className="absolute bottom-0 mt-16 w-full">
                 <Button onClick={onSave} variant="contained" fullWidth={true} sx={{}}>
                     Save
                 </Button>
@@ -272,3 +324,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
 }
 
 export default PreviewPanel;
+
+function validateSchema(str: string) {
+    const parsedJson = JSON.parse(str);
+    ajv.compile(parsedJson);
+}

@@ -13,6 +13,7 @@ export interface FlowForm {
   description?: string,
   optionA?: string,
   optionB?: string,
+  schema?: string,
   validate?: boolean
 }
 export interface Flow {

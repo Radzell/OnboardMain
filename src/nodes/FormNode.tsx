@@ -16,8 +16,6 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
     }
   )
 
-
-
   const flowForm = useMemo(() => {
     if(!id || !flowForms || !flowForms[id]) {
       return

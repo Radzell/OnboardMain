@@ -59,7 +59,8 @@
     "react-redux-firebase": "^3.11.0",
     "redux-firestore": "^0.15.0",
     "uuid": "^8.3.2",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "ajv": "^8.11.0"
   },
   "devDependencies": {
     "@types/react-color": "^3.0.6",

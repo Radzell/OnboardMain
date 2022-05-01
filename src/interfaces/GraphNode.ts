@@ -28,6 +28,7 @@ export enum ScreenType {
     PROFILE = "profile",
     THIS_OR_THAT="this_or_that",
     BUTTON_SCREEN="button_screen",
+    CUSTOM_FORM="custom_form_screen",
     END_POINT = "end_point"
 }
 
@@ -97,6 +98,11 @@ export const ScreenMetaDataMap: Record<string, ScreenMetaDataType> = {
     },
     "end_point": {
         name: "EndPoint",
+        type: "formNode",
+        schemaChangable: false
+    },
+    "custom_form_screen": {
+        name: "Custom Form",
         type: "formNode",
         schemaChangable: false
     }

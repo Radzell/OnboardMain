@@ -16,6 +16,10 @@ export interface Form {
 
 export interface FormSetting {
   validate: boolean
+  schema?: string,
+  name?: string,
+  title?: string,
+  description?: string
 }
 
 

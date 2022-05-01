@@ -2,7 +2,7 @@ import { Node, onActionFunc } from './types'
 import React, { useEffect } from 'react'
 import { useSteps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
-import { Flow } from '.';
+import { Flow, Form } from '.';
 import { Box, Flex, Text, Image } from '@chakra-ui/react';
 import { Step } from './steps/Step'
 import { Steps } from './steps/Steps'
@@ -53,6 +53,16 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
 
                 return <ButtonScreen stepId={step.id} stepType={step.data.formType} form={forms[step.data.formType]} flow={flow}
 onAction={onAction} onNext={onNext} />
+            }
+            case 'custom_form_screen': {
+                const formSetting = flow.formSettings[step.id]
+
+                const form:Form = {
+                    dataSchema: JSON.parse(formSetting.schema),
+                    uiScheme: JSON.parse(formSetting.schema),
+                    name: formSetting.title ?? "Untitled"
+                }
+                return <FormScreen stepId={step.id} form={form} flow={flow} onNext={onNext} />
             }
         }
 

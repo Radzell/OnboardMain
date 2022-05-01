@@ -85,20 +85,29 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const dispatch = useAppDispatch()
 
     const onSave = async () => {
-
+        let schemaSaving = schema
         if(!selectedNodeId) {
             return
         }
         if(formNode?.data?.formType === "custom_form_screen") {
             try {
-                validateSchema(schema ?? "")
+                validateSchema(schemaSaving ?? "")
+
+                const schemaObj = JSON.parse(schemaSaving)
+
+                delete schemaObj["title"]
+                delete schemaObj["description"]
+
+                schemaSaving = JSON.stringify(schemaObj)
+    
+
             }catch(e) {
                 snackbar.showSnackBar("Invalid Schema", "error")
                 return
             }
         }
 
-        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, schema, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, schema: schemaSaving, validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
@@ -139,6 +148,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const handleSchemaChange = (event: { target: { name: any; value: any; }; }) => {
+        
         setSchema(event.target.value)
 
         try{

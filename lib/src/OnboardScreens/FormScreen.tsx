@@ -5,6 +5,7 @@ import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
 import { CheckboxGroupMw, CheckboxMw, ErrorListMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
 import { ExtraPropsMw, FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
+import { useEffect } from "react"
 
 
 const middlewares = [
@@ -57,7 +58,14 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
     const onNextClicked = () => {
         onNext(data)
     }
-    delete form.dataSchema.name
+
+    useEffect(()=> {
+        if(form.dataSchema) {
+            delete form.dataSchema["title"]
+            delete form.dataSchema["description"]
+        }
+
+    },[form.dataSchema])
 
 
 
@@ -88,11 +96,11 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
                 <Stack
                     as={Box}
                     textAlign={'center'}
-                    spacing={{ base: 8, md: 14 }}
+                    spacing={{ base: 2, md: 4 }}
                     py={{ base: 2, md: 8 }}>
                     <Heading
                         fontWeight={600}
-                        fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
+                        fontSize={{ base: '2xl', sm: '2xl', md: '4xl' }}
                         lineHeight={'110%'}>
                         
                         <Text as={'span'} color={flow.color}>

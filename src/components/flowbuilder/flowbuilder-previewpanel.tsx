@@ -93,7 +93,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             try {
                 validateSchema(schemaSaving ?? "")
 
-                const schemaObj = JSON.parse(schemaSaving)
+                const schemaObj = JSON.parse(schemaSaving ?? "")
 
                 delete schemaObj["title"]
                 delete schemaObj["description"]
@@ -156,7 +156,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             validateSchema(event.target.value);
             setSchemaError(false)
         }catch(e) {
-
+            console.error("schema error",e)
             setSchemaError(true)
         }
 

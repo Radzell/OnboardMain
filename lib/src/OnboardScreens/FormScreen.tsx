@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { CheckboxGroupMw, CheckboxMw, ErrorListMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
+import { CheckboxGroupMw, CheckboxMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, GoogleBtnMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
 import { ExtraPropsMw, FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
 import { useEffect } from "react"
 
@@ -30,7 +30,7 @@ const middlewares = [
     withName(SwitchMw, 'Switch'),
     withName(TextAreaMw, 'TextArea'),
     withName(PasswordMw, 'Password'),
-
+    withName(GoogleBtnMw, "GoogleBtn"),
     CheckboxGroupMw,
     SelectMw,
     InputMw,
@@ -48,7 +48,9 @@ const extraProps = {
       rate: { component: 'Rate' },
       slider: { component: 'Slider' },
       radioGroup: { component: 'RadioGroup' },
-      switch: { component: 'Switch' }
+      switch: { component: 'Switch' },
+      googleBtn: {component: 'GoogleBtn'}
+
     }
 }
 

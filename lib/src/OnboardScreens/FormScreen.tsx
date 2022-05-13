@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { CheckboxGroupMw, CheckboxMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, GoogleBtnMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
+import { DividerMw, CheckboxGroupMw, CheckboxMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, GoogleBtnMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
 import { ExtraPropsMw, FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
 import { useEffect } from "react"
 
@@ -31,6 +31,7 @@ const middlewares = [
     withName(TextAreaMw, 'TextArea'),
     withName(PasswordMw, 'Password'),
     withName(GoogleBtnMw, "GoogleBtn"),
+    withName(DividerMw, "divider"),
     CheckboxGroupMw,
     SelectMw,
     InputMw,
@@ -49,16 +50,16 @@ const extraProps = {
       slider: { component: 'Slider' },
       radioGroup: { component: 'RadioGroup' },
       switch: { component: 'Switch' },
-      googleBtn: {component: 'GoogleBtn'}
-
+      googleBtn: {component: 'GoogleBtn'},
+      divider: {component: "divider"}
     }
 }
 
 const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form, flow: Flow,onNext: (data?: Record<string, any>) => void }) => {
     const [data, setData] = React.useState<Record<string, any>>();
 
-    const onNextClicked = () => {
-        onNext(data)
+    const onNextClicked = (submitData) => {
+        onNext(submitData)
     }
 
     useEffect(()=> {
@@ -112,11 +113,11 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
 
                     <OSForm
                         extraProps={extraProps}
-
                         schema={form.dataSchema}
                         data={data}
                         onChange={(e) => {
                             const data = e as Record<string, any>
+                            console.log("onChange", data)
                             setData(data)
                         }}
                         middlewares={middlewares}

@@ -17,3 +17,4 @@ export * from './middlewares/SwitchMw';
 export * from './middlewares/SliderMw';
 export * from './middlewares/NotSupportedMw';
 export * from './middlewares/GoogleBtnMw';
+export * from './middlewares/DividerMw'

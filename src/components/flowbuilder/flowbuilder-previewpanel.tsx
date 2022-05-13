@@ -18,6 +18,8 @@ const ajv = new Ajv({
     schemaId: undefined,
 })
 
+ajv.addVocabulary(["clientId", "scope", "redirectUri", "text"])
+
 const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const selectedNodeId = useAppSelector((state) => state.ui.previewing)
     const [shouldValidate, setShouldValidate] = useState<boolean>(false)

@@ -25,7 +25,7 @@ type Props = {
     onSuccess: (data: any) => void,
     onFailure: (data: any) => void,
     buttonText?: string,
-    children?: Element,
+    children?: ReactNode,
     popupWidth?: number,
     popupHeight?: number,
     className?: string,

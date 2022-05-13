@@ -1,6 +1,6 @@
 import * as React from 'react';
 import get from 'lodash/get';
-import { NumberInput } from '@chakra-ui/react';
+import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper } from '@chakra-ui/react';
 import { MiddlewareProps } from '../share';
 
 export const NumberInputMw: React.ComponentType<MiddlewareProps> = (props) => {
@@ -15,7 +15,13 @@ export const NumberInputMw: React.ComponentType<MiddlewareProps> = (props) => {
       value={typeof data === 'number' ? data : undefined}
       onChange={onChange}
       {...get(extraProps, 'props')}
-    />
+    >
+      <NumberInputField />
+      <NumberInputStepper>
+        <NumberIncrementStepper />
+        <NumberDecrementStepper />
+      </NumberInputStepper>
+    </NumberInput>
   );
 };
 

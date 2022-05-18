@@ -17,6 +17,9 @@ const ajv = new Ajv({
   schemaId: undefined,
 });
 
+ajv.addVocabulary(["clientId", "scope", "redirectUri", "text"])
+
+
 export function validate(schema: JSONSchema7, data: any) {
   ajv.validate(schema, data ?? {});
   return ajv.errors;

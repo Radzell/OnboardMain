@@ -33,7 +33,7 @@ export const FormControlLabelMw: React.ComponentType<MiddlewareProps> = (props) 
   return (
     <>
       <FormLabel>
-        {Object.hasOwnProperty.call(schema, 'title') ? schema.title : dataPath[dataPath.length - 1]}
+        {Object.hasOwnProperty.call(schema, 'title') ? schema.title : ""}
       </FormLabel>
       {next(props)}
     </>

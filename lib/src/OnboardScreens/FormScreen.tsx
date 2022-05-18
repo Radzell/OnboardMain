@@ -113,11 +113,11 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
 
                     <OSForm
                         extraProps={extraProps}
+
                         schema={form.dataSchema}
                         data={data}
                         onChange={(e) => {
                             const data = e as Record<string, any>
-                            console.log("onChange", data)
                             setData(data)
                         }}
                         middlewares={middlewares}

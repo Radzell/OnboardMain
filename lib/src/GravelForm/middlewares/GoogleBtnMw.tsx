@@ -12,7 +12,6 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
   if (typeof schema === 'boolean' || schema.type !== 'string' || !schema.clientId) return next(props);
 
   const onSuccess = async response => {
-    console.dir(response)
     const access_token = response.access_token
     const userInfoResp = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -34,9 +33,7 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
 
 };
 
-  const onFailure = response => {
-    //console.error("bets onFailure"+response)
-  };
+
   return (
     <OAuth2Login
       authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth"
@@ -51,8 +48,7 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
       scope={schema.scope}
 
       isCrossOrigin={false}
-      onSuccess={onSuccess}
-      onFailure={onFailure}   >
+      onSuccess={onSuccess}  >
         <GoogleLoginButton>
           <span>Signup with Google</span>
         </GoogleLoginButton>

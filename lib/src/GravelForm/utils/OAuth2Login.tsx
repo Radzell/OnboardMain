@@ -113,7 +113,6 @@ class OAuth2Login extends Component<Props, State> {
 
         // Cross origin requests will already handle this, let's just return the data
         if (!isCrossOrigin && !data[responseKey]) {
-            console.error('received data', data);
             return this.onFailure(new Error(`'${responseKey}' not found in received data`));
         }
 

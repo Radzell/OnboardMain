@@ -1,4 +1,4 @@
-import React, { Component, JSX, ReactNode } from 'react';
+import React, { Component, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 
 import PopupWindow from './PopupWindow';

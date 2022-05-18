@@ -33,7 +33,9 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
 
 };
 
-
+  const onFailure = response => {
+    //console.error("bets onFailure"+response)
+  };
   return (
     <OAuth2Login
       authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth"
@@ -48,7 +50,8 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
       scope={schema.scope}
 
       isCrossOrigin={false}
-      onSuccess={onSuccess}  >
+      onSuccess={onSuccess}
+      onFailure={onFailure}   >
         <GoogleLoginButton>
           <span>Signup with Google</span>
         </GoogleLoginButton>

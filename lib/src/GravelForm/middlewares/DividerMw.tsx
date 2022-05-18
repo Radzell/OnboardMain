@@ -8,10 +8,11 @@ export const DividerMw: React.FC<MiddlewareProps> = (props) => {
   //@ts-ignore
   if (schema.text) {
     //@ts-ignore
+    const text = schema.text
     return (
       <Flex align="center">
         <Divider />
-        <Text padding="2">{schema.text}</Text>
+        <Text padding="2">{text}</Text>
         <Divider />
       </Flex>
     )

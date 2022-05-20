@@ -61,7 +61,7 @@ const CreateOrJoinOrg = ({ stepId, flow, onNext }: { stepId:string, flow: Flow, 
     return (
         <Container maxW={'3xl'}>
             <Center marginTop={"6"}>
-                <ButtonGroup spacing='6' >
+                <ButtonGroup sx={{borderColor: "#c2c2c2", borderWidth: 1, borderRadius: 6}} spacing='6' >
                     <Button onClick={() => setScreen("create_org")} variant={screen === "create_org" ? "solid" : "outlined"}>Create A Organization</Button>
                     <Button onClick={() => setScreen("join_org")} variant={screen === "join_org" ? "solid" : "outlined"}>Join A Organization</Button>
                 </ButtonGroup>

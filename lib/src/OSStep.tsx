@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useSteps } from 'chakra-ui-steps';
 import WelcomeScreen from './OnboardScreens/WelcomeScreen';
 import { Flow, Form } from '.';
-import { Box, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Flex, Text, Image, Progress } from '@chakra-ui/react';
 import { Step } from './steps/Step'
 import { Steps } from './steps/Steps'
 
@@ -13,8 +13,10 @@ import CreateOrJoinOrg from './OnboardScreens/CreateOrJoinOrg';
 import { getCheckIcon } from './steps/Icons/Check';
 import ThisOrThat from './OnboardScreens/ThisOrThat';
 import ButtonScreen from './OnboardScreens/ButtonScreen';
+import chroma from 'chroma-js'
+import { useMemo } from 'react';
 
-const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void,  onAction?: onActionFunc }) => {
+const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { flow: Flow, step?: Node, maxSteps: number, stepCount: number, color: string, onNext: (data?: Record<string, any>) => void, onAction?: onActionFunc }) => {
     const { setStep, activeStep } = useSteps({
         initialStep: 0,
     })
@@ -23,9 +25,6 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
         setStep(stepCount)
     }, [stepCount])
 
-    if (!step) {
-        return <></>
-    }
 
 
 
@@ -52,12 +51,12 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
                 const forms = flow.forms ?? {}
 
                 return <ButtonScreen stepId={step.id} stepType={step.data.formType} form={forms[step.data.formType]} flow={flow}
-onAction={onAction} onNext={onNext} />
+                    onAction={onAction} onNext={onNext} />
             }
             case 'custom_form_screen': {
                 const formSetting = flow.formSettings[step.id]
 
-                const form:Form = {
+                const form: Form = {
                     dataSchema: JSON.parse(formSetting.schema),
                     uiScheme: JSON.parse(formSetting.schema),
                     name: formSetting.title ?? "Untitled"
@@ -69,17 +68,31 @@ onAction={onAction} onNext={onNext} />
         if (!!flow?.forms) {
             const form = flow?.forms[step.data.formType]
 
-            if(form) {
+            if (form) {
                 return <FormScreen stepId={step.id} form={form} flow={flow} onNext={onNext} />
             }
         }
     }
 
+    const flowColor = useMemo(() => {
+        return flow?.color ? chroma(flow?.color).css() : "rgba(43,108,176,1)"
+    }, [flow?.color])
+
+    const brightColor = useMemo(() => {
+        return chroma(flowColor).brighten().css()
+
+    }, [flowColor])
+
+    if (!step) {
+        return <></>
+    }
+
+    
     return <Box h="100%" pt={8}>
-        <Flex  pb={4} justifyContent={"center"} alignItems={"center"}>
+        <Flex pb={4} justifyContent={"center"} alignItems={"center"}>
             <Flex flexDirection={"row"} alignItems={"center"} >
                 {flow.logoDownloadUrl && <Image
-                    style={{marginRight: 8}}
+                    style={{ marginRight: 8 }}
                     boxSize='50px'
                     objectFit='contain'
                     src={flow.logoDownloadUrl}
@@ -90,17 +103,13 @@ onAction={onAction} onNext={onNext} />
                 </Text>
             </Flex>
         </Flex>
+        <Progress borderRadius="2xl"
+            sx={{
+                '& > div': {
+                    background: `linear-gradient(90deg, ${flowColor} 10%, ${brightColor} 90%)`,
+                },
+            }} value={(activeStep / maxSteps) * 100} />
 
-        <Steps colorScheme={color} activeStep={activeStep}>
-
-            {Array(maxSteps).fill(1).map((_, index) => (
-                //@ts-ignore
-                <Step //@ts-ignore 
-                checkIcon={getCheckIcon(flow?.color ?? "#fff")} label={`Step ${index + 1}`} key={index}>
-
-                </Step>
-            ))}
-        </Steps>
         {getForm()}
     </Box>
 }

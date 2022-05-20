@@ -1,3 +1,4 @@
+// @ts-nocheck
 import T from 'prop-types';
 import React, { Component } from 'react';
 import DynamicIcon from './DynamicIcon';
@@ -5,6 +6,11 @@ import DynamicIcon from './DynamicIcon';
 const DEFAULT_ICON_COLOR = '#FFFFFF';
 
 export default class SocialLoginButton extends Component {
+  handleMouseEnter: () => void;
+  handleMouseLeave: () => void;
+  handleFocus: () => void;
+  handleBlur: () => void;
+  handleClick: (e: any) => void;
   constructor (props) {
     super(props);
     this.state = { focused: false, hovered: false };

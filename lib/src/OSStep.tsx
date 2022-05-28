@@ -75,7 +75,6 @@ const OSStep = ({ flow, step, maxSteps, stepCount, color, onNext, onAction }: { 
     }
 
     const flowColor = useMemo(() => {
-        console.log("flow.color", flow?.color)
         return flow?.color ? chroma(flow?.color).css() : "rgba(43,108,176,1)"
     }, [flow?.color])
 

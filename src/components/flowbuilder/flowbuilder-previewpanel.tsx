@@ -294,14 +294,15 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     return (
-        <div className="relative flex flex-col justify-between h-full w-full">
-            <div className="flex full flex-col">
+        <div className="relative flex flex-col justify-between max-h-screen w-full -scroll-ml-0">
                 <Typography>
                     {formNode?.data.label}
                 </Typography>
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>
+            <div className="flex max-h-screen h-full flex-col overflow-y-scroll scroll-pb-4 mb-40 ">
+
                 <TextField
                         style={{marginTop: 8, marginBottom: 8}}
                         multiline={true}
@@ -322,10 +323,23 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                 {renderButtonSection()}
                 {renderCustomFormSection()}
                 {renderValidateSection()}
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
+                <p>test</p>
 
-            </div>
 
-            <div className="absolute bottom-0 mt-16 w-full">
+            </div>            
+   
+
+            <div style={{width: 300}} className="fixed bottom-8 mt-16 ">
                 <Button onClick={onSave} variant="contained" fullWidth={true} sx={{}}>
                     Save
                 </Button>

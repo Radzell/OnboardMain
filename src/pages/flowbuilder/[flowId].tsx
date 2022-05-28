@@ -6,7 +6,7 @@ import { FlowBuilderChart } from '../../components/flowbuilder/flowbuilder-chart
 
 
 const Flowbuilder = () => {
-    return <div style={{height: '100%'}}>
+    return <div style={{height: '100vh', overflowY: "hidden"}}>
         <FlowBuilderChart />
     </div>
 }

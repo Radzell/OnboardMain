@@ -4,7 +4,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit'
 import type { AppState, AppThunk } from '../app/store'
 
 export interface UIState {
-  tab: 'screens' | 'preview',
+  tab: 'screens' | 'preview' | 'design',
   screen: 'chart' | 'preview' | 'releases',
   previewing?: string
   isPreviewTest: boolean
@@ -30,6 +30,9 @@ export const uiSlice = createSlice({
     previewClick: (state) => {
         state.tab  = 'preview'
     },
+    designClick: (state) => {
+      state.tab  = 'design'
+    },
     screenChartClicked: (state) => {
       state.screen = "chart"
     },
@@ -54,6 +57,6 @@ export const uiSlice = createSlice({
   },
 })
 
-export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked, screenReleasesClicked, togglePreviewTesting } = uiSlice.actions
+export const { screenClick, previewClick, screenPreviewClicked, screenChartClicked, screenReleasesClicked, togglePreviewTesting, designClick } = uiSlice.actions
 
 export default uiSlice.reducer

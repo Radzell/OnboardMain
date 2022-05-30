@@ -3,7 +3,7 @@ import React, { useMemo } from "react"
 import { Flow, Form } from ".."
 import { Text } from '@chakra-ui/react'
 import { Box } from '@chakra-ui/react'
-import { DividerMw, CheckboxGroupMw, CheckboxMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, GoogleBtnMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, presetMws, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw } from '../GravelForm';
+import { DividerMw, CheckboxGroupMw, CheckboxMw, FieldsetTemplateMw, Form as OSForm, FormControlLabelMw, FormControlTemplateMw, GoogleBtnMw, InputMw, NotSupportedMw, NumberInputMw, PasswordMw, RadioGroupMw, SelectMw, SliderMw, SubmitButtonWithValidationMw, SwitchMw, TextAreaMw, FacebookBtnMw } from '../GravelForm';
 import { ExtraPropsMw, FixedArrayMw, FixedObjectMw, LocalRefMw, withName } from "../GravelForm/core"
 import { useEffect } from "react"
 
@@ -31,6 +31,8 @@ const middlewares = [
     withName(TextAreaMw, 'TextArea'),
     withName(PasswordMw, 'Password'),
     withName(GoogleBtnMw, "GoogleBtn"),
+    withName(FacebookBtnMw, "FacebookBtn"),
+
     withName(DividerMw, "divider"),
     CheckboxGroupMw,
     SelectMw,
@@ -51,6 +53,8 @@ const extraProps = {
       radioGroup: { component: 'RadioGroup' },
       switch: { component: 'Switch' },
       googleBtn: {component: 'GoogleBtn'},
+      facebookBtn: {component: 'FacebookBtn'},
+
       divider: {component: "divider"}
     }
 }

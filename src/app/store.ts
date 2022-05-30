@@ -15,6 +15,11 @@ export interface FlowForm {
   optionB?: string,
   schema?: string,
   validate?: boolean
+  titleColor?: string,
+  descriptionColor?: string
+  nextButtonColor?: string
+  nextButtonText?: string
+
 }
 export interface Flow {
   elements?: any[]

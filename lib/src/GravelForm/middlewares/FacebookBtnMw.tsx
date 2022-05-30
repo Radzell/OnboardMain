@@ -3,9 +3,9 @@ import get from 'lodash/get';
 import { Button, Input, InputGroup, InputRightElement, Textarea } from '@chakra-ui/react';
 import { MiddlewareProps } from '../share';
 import OAuth2Login from '../utils/OAuth2Login';
-import GoogleLoginButton from '../utils/GoogleLoginButton'
+import FacebookLoginButton from '../utils/FacebookLoginButton';
 
-export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
+export const FacebookBtnMw: React.FC<MiddlewareProps> = (props) => {
   const { next, schema, data, onChange, extraProps, size, formProps } = props;
 
   //@ts-ignore
@@ -52,12 +52,12 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
       isCrossOrigin={false}
       onSuccess={onSuccess}
       onFailure={onFailure}   >
-        <GoogleLoginButton>
-          <span>{schema.text ?? "Signup with Google"}</span>
-        </GoogleLoginButton>
+        <FacebookLoginButton>
+          <span>{schema.text ?? "Signup with Facebook"}</span>
+        </FacebookLoginButton>
       </OAuth2Login>
   );
 };
 
 
-export default GoogleBtnMw;
+export default FacebookBtnMw;

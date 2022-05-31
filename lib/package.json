@@ -1,6 +1,6 @@
 {
   "name": "onboard-os",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "System for building signup flows",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",

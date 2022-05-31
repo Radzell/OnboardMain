@@ -5,6 +5,7 @@ import { MiddlewareProps } from '../share';
 
 export const InputMw: React.FC<MiddlewareProps> = (props) => {
   const { next, schema, data, onChange, extraProps, size, formProps } = props;
+  
   if (typeof schema === 'boolean' || schema.type !== 'string') return next(props);
   return (
     <Input

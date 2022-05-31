@@ -4,8 +4,9 @@ import { Button, Input, InputGroup, InputRightElement, Textarea } from '@chakra-
 import { MiddlewareProps } from '../share';
 import OAuth2Login from '../utils/OAuth2Login';
 import FacebookLoginButton from '../utils/FacebookLoginButton';
+import { OnBoardOSMiddlewareProps } from './OnboardOSMiddlewareProps';
 
-export const FacebookBtnMw: React.FC<MiddlewareProps> = (props) => {
+export const FacebookBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
   const { next, schema, data, onChange, extraProps, size, formProps } = props;
 
   //@ts-ignore

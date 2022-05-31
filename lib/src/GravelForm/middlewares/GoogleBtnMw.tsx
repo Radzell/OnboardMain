@@ -4,8 +4,12 @@ import { Button, Input, InputGroup, InputRightElement, Textarea } from '@chakra-
 import { MiddlewareProps } from '../share';
 import OAuth2Login from '../utils/OAuth2Login';
 import GoogleLoginButton from '../utils/GoogleLoginButton'
+import { JSONSchema7Definition, JSONSchema7Type } from 'json-schema';
+import { OnBoardOSMiddlewareProps } from './OnboardOSMiddlewareProps';
 
-export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
+
+
+export const GoogleBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
   const { next, schema, data, onChange, extraProps, size, formProps } = props;
 
   //@ts-ignore
@@ -34,8 +38,8 @@ export const GoogleBtnMw: React.FC<MiddlewareProps> = (props) => {
 };
 
   const onFailure = response => {
-    //console.error("bets onFailure"+response)
   };
+  //@ts-ignore
   return (
     <OAuth2Login
       authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth"

@@ -11,6 +11,7 @@ import { saveFlowForm } from "../../reducers/flowChartSlice";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Flow, FlowForm } from "../../app/store";
 import Ajv, {ErrorObject as AJVErrorObject} from 'ajv';
+import { TwitterPicker } from "react-color";
 
 const ajv = new Ajv({
     allErrors: true,
@@ -20,7 +21,7 @@ const ajv = new Ajv({
 
 ajv.addVocabulary(["clientId", "scope", "redirectUri", "text"])
 
-const PreviewPanel = ({ flowId }: { flowId: string }) => {
+const PreviewPanel = ({ flowId, type }: { flowId: string, type: 'design' | 'setting' }) => {
     const selectedNodeId = useAppSelector((state) => state.ui.previewing)
     const [shouldValidate, setShouldValidate] = useState<boolean>(false)
     const [formData, setFormData] = useState({})
@@ -28,6 +29,8 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     const [optionB, setOptionB] = useState<string>()
     const [title, setTitle] = useState<string>()
     const [name, setName] = useState<string>()
+    const [titleColor, setTitleColor] = useState<string>()
+    const [descriptionColor, setDescriptionColor] = useState<string>()
     const [description, setDescription] = useState<string>()
     const [schema, setSchema] = useState<string>()
     const [schemaError, setSchemaError] = useState<boolean>(false)
@@ -52,6 +55,16 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     )
 
+    const flow: Flow | undefined = useAppSelector(
+        ({ firestore }): any =>  {
+            if(!firestore.data.flows || !selectedNodeId) {
+                return
+            }
+         
+            return firestore.data.flows[flowId] ?? undefined
+        }
+    )
+
     useEffect(() => {
         setTitle(flowForm?.title ?? "")
         setDescription(flowForm?.description ?? "")
@@ -59,9 +72,11 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         setOptionB(flowForm?.optionB ?? "")
         setName(flowForm?.name ?? "Untitled")
         setSchema(flowForm?.schema ?? "")
+        setTitleColor(flowForm?.titleColor ?? (flow?.color ?? "#000"))
+        setDescriptionColor(flowForm?.descriptionColor ?? "#000")
 
 
-    },[flowForm])
+    },[flowForm, flow])
 
 
     useEffect(() => {
@@ -109,12 +124,12 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
             }
         }
 
-        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, schema: schemaSaving, validate: shouldValidate } }))
+        await dispatch(saveFlowForm({ flowId, flowFormId: selectedNodeId, flowForm: { ...formData, title, description, optionA, optionB, name, schema: schemaSaving, titleColor, descriptionColor,  validate: shouldValidate } }))
         snackbar.showSnackBar("Saving...", "info")
     }
 
     const renderValidateSection = () => {
-        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome") {
+        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome" || formNode?.data.formType === "end_point") {
             return
         }
 
@@ -220,7 +235,7 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderBasicInfoSection = () => {
-        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen")) {
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen" || formNode?.data?.formType === "welcome" || formNode?.data?.formType === "end_point")) {
             return (
                 <>
                     <TextField
@@ -255,6 +270,28 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         }
     }
 
+
+    const renderBasicInfoDesignSection = () => {
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen")) {
+            return (
+                <>
+                    <Typography>
+                        Title Color
+                    </Typography>
+                    <TwitterPicker onChange={(e) => {
+                        setTitleColor(e.hex)
+                    }} color={titleColor} triangle="hide" />
+                     <Typography>
+                        Description Color
+                    </Typography>
+                    <TwitterPicker onChange={(e) => {
+                        setDescriptionColor(e.hex)
+                    }} color={descriptionColor} triangle="hide" />
+                </>
+            )
+        }
+    }
+
     const renderStepName = () => {
         return <TextField
             style={{marginTop: 8, marginBottom: 8}}
@@ -272,6 +309,9 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
     }
 
     const renderCustomFormSection = () => {
+        if(formNode?.data?.formType !== "custom_form_screen") {
+            return
+        }
         return(
             <TextField
                 maxRows={4}
@@ -293,15 +333,40 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
         )
     }
 
+    const renderPreviewFormItems = () => {
+        if(type != 'setting'){
+            return <></>
+        }
+        return <>
+                {renderStepName()}
+                {renderBasicInfoSection()}
+                {renderOrButtonSection()}
+                {renderButtonSection()}
+                {renderCustomFormSection()}
+                {renderValidateSection()}
+        </>
+    }
+
+    const renderDesignFormItems = () => {
+        if(type != 'design'){
+            return <></>
+        }
+        return <>
+                {renderBasicInfoDesignSection()}
+               
+        </>
+    }
+
     return (
-        <div className="relative flex flex-col justify-between h-full w-full">
-            <div className="flex full flex-col">
+        <div className="relative flex flex-col justify-between max-h-screen w-full -scroll-ml-0">
                 <Typography>
                     {formNode?.data.label}
                 </Typography>
                 <Typography variant="h5" gutterBottom component="div">
                     Settings
                 </Typography>
+            <div className="flex max-h-screen h-full flex-col overflow-y-scroll scroll-pb-4 mb-40 ">
+
                 <TextField
                         style={{marginTop: 8, marginBottom: 8}}
                         multiline={true}
@@ -316,16 +381,13 @@ const PreviewPanel = ({ flowId }: { flowId: string }) => {
                         defaultValue={selectedNodeId}
 
                 />
-                {renderStepName()}
-                {renderBasicInfoSection()}
-                {renderOrButtonSection()}
-                {renderButtonSection()}
-                {renderCustomFormSection()}
-                {renderValidateSection()}
+                {renderPreviewFormItems()}
+                {renderDesignFormItems()}
+                
+            </div>            
+   
 
-            </div>
-
-            <div className="absolute bottom-0 mt-16 w-full">
+            <div style={{width: 300}} className="fixed bottom-8 mt-16 ">
                 <Button onClick={onSave} variant="contained" fullWidth={true} sx={{}}>
                     Save
                 </Button>

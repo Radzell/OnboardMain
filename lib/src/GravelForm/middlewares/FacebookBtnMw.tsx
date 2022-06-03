@@ -3,13 +3,10 @@ import get from 'lodash/get';
 import { Button, Input, InputGroup, InputRightElement, Textarea } from '@chakra-ui/react';
 import { MiddlewareProps } from '../share';
 import OAuth2Login from '../utils/OAuth2Login';
-import GoogleLoginButton from '../utils/GoogleLoginButton'
-import { JSONSchema7Definition, JSONSchema7Type } from 'json-schema';
+import FacebookLoginButton from '../utils/FacebookLoginButton';
 import { OnBoardOSMiddlewareProps } from './OnboardOSMiddlewareProps';
 
-
-
-export const GoogleBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
+export const FacebookBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
   const { next, schema, data, onChange, extraProps, size, formProps } = props;
 
   //@ts-ignore
@@ -38,8 +35,8 @@ export const GoogleBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
 };
 
   const onFailure = response => {
+    //console.error("bets onFailure"+response)
   };
-  //@ts-ignore
   return (
     <OAuth2Login
       authorizationUrl="https://accounts.google.com/o/oauth2/v2/auth"
@@ -56,12 +53,12 @@ export const GoogleBtnMw: React.FC<OnBoardOSMiddlewareProps> = (props) => {
       isCrossOrigin={false}
       onSuccess={onSuccess}
       onFailure={onFailure}   >
-        <GoogleLoginButton>
-          <span>{schema.text ?? "Signup with Google"}</span>
-        </GoogleLoginButton>
+        <FacebookLoginButton>
+          <span>{schema.text ?? "Signup with Facebook"}</span>
+        </FacebookLoginButton>
       </OAuth2Login>
   );
 };
 
 
-export default GoogleBtnMw;
+export default FacebookBtnMw;

@@ -60,12 +60,12 @@ export default memo(({ data, id, isConnectable}: { data: any, id:string, isConne
         <Typography variant="subtitle1" >
           {renderName()}
         </Typography >
-        {data.formType !== "end_point" &&
+        {
           <Typography variant="caption" component="div">
           {data.label}
           </Typography >
         }
-        {data.formType !== "end_point" && <Button onClick={showPreview} size="small" variant="contained">
+        { <Button onClick={showPreview} size="small" variant="contained">
           Preview
         </Button>
         }

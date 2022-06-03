@@ -129,7 +129,7 @@ const PreviewPanel = ({ flowId, type }: { flowId: string, type: 'design' | 'sett
     }
 
     const renderValidateSection = () => {
-        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome") {
+        if(formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "welcome" || formNode?.data.formType === "end_point") {
             return
         }
 
@@ -235,7 +235,7 @@ const PreviewPanel = ({ flowId, type }: { flowId: string, type: 'design' | 'sett
     }
 
     const renderBasicInfoSection = () => {
-        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen")) {
+        if((formNode?.type === "orNode" || formNode?.data?.formType === "button_screen" || formNode?.data?.formType === "custom_form_screen" || formNode?.data?.formType === "welcome" || formNode?.data?.formType === "end_point")) {
             return (
                 <>
                     <TextField
@@ -309,6 +309,9 @@ const PreviewPanel = ({ flowId, type }: { flowId: string, type: 'design' | 'sett
     }
 
     const renderCustomFormSection = () => {
+        if(formNode?.data?.formType !== "custom_form_screen") {
+            return
+        }
         return(
             <TextField
                 maxRows={4}

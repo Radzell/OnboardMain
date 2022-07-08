@@ -90,6 +90,7 @@ const FormScreen = ({ stepId, form, flow, onNext }: { stepId: string, form: Form
         return false
     }, [flow.formSettings])
 
+
     const onSkip = () => {
         onNext()
     }

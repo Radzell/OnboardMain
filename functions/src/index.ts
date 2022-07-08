@@ -69,9 +69,13 @@ interface Form {
 interface FormSetting {
     title: string,
     description: string,
-    optionA: string,
-    optionB: string,
+    optionA?: string,
+    optionB?: string,
     validate: boolean
+    titleColor?: string,
+    descriptionColor?: string
+    nextButtonColor?: string
+    nextButtonText?: string
 }
 
 interface EventResp { 
